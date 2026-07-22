@@ -1,0 +1,247 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import { localizedPath, type Lang } from '../i18n/utils';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const t = {
+  es: {
+    title: 'Residencia — Agencia de Marca & Digital',
+    desc: 'Residencia es la agencia de marca y digital. Marcas y productos digitales para la era de la inteligencia.',
+    nav: { serv: 'Servicios', work: 'Trabajo', cta: 'Inicia un proyecto' },
+    eyebrow: 'Agencia de Marca & Digital — Grupo Residencia',
+    h: ['Marcas y productos', 'digitales para la', ['era de la ', 'inteligencia', '.']],
+    heroFoot: 'Una agencia independiente que construye las marcas y productos que la gente recuerda — claros, cuidados y hechos para durar.',
+    heroTags: ['Estrategia', 'Identidad', 'Producto', 'Web'],
+    intro: ['Somos un estudio pequeño de estrategas, diseñadores e ingenieros. Trabajamos en ', 'colaboración cercana', ' — menos proyectos, más cuidado — para hacer trabajo honesto, útil y silenciosamente inolvidable.'],
+    servHead: 'Servicios',
+    services: [
+      { n: '01', h: 'Estrategia', d: 'Posicionamiento, narrativa y la idea afilada que hay debajo. Encontramos eso que solo tú puedes decir.', tags: ['Estrategia de marca', 'Naming', 'Investigación'] },
+      { n: '02', h: 'Identidad', d: 'Sistemas visuales con punto de vista — tipografía, movimiento y dirección de arte que escalan.', tags: ['Identidad visual', 'Design systems', 'Dirección de arte'] },
+      { n: '03', h: 'Producto', d: 'Productos digitales que se sienten inevitables, del primer prototipo a la interfaz en producción.', tags: ['UX / UI', 'Web y app', 'Ingeniería'] },
+      { n: '04', h: 'Web', d: 'Sitios que cargan toda la marca — rápidos, accesibles y hechos para durar.', tags: ['Diseño', 'Desarrollo', 'CMS'] },
+    ],
+    workHead: 'Trabajo seleccionado',
+    work: [
+      { name: 'Atlas', sub: 'Rebrand y plataforma de banca digital', yr: '2026', tag: 'Marca · Producto' },
+      { name: 'Meridian', sub: 'Sistema de identidad para un estudio de arquitectura', yr: '2026', tag: 'Identidad' },
+      { name: 'Hyperion', sub: 'Diseño de producto IA y design system', yr: '2025', tag: 'Producto' },
+      { name: 'Verde', sub: 'Marca y sitio para un fondo climático', yr: '2025', tag: 'Marca · Web' },
+    ],
+    procHead: 'Cómo trabajamos',
+    steps: [
+      { b: 'Escuchar', p: 'Empezamos por entender el negocio, la audiencia y el problema real — no los síntomas del brief.' },
+      { b: 'Definir', p: 'Una idea clara, expresada con precisión. Todo lo que sigue está a su servicio.' },
+      { b: 'Crear', p: 'Diseñamos y construimos en ciclos cortos, en el medio real, hasta que se siente inevitable.' },
+      { b: 'Lanzar', p: 'Lanzamos, medimos, refinamos. Seguimos cerca después del go-live, no solo antes.' },
+    ],
+    cEyebrow: 'Trabajemos juntos', cBig: 'Inicia un proyecto', back: '↩ Inicio', partOf: 'Parte del grupo Residencia ↩', city: 'Ciudad de México',
+    footTag: 'Agencia de marca & digital — Grupo Residencia.',
+  },
+  en: {
+    title: 'Residencia — Brand & Digital Agency',
+    desc: 'Residencia is the brand and digital agency — brands and digital products for the intelligence age.',
+    nav: { serv: 'Services', work: 'Work', cta: 'Start a project' },
+    eyebrow: 'Brand & Digital Agency — Residencia Group',
+    h: ['Brands & digital', 'products for the', ['', 'intelligence', ' age.']],
+    heroFoot: 'An independent agency building the brands and products people remember — clear, considered, and made to last.',
+    heroTags: ['Strategy', 'Identity', 'Product', 'Web'],
+    intro: ['We are a small studio of strategists, designers and engineers. We work in ', 'close partnership', ' — fewer projects, deeper care — to make work that is honest, useful and quietly unforgettable.'],
+    servHead: 'Services',
+    services: [
+      { n: '01', h: 'Strategy', d: 'Positioning, narrative and the sharp idea underneath. We find the thing only you can say.', tags: ['Brand strategy', 'Naming', 'Research'] },
+      { n: '02', h: 'Identity', d: 'Visual systems with a point of view — typography, motion and art direction that scale.', tags: ['Visual identity', 'Design systems', 'Art direction'] },
+      { n: '03', h: 'Product', d: 'Digital products that feel inevitable, from first prototype to production-grade interface.', tags: ['UX / UI', 'Web & app', 'Engineering'] },
+      { n: '04', h: 'Web', d: 'Sites that carry the whole brand — fast, accessible and built to last.', tags: ['Design', 'Build', 'CMS'] },
+    ],
+    workHead: 'Selected work',
+    work: [
+      { name: 'Atlas', sub: 'Rebrand & digital banking platform', yr: '2026', tag: 'Brand · Product' },
+      { name: 'Meridian', sub: 'Identity system for an architecture firm', yr: '2026', tag: 'Identity' },
+      { name: 'Hyperion', sub: 'AI product design & design system', yr: '2025', tag: 'Product' },
+      { name: 'Verde', sub: 'Brand & website for a climate fund', yr: '2025', tag: 'Brand · Web' },
+    ],
+    procHead: 'How we work',
+    steps: [
+      { b: 'Listen', p: "We start by understanding the business, the audience and the real problem — not the brief's symptoms." },
+      { b: 'Define', p: 'One clear idea, sharply expressed. Everything that follows is in service of it.' },
+      { b: 'Make', p: 'Design and build in tight loops, in the real medium, until it feels inevitable.' },
+      { b: 'Ship', p: 'Launch, measure, refine. We stay close after go-live, not just before it.' },
+    ],
+    cEyebrow: "Let's work together", cBig: 'Start a project', back: '↩ Home', partOf: 'Part of the Residencia group ↩', city: 'Mexico City',
+    footTag: 'Brand & digital agency — Residencia Group.',
+  },
+}[lang];
+
+const L = (route: string) => localizedPath(route, lang);
+---
+<Base title={t.title} description={t.desc} theme="theme-residencia">
+
+  <header class="hdr" data-nav>
+    <div class="wrap nav">
+      <a href={L('residencia')} class="brand">Residencia<span class="reg">®</span></a>
+      <nav class="links">
+        <a href="#services" data-hot>{t.nav.serv}</a>
+        <a href="#work" data-hot>{t.nav.work}</a>
+        <a href={L('')} class="backlink" data-hot>{t.back}</a>
+        <LangToggle lang={lang} route="residencia" />
+        <a href="#contact" class="cta" data-hot>{t.nav.cta}</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" data-hero>
+    <div class="wrap">
+      <div class="hero-grid">
+        <span class="eyebrow reveal">{t.eyebrow}</span>
+        <h1 class="h1">
+          <span class="ln"><span>{t.h[0]}</span></span>
+          <span class="ln"><span>{t.h[1]}</span></span>
+          <span class="ln"><span>{t.h[2][0]}<span class="serif-i">{t.h[2][1]}</span>{t.h[2][2]}</span></span>
+        </h1>
+        <div class="hero-foot reveal">
+          <p>{t.heroFoot}</p>
+          <div class="hero-tags">{t.heroTags.map((x) => <span>{x}</span>)}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule wrap"><div></div></div>
+
+  <section class="wrap intro">
+    <p class="reveal">{t.intro[0]}<span class="serif-i">{t.intro[1]}</span>{t.intro[2]}</p>
+  </section>
+
+  <section id="services" class="wrap svc">
+    <div class="shead reveal"><span class="num">(01)</span><h2>{t.servHead}</h2></div>
+    {t.services.map((s) => (
+      <div class="svc-row reveal">
+        <span class="sn">{s.n}</span>
+        <h3>{s.h}</h3>
+        <p class="sd">{s.d}</p>
+        <div class="st">{s.tags.map((x) => <span>{x}</span>)}</div>
+      </div>
+    ))}
+  </section>
+
+  <section id="work" class="wrap work">
+    <div class="shead reveal"><span class="num">(02)</span><h2>{t.workHead}</h2></div>
+    <div class="wgrid">
+      {t.work.map((w, i) => (
+        <a class="wcard reveal" href="#" data-hot>
+          <div class={`thumb t${i + 1}`}><span class="big">{w.name}</span></div>
+          <div class="wmeta">
+            <div><h3>{w.name}</h3><p>{w.sub}</p></div>
+            <div class="wright"><span class="tag">{w.tag}</span><span class="yr">{w.yr}</span></div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap proc">
+    <div class="shead reveal"><span class="num">(03)</span><h2>{t.procHead}</h2></div>
+    <div class="steps">
+      {t.steps.map((s) => (<div class="reveal"><b>{s.b}</b><p>{s.p}</p></div>))}
+    </div>
+  </section>
+
+  <section id="contact" class="wrap contact">
+    <div class="eyebrow reveal" style="margin-bottom:1.4rem">{t.cEyebrow}</div>
+    <a href="mailto:cesar.j@residencia.com.mx" class="big" data-hot>{t.cBig}</a>
+    <div class="crow reveal">
+      <a href="mailto:cesar.j@residencia.com.mx" data-hot>cesar.j@residencia.com.mx</a>
+      <a href={L('')} data-hot>{t.partOf}</a>
+      <span>{t.city}</span>
+    </div>
+  </section>
+
+  <footer class="wrap foot">
+    <div class="brand">Residencia<span class="reg">®</span></div>
+    <span class="muted">{t.footTag}</span>
+    <span class="muted">© 2026 Residencia</span>
+  </footer>
+
+</Base>
+
+<style>
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;transition:transform .4s,background .4s,border-color .4s;border-bottom:1px solid transparent}
+  .hdr.scrolled{background:rgba(245,244,239,.8);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .brand{font-family:var(--display);font-weight:700;font-size:1.18rem;letter-spacing:-.02em;display:flex;align-items:flex-start;gap:.15em}
+  .brand .reg{font-size:.6em;color:var(--accent);margin-top:.2em}
+  .links{display:flex;gap:1.6rem;align-items:center}
+  .links a{font-size:.86rem;color:var(--muted);transition:color .25s}
+  .links a:hover{color:var(--ink)}
+  .links a.cta{color:var(--ink);border:1px solid var(--ink);padding:.55em 1.2em;transition:.3s}
+  .links a.cta:hover{background:var(--ink);color:var(--bg)}
+  @media (max-width:900px){ .links a:not(.cta):not(.backlink){display:none} }
+
+  .hero{min-height:94svh;display:flex;align-items:center;padding-top:90px}
+  .hero-grid{display:flex;flex-direction:column}
+  .h1{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,9vw,9rem);line-height:.95;letter-spacing:-.04em;margin:1.4rem 0}
+  .h1 .ln{display:block;overflow:hidden}
+  .h1 .ln span{display:block;transform:translateY(110%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
+  [data-hero].in .h1 .ln span{transform:none}
+  .h1 .ln:nth-child(2) span{transition-delay:.07s}
+  .h1 .ln:nth-child(3) span{transition-delay:.14s}
+  .h1 .serif-i{color:var(--accent);font-weight:400}
+  .hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:1.6rem}
+  .hero-foot p{max-width:46ch;color:var(--muted)}
+  .hero-tags{display:flex;gap:.5em;flex-wrap:wrap}
+  .hero-tags span{font-size:.78rem;border:1px solid var(--line);border-radius:100px;padding:.4em .9em;color:var(--muted)}
+
+  .rule{padding-block:0}
+  .rule div{height:1px;background:var(--line)}
+
+  .intro{padding-block:clamp(70px,10vh,150px)}
+  .intro p{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4.2vw,3.4rem);line-height:1.08;letter-spacing:-.025em;max-width:26ch}
+  .intro .serif-i{color:var(--accent)}
+
+  .svc{border-top:1px solid var(--line)}
+  .svc-row{display:grid;grid-template-columns:auto .8fr 1.4fr 1fr;gap:2rem;align-items:start;padding-block:clamp(26px,4vh,46px);border-bottom:1px solid var(--line);transition:background .35s,padding .35s}
+  .svc-row:hover{background:var(--bg-2);padding-inline:18px}
+  .svc-row .sn{font-family:var(--display);color:var(--accent);font-weight:700;font-size:.86rem;padding-top:.6em}
+  .svc-row h3{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4.2vw,3.2rem);letter-spacing:-.03em;line-height:.95}
+  .svc-row .sd{color:var(--muted);max-width:42ch;padding-top:.5em}
+  .svc-row .st{display:flex;flex-direction:column;gap:.4em;padding-top:.5em;font-size:.86rem;color:var(--ink)}
+  @media (max-width:880px){ .svc-row{grid-template-columns:auto 1fr;gap:.6rem 1.2rem} .svc-row .sd,.svc-row .st{grid-column:2} }
+
+  .work{padding-top:clamp(72px,10vh,150px)}
+  .wgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,3vw,52px)}
+  @media (max-width:760px){ .wgrid{grid-template-columns:1fr} }
+  .thumb{aspect-ratio:5/4;border-radius:4px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+  .wcard:hover .thumb{transform:translateY(-6px)}
+  .thumb .big{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5vw,4rem);letter-spacing:-.03em;color:rgba(21,19,14,.16);transition:color .4s}
+  .wcard:hover .thumb .big{color:rgba(21,19,14,.32)}
+  .t1{background:linear-gradient(135deg,#EDEAE2,#E2DCCE)}
+  .t2{background:linear-gradient(135deg,#E7E9E4,#D7DFD6)}
+  .t3{background:linear-gradient(135deg,#ECE6E6,#E2D4D2)}
+  .t4{background:linear-gradient(135deg,#E6EAEC,#D3DEE2)}
+  .wmeta{display:flex;justify-content:space-between;gap:1rem;margin-top:1.1rem;border-top:1px solid var(--line);padding-top:1rem}
+  .wmeta h3{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em}
+  .wmeta p{color:var(--muted);font-size:.9rem;margin-top:.2em}
+  .wright{text-align:right;display:flex;flex-direction:column;gap:.3em;white-space:nowrap}
+  .wright .tag{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .wright .yr{color:var(--muted);font-size:.86rem}
+
+  .proc{padding-top:clamp(72px,10vh,150px)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;border-top:1px solid var(--line);padding-top:clamp(32px,4vh,56px)}
+  .steps b{font-family:var(--display);font-weight:700;font-size:1.4rem;display:block;margin-bottom:.5em}
+  .steps p{color:var(--muted);font-size:.92rem}
+  @media (max-width:760px){ .steps{grid-template-columns:1fr 1fr;gap:1.6rem} }
+
+  .contact{text-align:center;border-top:1px solid var(--line);margin-top:clamp(40px,6vh,80px)}
+  .contact .big{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,11vw,10rem);letter-spacing:-.04em;line-height:.9;display:inline-block;transition:color .4s}
+  .contact .big:hover{color:var(--accent)}
+  .crow{display:flex;justify-content:center;gap:clamp(1rem,3vw,3rem);margin-top:2rem;flex-wrap:wrap;color:var(--muted)}
+  .crow a{border-bottom:1px solid var(--line);padding-bottom:.2em;transition:.3s}
+  .crow a:hover{color:var(--ink);border-color:var(--accent)}
+
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-block:clamp(40px,6vh,72px);border-top:1px solid var(--line)}
+  .foot .brand{font-size:1.3rem}
+</style>

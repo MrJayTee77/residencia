@@ -1,0 +1,8 @@
+/* Residencia — Webfonts
+   NOTE: No brand font files were provided. These are Google Fonts substitutions
+   chosen to match the logomark's geometry (Space Grotesk), its technical/
+   registration-mark character (Space Mono), and a workhorse editorial grotesk
+   for running text (Archivo). Swap the @font-face src for licensed brand fonts
+   when available. See readme.md → VISUAL FOUNDATIONS. */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Archivo:wght@400;500;600;700&display=swap');

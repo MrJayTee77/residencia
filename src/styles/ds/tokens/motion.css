@@ -1,0 +1,20 @@
+/* Residencia — Motion tokens.
+   Precise and quick. No bounce; content settles with a decisive ease-out.
+   Interaction feedback: hover shifts color, press darkens + nudges 1px. */
+
+:root {
+  --dur-fast: 120ms;   /* @kind other */
+  --dur-base: 180ms;   /* @kind other */
+  --dur-slow: 280ms;   /* @kind other */
+  --dur-slower: 480ms; /* @kind other */
+
+  /* Decisive ease-out (standard). */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+  /* Gentle ease for entrances / fades. */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+  --ease-linear: linear; /* @kind other */
+
+  --transition-colors: color var(--dur-fast) var(--ease-standard),
+                       background-color var(--dur-fast) var(--ease-standard),
+                       border-color var(--dur-fast) var(--ease-standard); /* @kind other */
+}

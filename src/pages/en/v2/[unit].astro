@@ -1,0 +1,11 @@
+---
+import UnitPage from '../../../components/UnitPage.astro';
+import { units } from '../../../data/units';
+
+export function getStaticPaths() {
+  return Object.keys(units).map((unit) => ({ params: { unit } }));
+}
+
+const { unit } = Astro.params;
+---
+<UnitPage unit={unit!} lang="en" />

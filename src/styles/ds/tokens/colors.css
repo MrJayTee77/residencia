@@ -1,0 +1,71 @@
+/* Residencia — Color tokens
+   "Combo 09" — Vulcanico (#FF4103) primary over Noturno (#001621). The committed
+   Residencia palette: a single vivid orange-red accent on deep teal-navy neutrals
+   and cool paper. Signature: black-on-orange / orange-on-black. Ramps in OKLCH. */
+
+:root {
+  /* — Brand: Vulcanico (primary accent) — */
+  --vulcanico-100: #FFE1D5;
+  --vulcanico-200: #FFBDA7;
+  --vulcanico-300: #FF8D6B;
+  --vulcanico-400: #FF6135;
+  --vulcanico-500: #FF4103; /* primary · Vulcanico */
+  --vulcanico-600: #D12D00;
+  --vulcanico-700: #9E2100;
+
+  /* — Ink: Noturno (deep teal-navy neutrals) — */
+  --noturno-900: #001621; /* Noturno */
+  --noturno-800: #0F2129;
+  --noturno-700: #22343E;
+  --noturno-600: #3E505A;
+  --noturno-500: #61727A;
+  --noturno-400: #86959C;
+  --noturno-300: #ABB6BD;
+
+  /* — Paper (cool near-neutral off-whites, faint navy tint) — */
+  --paper-000: #FAFDFF; /* raised surface / card */
+  --paper-100: #F2F7F9; /* app background */
+  --paper-200: #E6ECF0; /* sunken / hover fill */
+  --paper-300: #D9E1E5; /* dividers on paper */
+  --line:       #CED7DC; /* hairline borders */
+  --line-strong:#BAC4CA;
+
+  /* — Support: Azure (interactive / links, used sparingly) — */
+  --azure-100: #DCE6F7;
+  --azure-500: #2E5AAC;
+  --azure-600: #244A90;
+
+  /* — Semantic hues — */
+  --green-100: #D8EDDE; --green-500: #2F7D52; --green-600: #226040;
+  --amber-100: #FBE7C4; --amber-500: #B97B12; --amber-600: #96620E;
+  --red-100:   #FBD9D2; --red-500:   #D23A22; --red-600:   #A82A16;
+
+  /* ————— Semantic aliases ————— */
+  --bg-app:        var(--paper-100);
+  --bg-sunken:     var(--paper-200);
+  --surface:       var(--paper-000);
+  --surface-hover: var(--paper-200);
+  --surface-inverse: var(--noturno-900);
+
+  --text-primary:   var(--noturno-900);
+  --text-secondary: var(--noturno-700);
+  --text-muted:     var(--noturno-500);
+  --text-on-accent:    var(--noturno-900);   /* dark text on Vulcanico — black-on-orange */  --text-oninverse: var(--paper-100);
+  --text-link:      var(--azure-600);
+
+  --border:        var(--line);
+  --border-strong: var(--line-strong);
+  --border-focus:  var(--vulcanico-500);
+
+  --accent:        var(--vulcanico-500);
+  --accent-hover:  var(--vulcanico-600);
+  --accent-press:  var(--vulcanico-700);
+  --accent-soft:   var(--vulcanico-100);
+
+  --focus-ring:    color-mix(in srgb, var(--vulcanico-500) 40%, transparent);
+
+  --success: var(--green-500); --success-soft: var(--green-100);
+  --warning: var(--amber-500); --warning-soft: var(--amber-100);
+  --danger:  var(--red-500);   --danger-soft:  var(--red-100);
+  --info:    var(--azure-500); --info-soft:    var(--azure-100);
+}

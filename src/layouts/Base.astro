@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  theme?: 'theme-group' | 'theme-residencia' | 'theme-gr8' | 'theme-synergy' | 'theme-agency' | 'theme-prod' | 'theme-syn' | 'theme-res' | 'theme-res-ds';
+}
+const { title, description = 'Residencia Group — a creative group of three studios.', theme = 'theme-group' } = Astro.props;
+
+const fonts =
+  'https://fonts.googleapis.com/css2?' +
+  'family=Archivo:wght@400;500;600;700;800&' +
+  'family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&' +
+  'family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&' +
+  'family=Hanken+Grotesk:wght@400;500;600;700&' +
+  'family=Instrument+Serif:ital@0;1&' +
+  'family=Plus+Jakarta+Sans:wght@400;500;600;700;800&' +
+  'family=Space+Mono:wght@400;700&display=swap';
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#15140F" />
+  <link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={fonts} rel="stylesheet" />
+</head>
+<body class={theme}>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <slot />
+
+  <script>
+    // ---- custom cursor (lerped) ----
+    const cursor = document.getElementById('cursor');
+    if (cursor && window.matchMedia('(hover:hover)').matches) {
+      let cx = innerWidth / 2, cy = innerHeight / 2, tx = cx, ty = cy;
+      addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; });
+      const loop = () => {
+        cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
+        cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+        requestAnimationFrame(loop);
+      };
+      requestAnimationFrame(loop);
+      document.querySelectorAll('a, button, [data-hot]').forEach((el) => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hot'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hot'));
+      });
+    }
+
+    // ---- scroll reveal ----
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.16 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+    // ---- hero intro + sticky/hide nav ----
+    document.querySelectorAll('[data-hero]').forEach((h) => requestAnimationFrame(() => h.classList.add('in')));
+    const header = document.querySelector('[data-nav]');
+    if (header) {
+      let lastY = 0;
+      addEventListener('scroll', () => {
+        const y = scrollY;
+        header.classList.toggle('scrolled', y > 40);
+        if (y > lastY && y > 420) header.classList.add('hide'); else header.classList.remove('hide');
+        lastY = y;
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>

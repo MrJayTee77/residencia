@@ -1,0 +1,20 @@
+---
+import { localizedPath, type Lang } from '../i18n/utils';
+interface Props { lang: Lang; route?: string; }
+const { lang, route = '' } = Astro.props;
+const esHref = localizedPath(route, 'es');
+const enHref = localizedPath(route, 'en');
+---
+<div class="langtoggle" role="group" aria-label="Language">
+  <a href={esHref} class={lang === 'es' ? 'on' : ''} hreflang="es" aria-current={lang === 'es' ? 'true' : undefined} data-hot>ES</a>
+  <span aria-hidden="true">/</span>
+  <a href={enHref} class={lang === 'en' ? 'on' : ''} hreflang="en" aria-current={lang === 'en' ? 'true' : undefined} data-hot>EN</a>
+</div>
+
+<style>
+  .langtoggle{display:inline-flex;align-items:center;gap:.4em;font-size:.78rem;font-weight:600;letter-spacing:.08em}
+  .langtoggle a{color:var(--muted);transition:color .25s}
+  .langtoggle a:hover{color:var(--ink)}
+  .langtoggle a.on{color:var(--ink)}
+  .langtoggle span{color:var(--muted);opacity:.5}
+</style>

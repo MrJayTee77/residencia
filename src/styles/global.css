@@ -1,0 +1,119 @@
+/* ============================================================
+   RESIDENCIA GROUP — shared design system
+   One skeleton, four skins (theme classes set the variables).
+   ============================================================ */
+
+:root{ --maxw:1480px; --pad:clamp(20px,5vw,80px); }
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:var(--body);
+  font-size:clamp(15px,1.05vw,17px);line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  transition:background .5s ease,color .5s ease;
+}
+@media (hover:hover){ body{cursor:none} }
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:inherit}
+::selection{background:var(--accent);color:var(--accent-ink)}
+
+/* -------------------- THEMES -------------------- */
+.theme-group{
+  --bg:#ECEAE3;--bg-2:#fff;--ink:#15140F;--muted:#6E6A60;--line:rgba(21,20,15,.14);
+  --accent:#15140F;--accent-ink:#fff;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;--serif:"Fraunces",Georgia,serif;--body:"Archivo",system-ui,sans-serif;
+}
+.theme-residencia{
+  --bg:#F5F4EF;--bg-2:#fff;--ink:#15130E;--muted:#7B776A;--line:rgba(21,19,14,.15);
+  --accent:#D6442E;--accent-ink:#fff;
+  --display:"Archivo",system-ui,sans-serif;--serif:"Fraunces",Georgia,serif;--body:"Hanken Grotesk",system-ui,sans-serif;
+}
+.theme-gr8{
+  --bg:#0B0A12;--bg-2:#15131F;--ink:#F7F5FF;--muted:#A6A1C4;--line:rgba(247,245,255,.13);
+  --accent:#C13CFF;--accent-2:#37E6E0;--accent-3:#FF4DA6;--accent-ink:#0B0A12;
+  --display:"Plus Jakarta Sans",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--body:"Plus Jakarta Sans",system-ui,sans-serif;
+}
+.theme-synergy{
+  --bg:#EAEAE8;--bg-2:#ffffff;--ink:#0B0B0B;--muted:#6B6B68;--line:rgba(11,11,11,.16);
+  --accent:#0B0B0B;--acid:#C8FF1E;--accent-ink:#fff;
+  --display:"Archivo",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--body:"Hanken Grotesk",system-ui,sans-serif;
+}
+
+/* ---- v2 Residencia PARENT hub: monochrome technical / blueprint (per brand refs) ---- */
+.theme-res{
+  --bg:#F4F3EE;--bg-2:#FBFAF6;--ink:#0E0E0C;--muted:#6B6A63;--line:rgba(14,14,12,.18);
+  --accent:#0E0E0C;--accent-ink:#F4F3EE;
+  --display:"Archivo",system-ui,sans-serif;--serif:"Fraunces",Georgia,serif;
+  --body:"Archivo",system-ui,sans-serif;--mono:"Space Mono",ui-monospace,monospace;
+}
+
+/* ---- v2 living-ecosystem unit skins (Agency / Production / Synergy; GR8 reuses theme-gr8) ---- */
+.theme-agency{
+  --bg:#F4F1E9;--bg-2:#FBF9F3;--ink:#1A1712;--muted:#807769;--line:rgba(26,23,18,.14);
+  --accent:#B07A3C;--accent-2:#C98A45;--accent-ink:#fff;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;--serif:"Fraunces",Georgia,serif;--body:"Archivo",system-ui,sans-serif;
+}
+.theme-prod{
+  --bg:#16140F;--bg-2:#201C15;--ink:#EFE9DC;--muted:#B0A693;--line:rgba(239,233,220,.16);
+  --accent:#C9742E;--accent-2:#E0A05A;--accent-ink:#16140F;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;--serif:"Fraunces",Georgia,serif;--body:"Archivo",system-ui,sans-serif;
+}
+.theme-syn{
+  --bg:#F5EFE2;--bg-2:#FBF7EE;--ink:#3A2A1E;--muted:#8A7459;--line:rgba(58,42,30,.16);
+  --accent:#B5683C;--accent-2:#C98A5E;--accent-ink:#fff;
+  --display:"Archivo",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;--body:"Hanken Grotesk",system-ui,sans-serif;
+}
+
+/* film grain on the cinematic production theme too */
+.theme-prod::after{
+  content:"";position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* film grain — only on the cinematic dark theme */
+.theme-gr8::after{
+  content:"";position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -------------------- SHARED UTILITIES -------------------- */
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+.eyebrow{font-family:var(--body);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.serif-i{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.accent{color:var(--accent)}
+section{padding-block:clamp(72px,10vh,160px)}
+
+.shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(36px,6vh,72px)}
+.shead .num{font-family:var(--display);color:var(--accent);font-weight:700;font-size:.9rem}
+.shead h2{font-family:var(--display);font-weight:600;font-size:clamp(.95rem,1.4vw,1.05rem);letter-spacing:.04em;text-transform:uppercase}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* custom cursor */
+.cursor{position:fixed;top:0;left:0;width:9px;height:9px;border-radius:50%;background:var(--accent);
+  z-index:9999;pointer-events:none;transform:translate(-50%,-50%);
+  transition:width .25s,height .25s,opacity .25s;mix-blend-mode:difference}
+.cursor.hot{width:52px;height:52px}
+@media (hover:none){ .cursor{display:none} }
+
+/* shared marquee */
+.marquee{overflow:hidden;white-space:nowrap;display:flex}
+.marquee .track{display:inline-flex;gap:3rem;padding-right:3rem;animation:scroll 30s linear infinite;will-change:transform}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* shared backlink to the group */
+.backlink{display:inline-flex;align-items:center;gap:.5em;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .25s}
+.backlink:hover{color:var(--ink)}
+
+/* reduced motion */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}

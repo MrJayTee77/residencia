@@ -1,0 +1,204 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import { localizedPath, type Lang } from '../i18n/utils';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const meta = [
+  { slug: 'residencia', n: '01', swatch: '#D6442E', bg: '#F5F4EF', ink: '#15130E' },
+  { slug: 'gr8', n: '02', swatch: '#C13CFF', bg: '#0B0A12', ink: '#F7F5FF' },
+  { slug: 'synergy', n: '03', swatch: '#0B0B0B', bg: '#EAEAE8', ink: '#0B0B0B' },
+];
+
+const t = {
+  es: {
+    title: 'Residencia — Grupo Creativo · 18 Años de Valor Digital',
+    desc: 'Residencia — 18 años ayudando a las marcas a crear su valor digital. Tres estudios: marca y digital, creadores y experiencias.',
+    about: 'Nosotros', contact: 'Contacto',
+    eyebrow: 'Residencia — 18 años de valor digital',
+    h: ['Un grupo.', 'Tres formas de crear', ['algo ', 'inolvidable', '.']],
+    heroFoot: 'Tres estudios bajo un mismo techo — marca y digital, creadores y entretenimiento, y experiencias. Elige el que necesitas, o tráelos todos.',
+    heroCta: '↓ Conoce los estudios',
+    mq: ['Marca', 'Creadores', 'Experiencias', 'Contenido', 'Eventos', 'Producto'],
+    studiosHead: 'Los Estudios', enter: 'Entrar',
+    aboutHead: 'El Grupo',
+    stmt: ['Empezamos como un estudio y no dejamos de superar la etiqueta. Así que construimos tres — cada uno ', 'obsesionado', ' con un oficio, todos con la misma creencia: hacer trabajo que la gente recuerda, y negarse a pasar desapercibido.'],
+    stats: [{ b: '3', l: 'estudios independientes' }, { b: '40+', l: 'personas en todas las disciplinas' }, { b: '18', l: 'años creando valor digital' }],
+    contactBig: 'Trabaja con nosotros', city: 'Ciudad de México',
+    footTag: 'Grupo creativo — marca, creadores y experiencias.', rights: '© 2026 Residencia. Todos los derechos reservados.',
+    brands: [
+      { role: 'Marca & Digital', line: 'La agencia de marca y digital. 18 años construyendo valor digital para las marcas.', disc: ['Estrategia', 'Identidad', 'Producto Digital', 'Web'] },
+      { role: 'Creadores & Entertainment', line: 'La agencia de creadores. No representamos creadores — nos asociamos con ellos.', disc: ['Creadores', 'Contenido', 'Esports', 'Eventos'] },
+      { role: 'Tecnología Creativa', line: 'El estudio de tecnología creativa. Arte, diseño, cultura e innovación — y experiencias AR inmersivas.', disc: ['Tecnología creativa', 'Experiencias AR', 'Retail inmersivo', 'Instalaciones'] },
+    ],
+  },
+  en: {
+    title: 'Residencia — Creative Group · 18 Years of Digital Value',
+    desc: 'Residencia — 18 years helping brands create their digital value. Three studios: brand & digital, creators, and experiences.',
+    about: 'About', contact: 'Contact',
+    eyebrow: 'Residencia — 18 years of digital value',
+    h: ['One group.', 'Three ways to make', ['something ', 'unforgettable', '.']],
+    heroFoot: 'Three studios under one roof — brand & digital, creators & entertainment, and experiences. Pick the one you need, or bring all three.',
+    heroCta: '↓ Meet the studios',
+    mq: ['Brand', 'Creators', 'Experiences', 'Content', 'Events', 'Product'],
+    studiosHead: 'The Studios', enter: 'Enter',
+    aboutHead: 'The Group',
+    stmt: ['We started as one studio and kept outgrowing the label. So we built three — each ', 'obsessive', ' about one craft, all sharing the same belief: make work people remember, and refuse to be ignored.'],
+    stats: [{ b: '3', l: 'independent studios' }, { b: '40+', l: 'people across disciplines' }, { b: '18', l: 'years creating digital value' }],
+    contactBig: 'Work with us', city: 'Mexico City',
+    footTag: 'Creative group — brand, creators and experiences.', rights: '© 2026 Residencia. All rights reserved.',
+    brands: [
+      { role: 'Brand & Digital', line: 'The brand and digital agency. 18 years building digital value for brands.', disc: ['Strategy', 'Identity', 'Digital Product', 'Web'] },
+      { role: 'Creators & Entertainment', line: "The creator agency. We don't represent creators — we partner with them.", disc: ['Creators', 'Content', 'Esports', 'Events'] },
+      { role: 'Creative Technology', line: 'The creative technology studio. Art, design, culture and innovation — and immersive AR experiences.', disc: ['Creative tech', 'AR experiences', 'Immersive retail', 'Installations'] },
+    ],
+  },
+}[lang];
+
+const L = (route: string) => localizedPath(route, lang);
+const brands = meta.map((m, i) => ({ ...m, ...t.brands[i] }));
+---
+<Base title={t.title} description={t.desc} theme="theme-group">
+
+  <header class="hdr" data-nav>
+    <div class="wrap nav">
+      <a href={L('')} class="brand">Residencia<span class="dot"></span></a>
+      <nav class="links">
+        <a href={L('residencia')}>Residencia</a>
+        <a href={L('gr8')}>GR8</a>
+        <a href={L('synergy')}>Synergy</a>
+        <a href="#about" class="muted">{t.about}</a>
+        <LangToggle lang={lang} route="" />
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" data-hero>
+    <div class="wrap">
+      <span class="eyebrow reveal">{t.eyebrow}</span>
+      <h1 class="h1">
+        <span class="ln"><span>{t.h[0]}</span></span>
+        <span class="ln"><span>{t.h[1]}</span></span>
+        <span class="ln"><span>{t.h[2][0]}<span class="serif-i">{t.h[2][1]}</span>{t.h[2][2]}</span></span>
+      </h1>
+      <div class="hero-foot reveal">
+        <p>{t.heroFoot}</p>
+        <a href="#studios" class="scrolllink" data-hot>{t.heroCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee mq" aria-hidden="true">
+    <div class="track">
+      {[...t.mq, ...t.mq].map((w) => (<span>{w}<i>✳</i></span>))}
+    </div>
+  </div>
+
+  <section id="studios" class="studios">
+    <div class="wrap"><div class="shead reveal"><span class="num">(01)</span><h2>{t.studiosHead}</h2></div></div>
+    {brands.map((b) => (
+      <a class="brandrow reveal wrap" href={L(b.slug)} data-hot style={`--sw:${b.swatch};--rbg:${b.bg};--rink:${b.ink}`}>
+        <div class="br-n">{b.n}</div>
+        <div class="br-main"><h3>{b.slug === 'gr8' ? 'GR8' : b.slug === 'synergy' ? 'Synergy' : 'Residencia'}</h3><p class="br-line">{b.line}</p></div>
+        <div class="br-side"><span class="br-role">{b.role}</span><ul>{b.disc.map((d) => <li>{d}</li>)}</ul></div>
+        <div class="br-enter">{t.enter}<span class="arr">→</span></div>
+      </a>
+    ))}
+  </section>
+
+  <section id="about" class="wrap about">
+    <div class="shead reveal"><span class="num">(02)</span><h2>{t.aboutHead}</h2></div>
+    <p class="bigstmt reveal">{t.stmt[0]}<span class="serif-i">{t.stmt[1]}</span>{t.stmt[2]}</p>
+    <div class="stats reveal">
+      {t.stats.map((s) => (<div><b>{s.b}</b><span>{s.l}</span></div>))}
+    </div>
+  </section>
+
+  <section class="contact wrap" id="contact">
+    <a href="mailto:cesar.j@residencia.com.mx" class="big" data-hot>{t.contactBig}</a>
+    <div class="crow reveal">
+      <a href="mailto:cesar.j@residencia.com.mx" data-hot>cesar.j@residencia.com.mx</a>
+      <a href="tel:+525532288017" data-hot>+52 55 3228 8017</a>
+      <span>{t.city}</span>
+    </div>
+  </section>
+
+  <footer class="wrap foot">
+    <div class="brand">Residencia<span class="dot"></span></div>
+    <nav><a href={L('residencia')} data-hot>Residencia</a><a href={L('gr8')} data-hot>GR8</a><a href={L('synergy')} data-hot>Synergy</a></nav>
+    <span class="muted">{t.rights}</span>
+  </footer>
+
+</Base>
+
+<style>
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;transition:transform .4s,background .4s,border-color .4s;border-bottom:1px solid transparent}
+  .hdr.scrolled{background:rgba(236,234,227,.78);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{font-family:var(--display);font-weight:800;font-size:1.2rem;letter-spacing:-.02em;display:flex;align-items:flex-end;gap:.3em}
+  .brand .dot{width:7px;height:7px;border-radius:50%;background:#FF4A1C;margin-bottom:.45em}
+  .links{display:flex;gap:1.6rem;align-items:center}
+  .links a{font-size:.88rem;transition:opacity .25s}
+  .links a:hover{opacity:.55}
+  .links a.muted{color:var(--muted)}
+  @media (max-width:760px){ .links a.muted{display:none} .links{gap:1.1rem} }
+
+  .hero{min-height:96svh;display:flex;align-items:flex-end;padding-bottom:clamp(40px,7vh,90px)}
+  .h1{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,9.2vw,9rem);line-height:.92;letter-spacing:-.035em;margin-top:1.5rem}
+  .h1 .ln{display:block;overflow:hidden}
+  .h1 .ln span{display:block;transform:translateY(110%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
+  [data-hero].in .h1 .ln span{transform:none}
+  .h1 .ln:nth-child(2) span{transition-delay:.08s}
+  .h1 .ln:nth-child(3) span{transition-delay:.16s}
+  .h1 .serif-i{color:#D6442E}
+  .hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;margin-top:clamp(28px,5vh,56px);flex-wrap:wrap}
+  .hero-foot p{max-width:46ch;color:var(--muted)}
+  .scrolllink{border-bottom:1px solid var(--accent);padding-bottom:.3em;font-size:.9rem;white-space:nowrap}
+
+  .mq{border-block:1px solid var(--line);padding:16px 0}
+  .mq span{font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,3vw,2.2rem);display:inline-flex;align-items:center;gap:3rem}
+  .mq i{color:var(--accent);font-style:normal;font-size:1rem}
+
+  .studios{padding-top:clamp(72px,10vh,150px)}
+  .brandrow{display:grid;grid-template-columns:auto 1.3fr 1fr auto;gap:clamp(1rem,3vw,3rem);align-items:center;padding-block:clamp(30px,4.5vh,56px);border-top:1px solid var(--line);position:relative;transition:padding .45s ease,color .45s ease}
+  .studios .brandrow:last-of-type{border-bottom:1px solid var(--line)}
+  .brandrow::before{content:"";position:absolute;inset:0;background:var(--rbg);transform:scaleY(0);transform-origin:bottom;transition:transform .5s cubic-bezier(.16,1,.3,1);z-index:-1;border-radius:6px}
+  .brandrow:hover{padding-left:clamp(16px,2vw,32px);padding-right:clamp(16px,2vw,32px);color:var(--rink)}
+  .brandrow:hover::before{transform:scaleY(1)}
+  .br-n{font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--muted)}
+  .brandrow:hover .br-n{color:var(--sw)}
+  .br-main h3{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,7vw,5.5rem);letter-spacing:-.035em;line-height:.9}
+  .br-line{color:var(--muted);max-width:34ch;margin-top:.4em}
+  .brandrow:hover .br-line{color:var(--rink);opacity:.8}
+  .br-side{display:flex;flex-direction:column;gap:.7em}
+  .br-role{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sw);font-weight:700}
+  .br-side ul{list-style:none;display:flex;flex-wrap:wrap;gap:.4em}
+  .br-side li{font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:.25em .8em}
+  .brandrow:hover .br-side li{color:var(--rink);border-color:currentColor}
+  .br-enter{display:flex;align-items:center;gap:.5em;font-family:var(--display);font-weight:600;white-space:nowrap}
+  .br-enter .arr{transition:transform .4s}
+  .brandrow:hover .br-enter .arr{transform:translateX(8px)}
+  @media (max-width:920px){ .brandrow{grid-template-columns:1fr;gap:1.1rem} .br-enter{justify-content:flex-start} }
+
+  .about{padding-top:clamp(80px,11vh,170px)}
+  .bigstmt{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4.4vw,3.6rem);line-height:1.05;letter-spacing:-.025em;max-width:24ch}
+  .bigstmt .serif-i{color:var(--accent)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:clamp(48px,7vh,90px);border-top:1px solid var(--line);padding-top:clamp(32px,4vh,56px)}
+  .stats b{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,6vw,4.6rem);letter-spacing:-.03em;display:block;line-height:1}
+  .stats span{color:var(--muted)}
+  @media (max-width:680px){ .stats{grid-template-columns:1fr;gap:1.6rem} }
+
+  .contact{text-align:center}
+  .contact .big{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,12vw,11rem);letter-spacing:-.04em;line-height:.86;text-transform:uppercase;display:inline-block;transition:color .4s}
+  .contact .big:hover{color:#D6442E}
+  .crow{display:flex;justify-content:center;gap:2rem;margin-top:2rem;color:var(--muted);flex-wrap:wrap}
+  .crow a{border-bottom:1px solid var(--line);padding-bottom:.2em}
+
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-block:clamp(40px,6vh,72px);border-top:1px solid var(--line)}
+  .foot nav{display:flex;gap:1.4rem}
+  .foot nav a{font-size:.88rem;color:var(--muted)}
+  .foot nav a:hover{color:var(--ink)}
+</style>

@@ -1,0 +1,247 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import RMark from './RMark.astro';
+import { localizedPath, type Lang } from '../i18n/utils';
+import { units, unitOrder } from '../data/units';
+
+interface Props { unit: string; lang: Lang; }
+const { unit, lang } = Astro.props;
+
+const u = units[unit];
+const c = u[lang];
+const idx = unitOrder.indexOf(unit as any);
+const indexLabel = `${String(idx + 1).padStart(2, '0')} / ${String(unitOrder.length).padStart(2, '0')}`;
+
+const mail = 'cesar.j@residencia.com.mx';
+const tel = '+525532288017';
+const mailto = (subj: string) => `mailto:${mail}?subject=${encodeURIComponent(subj)}`;
+
+const L = (route: string) => localizedPath(route, lang);
+const hubHref = L('v2');
+
+const tx = lang === 'es'
+  ? { back: 'Ecosistema', contact: 'Contacto', other: 'Otras unidades', see: 'Ver servicios', talk: 'Hablemos', within: 'Una unidad de Residencia', rights: '© 2026 Residencia. Todos los derechos reservados.' }
+  : { back: 'Ecosystem', contact: 'Contact', other: 'Other units', see: 'See services', talk: "Let's talk", within: 'A Residencia unit', rights: '© 2026 Residencia. All rights reserved.' };
+
+const others = unitOrder.filter((o) => o !== unit).map((o) => ({ id: o, name: units[o][lang].name, accent: units[o].accent }));
+const title = `${c.name} — Residencia`;
+---
+<Base title={title} description={c.heroLead} theme={u.theme}>
+
+  <header class="hdr" data-nav>
+    <div class="wrap nav">
+      <a href={hubHref} class="brand" data-hot><span class="arr">←</span> <RMark size={26} /><span>Residencia</span></a>
+      <nav class="links">
+        {unitOrder.map((o) => (
+          <a href={L(`v2/${o}`)} class={o === unit ? 'on' : ''}>{o === 'gr8' ? 'GR8' : units[o][lang].name.replace(' by Residencia', '').replace('Residencia ', '')}</a>
+        ))}
+        <a href="#contact" class="muted">{tx.contact}</a>
+        <LangToggle lang={lang} route={`v2/${unit}`} />
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== hero ===== -->
+  <section class="u-hero" data-hero>
+    <div class="wrap">
+      <div class="u-top">
+        <a href={hubHref} class="backlink" data-hot><span class="arr">←</span> {tx.back}</a>
+        <span class="u-index">{indexLabel}</span>
+      </div>
+      <span class="eyebrow u-kind">{c.kind} · {tx.within}</span>
+      <h1 class="u-h1"><span class="ln"><span>{c.heroHead[0]}</span></span><span class="ln"><span class="serif-i">{c.heroHead[1]}</span></span></h1>
+      <p class="u-lead reveal">{c.heroLead}</p>
+      <div class="u-cta-row reveal">
+        <a href={mailto(c.mailSubj)} class="btn btn-solid" data-hot>{tx.talk}</a>
+        <a href="#services" class="btn btn-ghost" data-hot>{tx.see} ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== intro ===== -->
+  <section class="u-intro wrap">
+    <p class="bigstmt reveal">{c.intro}</p>
+  </section>
+
+  <!-- ===== services ===== -->
+  <section id="services" class="u-sec wrap">
+    <div class="shead reveal"><span class="num">(01)</span><h2>{c.servicesHead}</h2></div>
+    <div class="svc-grid">
+      {c.services.map((s, i) => (
+        <article class="svc-card reveal">
+          <span class="svc-n">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{s.t}</h3>
+          <p>{s.d}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ===== process ===== -->
+  <section class="u-sec wrap">
+    <div class="shead reveal"><span class="num">(02)</span><h2>{c.processHead}</h2></div>
+    <div class="proc-grid">
+      {c.process.map((p) => (
+        <div class="proc-step reveal">
+          <span class="proc-n">{p.n}</span>
+          <h3>{p.t}</h3>
+          <p>{p.d}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ===== highlights / examples ===== -->
+  <section class="u-sec wrap">
+    <div class="shead reveal"><span class="num">(03)</span><h2>{c.highlightsHead}</h2></div>
+    <div class="hl-grid">
+      {c.highlights.map((h) => (
+        <article class="hl-card reveal">
+          <div class="hl-art" style={`--c:${u.accent}`}></div>
+          <h3>{h.t}</h3>
+          <p>{h.d}</p>
+        </article>
+      ))}
+    </div>
+    {c.chips && (
+      <div class="chips-block reveal">
+        {c.chipsHead && <span class="svc-head">{c.chipsHead}</span>}
+        <ul class="chips">{c.chips.map((ch) => <li>{ch}</li>)}</ul>
+      </div>
+    )}
+    {c.note && <p class="u-note reveal">{c.note}</p>}
+  </section>
+
+  <!-- ===== CTA / contact ===== -->
+  <section id="contact" class="u-cta">
+    <div class="wrap">
+      <h2 class="cta-big reveal">{c.ctaHead}</h2>
+      <p class="cta-sub reveal">{c.ctaSub}</p>
+      <div class="u-cta-row reveal">
+        <a href={mailto(c.mailSubj)} class="btn btn-solid" data-hot>{c.mailSubj.split('—')[0].trim()} →</a>
+      </div>
+      <div class="crow reveal">
+        <a href={`mailto:${mail}`} data-hot>{mail}</a>
+        <a href={`tel:${tel}`} data-hot>+52 55 3228 8017</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== footer / other units ===== -->
+  <footer class="u-foot wrap">
+    <div class="uf-row">
+      <span class="svc-head">{tx.other}</span>
+      <nav class="uf-units">
+        {others.map((o) => (
+          <a href={L(`v2/${o.id}`)} data-hot style={`--c:${o.accent}`}>{o.name}<span class="uf-go">→</span></a>
+        ))}
+      </nav>
+    </div>
+    <div class="uf-bottom">
+      <a href={hubHref} class="brand" data-hot>Residencia<span class="dot" style={`background:${u.accent}`}></span></a>
+      <span class="muted">{tx.rights}</span>
+    </div>
+  </footer>
+
+</Base>
+
+<style>
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;transition:transform .4s,background .4s,border-color .4s;border-bottom:1px solid transparent;background:color-mix(in srgb,var(--bg) 82%,transparent)}
+  .hdr.scrolled{backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{font-family:var(--display);font-weight:800;font-size:1.1rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.4em}
+  .brand .arr{font-size:.9rem;transition:transform .3s}
+  .brand:hover .arr{transform:translateX(-4px)}
+  .brand :global(.rmark){flex:none}
+  .links{display:flex;gap:1.4rem;align-items:center}
+  .links a{font-family:"Space Mono",ui-monospace,monospace;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;transition:opacity .25s,color .25s;color:var(--muted)}
+  .links a.on{color:var(--ink)}
+  .links a:hover{opacity:.7;color:var(--ink)}
+  .links a.muted{color:var(--muted)}
+  @media (max-width:900px){ .links>a:not(.muted):not(.on){display:none} }
+
+  section{padding-block:clamp(64px,9vh,130px)}
+
+  /* hero */
+  .u-hero{padding-top:clamp(120px,18vh,200px);padding-bottom:clamp(48px,7vh,90px)}
+  .u-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:clamp(28px,5vh,56px)}
+  .backlink .arr{transition:transform .3s;display:inline-block}
+  .backlink:hover .arr{transform:translateX(-4px)}
+  .u-index{font-family:"Space Mono",ui-monospace,monospace;font-size:.8rem;color:var(--accent);letter-spacing:.05em}
+  .u-kind{display:block;margin-bottom:clamp(16px,2.5vh,28px)}
+  .u-h1{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,8vw,7rem);line-height:.96;letter-spacing:-.035em}
+  .u-h1 .ln{display:block;overflow:hidden}
+  .u-h1 .ln span{display:block;transform:translateY(110%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
+  [data-hero].in .u-h1 .ln span{transform:none}
+  .u-h1 .ln:nth-child(2) span{transition-delay:.09s}
+  .u-h1 .serif-i{color:var(--accent)}
+  .u-lead{font-size:clamp(1.05rem,1.7vw,1.35rem);color:var(--muted);max-width:54ch;margin-top:clamp(24px,4vh,40px);line-height:1.5}
+  .u-cta-row{display:flex;gap:.9rem;margin-top:clamp(28px,4vh,44px);flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--display);font-weight:600;font-size:.96rem;padding:.85em 1.5em;border-radius:100px;transition:transform .35s cubic-bezier(.16,1,.3,1),background .3s,color .3s,border-color .3s}
+  .btn-solid{background:var(--accent);color:var(--accent-ink)}
+  .btn-solid:hover{transform:translateY(-3px)}
+  .btn-ghost{border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  /* intro */
+  .u-intro{padding-block:clamp(48px,7vh,96px)}
+  .bigstmt{font-family:var(--display);font-weight:400;font-size:clamp(1.5rem,3.8vw,3rem);line-height:1.08;letter-spacing:-.02em;max-width:24ch}
+
+  .u-sec{padding-block:clamp(40px,6vh,80px)}
+
+  /* services */
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  @media (max-width:880px){ .svc-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .svc-grid{grid-template-columns:1fr} }
+  .svc-card{background:var(--bg);padding:clamp(24px,2.4vw,38px);display:flex;flex-direction:column;gap:.5em;transition:background .4s}
+  .svc-card:hover{background:var(--bg-2)}
+  .svc-n{font-family:"Space Mono",ui-monospace,monospace;font-size:.78rem;color:var(--accent)}
+  .svc-card h3{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em;line-height:1.1}
+  .svc-card p{color:var(--muted);font-size:.96rem}
+
+  /* process */
+  .proc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1.4rem,3vw,3rem)}
+  @media (max-width:880px){ .proc-grid{grid-template-columns:repeat(2,1fr);gap:2rem} }
+  @media (max-width:480px){ .proc-grid{grid-template-columns:1fr} }
+  .proc-step{border-top:2px solid var(--accent);padding-top:1.1em}
+  .proc-n{font-family:var(--display);font-weight:800;font-size:2.2rem;letter-spacing:-.03em;color:var(--accent);display:block;line-height:1}
+  .proc-step h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin-top:.5em}
+  .proc-step p{color:var(--muted);font-size:.94rem;margin-top:.4em}
+
+  /* highlights */
+  .hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem}
+  .hl-card{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2)}
+  .hl-art{aspect-ratio:16/10;background:
+    linear-gradient(135deg,color-mix(in srgb,var(--c) 78%,#000),color-mix(in srgb,var(--c) 24%,var(--bg))),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.06) 0 9px,transparent 9px 18px)}
+  .hl-card h3{font-family:var(--display);font-weight:700;font-size:1.15rem;padding:.9em 1em .1em}
+  .hl-card p{color:var(--muted);font-size:.92rem;padding:0 1em 1.2em}
+
+  .chips-block{margin-top:clamp(32px,5vh,56px)}
+  .svc-head{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--accent);display:block;margin-bottom:1em}
+  .chips{list-style:none;display:flex;flex-wrap:wrap;gap:.6em}
+  .chips li{border:1px solid var(--line);border-radius:100px;padding:.5em 1.1em;font-size:.88rem;color:var(--muted)}
+  .u-note{margin-top:clamp(28px,4vh,44px);font-size:.82rem;font-style:italic;color:var(--muted)}
+
+  /* cta */
+  .u-cta{background:var(--bg-2);border-block:1px solid var(--line)}
+  .cta-big{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,6.5vw,5rem);letter-spacing:-.035em;line-height:.96}
+  .cta-sub{color:var(--muted);font-size:1.1rem;margin-top:1em;max-width:40ch}
+  .crow{display:flex;gap:1.8rem;margin-top:clamp(28px,4vh,44px);color:var(--muted);flex-wrap:wrap;font-size:.96rem}
+  .crow a{border-bottom:1px solid var(--line);padding-bottom:.2em}
+  .crow a:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* footer */
+  .u-foot{padding-block:clamp(48px,7vh,80px)}
+  .uf-row{display:flex;flex-direction:column;gap:1.4rem;padding-bottom:clamp(32px,5vh,56px);border-bottom:1px solid var(--line)}
+  .uf-units{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  @media (max-width:760px){ .uf-units{grid-template-columns:1fr} }
+  .uf-units a{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,3vw,2rem);letter-spacing:-.02em;display:flex;align-items:center;justify-content:space-between;padding:.5em .9em;border:1px solid var(--line);border-radius:14px;transition:border-color .35s,transform .35s}
+  .uf-units a:hover{border-color:var(--c);transform:translateY(-3px)}
+  .uf-go{color:var(--c);transition:transform .35s}
+  .uf-units a:hover .uf-go{transform:translateX(5px)}
+  .uf-bottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-top:clamp(28px,4vh,40px)}
+  .uf-bottom .brand{font-size:1.1rem}
+</style>

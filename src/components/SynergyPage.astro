@@ -1,0 +1,256 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import { localizedPath, type Lang } from '../i18n/utils';
+
+// Content sourced from the BOOK-SYNERGY-2026 deck (Synergy Studio ® MX).
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const t = {
+  es: {
+    title: 'Synergy Studio — Estudio de Tecnología Creativa',
+    desc: 'Synergy Studio: un estudio de tecnología creativa en la intersección del arte, el diseño, la cultura y la innovación. Experiencias AR inmersivas.',
+    nav: { who: 'Estudio', method: 'Método', work: 'Trabajo', cta: 'Construyamos algo' },
+    markRight: 'SYNERGY STUDIO. ® MX',
+    heroSub: 'Estudio de Tecnología Creativa ® MX',
+    heroLine: 'Construimos experiencias en la intersección del arte, el diseño, la cultura y la innovación.',
+    whoHead: ['Quiénes', 'somos'],
+    whoBody: 'Un estudio de tecnología creativa que opera en la intersección del arte, el diseño, la cultura y la innovación.',
+    methodHead: ['Cómo', 'trabajamos'],
+    methodBody: 'Definimos la estrategia, la activamos a través de experiencias creativas y convertimos el engagement en datos, insights y resultados de negocio.',
+    steps: [
+      { n: '01', h: 'Estrategia', d: 'Definimos la idea y el plan que sostiene todo lo demás.' },
+      { n: '02', h: 'Experiencias creativas', d: 'La activamos con experiencias inmersivas que la gente quiere vivir.' },
+      { n: '03', h: 'Datos y resultados', d: 'Convertimos el engagement en datos, insights y resultados de negocio.' },
+    ],
+    caps: ['Tecnología creativa', 'Experiencias AR', 'Retail inmersivo', 'Smart art toys', 'Instalaciones', 'Experiencial'],
+    workHead: 'Trabajo seleccionado',
+    work: [
+      { name: 'Airmax — Frog Charm', tag: 'AR · Smart Art Toys', d: '“Activa tu rana interior”: un art toy anfibio digital con capa de realidad aumentada.' },
+      { name: 'AR Reflections', tag: 'Retail inmersivo', d: 'Espejos AR para showrooms, tiendas y pop-ups que reflejan la marca a escala.' },
+    ],
+    prodHead: 'AR Reflections',
+    prodSub: 'Experiencias de espejo AR inmersivas, en tres formatos.',
+    tiers: [
+      { h: 'PRO', d: 'Ideal para entornos de gran escala como showrooms, tiendas y aeropuertos. Diseñado para experiencias de moda, deporte, lifestyle y entretenimiento, con reflejos AR inmersivos a escala.' },
+      { h: 'LITE', d: 'El formato vertical ofrece un setup compacto para espacios pequeños, pop-ups y activaciones de seeding — ideal para accesorios, maquillaje y belleza donde la agilidad importa.' },
+      { h: 'CUSTOM', d: 'Diseño y fabricación a la medida para necesidades únicas de marca: aparadores, stands de exhibición o displays one-of-a-kind, integrados con la identidad para una instalación funcional y estética.' },
+    ],
+    cTag: '// Construyamos algo juntos.', back: 'Parte de Residencia ↩',
+    footTag: 'Estudio de tecnología creativa ® MX',
+  },
+  en: {
+    title: 'Synergy Studio — Creative Technology Studio',
+    desc: 'Synergy Studio: a creative technology studio at the intersection of art, design, culture and innovation. Immersive AR experiences.',
+    nav: { who: 'Studio', method: 'Method', work: 'Work', cta: "Let's build" },
+    markRight: 'SYNERGY STUDIO. ® MX',
+    heroSub: 'Creative Technology Studio ® MX',
+    heroLine: 'We build experiences at the intersection of art, design, culture and innovation.',
+    whoHead: ['Who', 'are we'],
+    whoBody: 'A creative technology studio operating at the intersection of art, design, culture, and innovation.',
+    methodHead: ['How we', 'work'],
+    methodBody: 'We define strategy, activate it through creative experiences, and convert engagement into data, insights, and business results.',
+    steps: [
+      { n: '01', h: 'Strategy', d: 'We define the idea and the plan that holds everything else together.' },
+      { n: '02', h: 'Creative experiences', d: 'We activate it through immersive experiences people want to live.' },
+      { n: '03', h: 'Data & results', d: 'We convert engagement into data, insights and business results.' },
+    ],
+    caps: ['Creative technology', 'AR experiences', 'Immersive retail', 'Smart art toys', 'Installations', 'Experiential'],
+    workHead: 'Selected work',
+    work: [
+      { name: 'Airmax — Frog Charm', tag: 'AR · Smart Art Toys', d: '“Activate your inner frog”: a digital amphibian art toy with an augmented-reality layer.' },
+      { name: 'AR Reflections', tag: 'Immersive retail', d: 'AR mirrors for showrooms, stores and pop-ups that reflect the brand at scale.' },
+    ],
+    prodHead: 'AR Reflections',
+    prodSub: 'Immersive AR mirror experiences, in three formats.',
+    tiers: [
+      { h: 'PRO', d: 'Ideal for large-scale environments such as showrooms, retail stores and airports. Designed for fashion, sports, lifestyle and entertainment experiences, delivering immersive AR reflections at scale.' },
+      { h: 'LITE', d: 'The vertical portrait format offers a compact setup for small spaces, pop-ups and seeding activations — ideal for accessories, makeup and beauty products where agility matters most.' },
+      { h: 'CUSTOM', d: 'Tailor-made design and fabrication for unique brand needs — storefronts, exhibition stands or one-of-a-kind displays, integrated with brand identity for a functional, aesthetic installation.' },
+    ],
+    cTag: "// Let's build something together.", back: 'Part of Residencia ↩',
+    footTag: 'Creative technology studio ® MX',
+  },
+}[lang];
+
+const L = (route: string) => localizedPath(route, lang);
+---
+<Base title={t.title} description={t.desc} theme="theme-synergy">
+
+  <header class="hdr" data-nav>
+    <div class="wrap nav">
+      <a href={L('synergy')} class="brand"><span class="s">◉</span>Synergy</a>
+      <nav class="links">
+        <a href="#who" data-hot>{t.nav.who}</a>
+        <a href="#method" data-hot>{t.nav.method}</a>
+        <a href="#work" data-hot>{t.nav.work}</a>
+        <a href={L('')} class="backlink" data-hot>↩ Residencia</a>
+        <LangToggle lang={lang} route="synergy" />
+        <a href="#contact" class="cta" data-hot>{t.nav.cta}</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" data-hero>
+    <div class="marks wrap">
+      <span>ALL RIGHTS RESERVED // COPYRIGHT LAB. ® MX</span>
+      <span>{t.markRight}</span>
+    </div>
+    <div class="wrap heromid">
+      <h1 class="word" data-text="SYNERGY">SYNERGY</h1>
+    </div>
+    <div class="wrap herofoot">
+      <span class="eyebrow">{t.heroSub}</span>
+      <p>{t.heroLine}</p>
+    </div>
+  </section>
+
+  <!-- WHO ARE WE -->
+  <section id="who" class="wrap statement">
+    <span class="sidx">01 — {t.nav.who}</span>
+    <h2 class="big">{t.whoHead[0]}<br/>{t.whoHead[1]}</h2>
+    <p class="lead">{t.whoBody}</p>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method" class="wrap statement alt">
+    <span class="sidx">02 — {t.nav.method}</span>
+    <h2 class="big">{t.methodHead[0]}<br/>{t.methodHead[1]}</h2>
+    <p class="lead">{t.methodBody}</p>
+    <div class="steps">
+      {t.steps.map((s) => (<div class="step"><span class="sn">{s.n}</span><h3>{s.h}</h3><p>{s.d}</p></div>))}
+    </div>
+  </section>
+
+  <!-- CAPABILITIES MARQUEE -->
+  <div class="marquee mq" aria-hidden="true">
+    <div class="track">{[...t.caps, ...t.caps].map((c) => (<span>{c}<i>/</i></span>))}</div>
+  </div>
+
+  <!-- WORK (dark immersive) -->
+  <section id="work" class="work">
+    <div class="wrap">
+      <span class="sidx light">03 — {t.workHead}</span>
+      <div class="wgrid">
+        {t.work.map((w, i) => (
+          <article class={`wcard w${i + 1}`}>
+            <div class="wtop"><span class="wtag">{w.tag}</span></div>
+            <div class="wbtm"><h3>{w.name}</h3><p>{w.d}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- AR REFLECTIONS / TIERS -->
+  <section class="wrap tiers">
+    <div class="thead">
+      <h2 class="big">{t.prodHead}</h2>
+      <p class="lead">{t.prodSub}</p>
+    </div>
+    <div class="tgrid">
+      {t.tiers.map((tr) => (
+        <div class="tier"><h3>{tr.h}</h3><p>{tr.d}</p></div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CONTACT (dark) -->
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <p class="ctag">{t.cTag}</p>
+      <a href="mailto:hello@synergystudio.io" class="cbig" data-hot>@synergystudio.io</a>
+      <div class="crow">
+        <a href="mailto:hello@synergystudio.io" data-hot>hello@synergystudio.io</a>
+        <a href={L('')} data-hot>{t.back}</a>
+        <span>Ciudad de México · MX</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap foot">
+    <div class="brand"><span class="s">◉</span>Synergy</div>
+    <span class="muted">{t.footTag}</span>
+    <span class="muted">© 2026 Synergy Studio</span>
+  </footer>
+
+</Base>
+
+<style>
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;transition:transform .4s,background .4s,border-color .4s;border-bottom:1px solid transparent}
+  .hdr.scrolled{background:rgba(234,234,232,.82);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{font-family:var(--display);font-weight:800;font-size:1.2rem;letter-spacing:-.03em;display:flex;align-items:center;gap:.35em;text-transform:uppercase}
+  .brand .s{font-size:.7em;color:var(--ink)}
+  .links{display:flex;gap:1.5rem;align-items:center}
+  .links a{font-size:.82rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em;transition:color .25s}
+  .links a:hover{color:var(--ink)}
+  .links a.cta{color:var(--bg);background:var(--ink);padding:.6em 1.2em;border-radius:0;font-weight:600}
+  .links a.cta:hover{background:#000}
+  @media (max-width:960px){ .links a:not(.cta):not(.backlink){display:none} }
+
+  /* hero */
+  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding-top:84px;padding-bottom:clamp(28px,5vh,56px)}
+  .marks{display:flex;justify-content:space-between;gap:1rem;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:1.4rem}
+  .heromid{flex:1;display:flex;align-items:center;justify-content:center}
+  .word{position:relative;font-family:var(--display);font-weight:800;font-size:clamp(3.4rem,18vw,17rem);letter-spacing:-.04em;line-height:1}
+  .word::before{content:attr(data-text);position:absolute;inset:0;filter:blur(10px);opacity:.35}
+  .herofoot{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:1.4rem}
+  .herofoot p{max-width:42ch;color:var(--ink);font-size:clamp(1rem,1.5vw,1.2rem)}
+
+  /* statements */
+  .statement{padding-block:clamp(80px,12vh,180px)}
+  .sidx{display:inline-block;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:clamp(28px,5vh,56px)}
+  .big{font-family:var(--display);font-weight:800;font-size:clamp(3rem,13vw,12rem);line-height:.86;letter-spacing:-.045em;text-transform:uppercase}
+  .lead{font-family:var(--body);font-weight:400;font-size:clamp(1.5rem,3.6vw,3rem);line-height:1.1;letter-spacing:-.01em;max-width:24ch;margin-top:clamp(36px,6vh,72px)}
+  .alt .lead{max-width:30ch}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:clamp(48px,7vh,96px);border-top:1px solid var(--line);padding-top:clamp(32px,4vh,56px)}
+  .step .sn{font-family:var(--display);font-weight:800;font-size:.9rem;color:var(--ink);background:var(--acid);padding:.1em .5em;display:inline-block}
+  .step h3{font-family:var(--display);font-weight:800;font-size:1.5rem;letter-spacing:-.02em;text-transform:uppercase;margin:.8em 0 .3em}
+  .step p{color:var(--muted)}
+  @media (max-width:760px){ .steps{grid-template-columns:1fr;gap:1.8rem} }
+
+  .mq{border-block:1px solid var(--line);padding:16px 0}
+  .mq span{font-family:var(--display);font-weight:700;font-size:clamp(1rem,2.2vw,1.6rem);text-transform:uppercase;letter-spacing:-.01em;display:inline-flex;align-items:center;gap:1.4rem}
+  .mq i{color:var(--muted);font-style:normal}
+
+  /* work — dark immersive */
+  .work{background:#0B0B0B;color:#EAEAE8;padding-block:clamp(72px,10vh,150px);margin-top:0}
+  .work .sidx{color:rgba(234,234,232,.55)}
+  .wgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,28px)}
+  @media (max-width:760px){ .wgrid{grid-template-columns:1fr} }
+  .wcard{position:relative;min-height:clamp(320px,42vh,460px);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,2.4vw,34px);isolation:isolate}
+  .wcard::after{content:"";position:absolute;inset:0;z-index:-1;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+  .wcard:hover::after{transform:scale(1.05)}
+  .w1::after{background:radial-gradient(120% 120% at 70% 20%,#1d3a12,#0B0B0B 62%)}
+  .w2::after{background:radial-gradient(120% 120% at 30% 80%,#14243a,#0B0B0B 62%)}
+  .wtag{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#0B0B0B;background:var(--acid);padding:.35em .8em;border-radius:100px;font-weight:700}
+  .wbtm h3{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-.03em;text-transform:uppercase;line-height:.95}
+  .wbtm p{color:rgba(234,234,232,.7);max-width:40ch;margin-top:.5em}
+
+  /* tiers */
+  .tiers{padding-block:clamp(80px,12vh,170px)}
+  .thead{border-bottom:1px solid var(--line);padding-bottom:clamp(28px,4vh,48px);margin-bottom:clamp(36px,5vh,64px)}
+  .thead .lead{margin-top:1rem;font-size:clamp(1.2rem,2.4vw,1.8rem);color:var(--muted)}
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,48px)}
+  @media (max-width:820px){ .tgrid{grid-template-columns:1fr;gap:2.4rem} }
+  .tier h3{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,5vw,4rem);letter-spacing:-.03em;margin-bottom:.5em}
+  .tier:hover h3{color:#000}
+  .tier p{color:var(--muted);max-width:38ch}
+
+  /* contact — dark */
+  .contact{background:#0B0B0B;color:#EAEAE8;padding-block:clamp(80px,13vh,180px);text-align:center}
+  .ctag{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,234,232,.6);margin-bottom:1.4rem}
+  .cbig{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,9vw,8rem);letter-spacing:-.04em;display:inline-block;transition:color .35s}
+  .cbig:hover{color:var(--acid)}
+  .crow{display:flex;justify-content:center;gap:clamp(1rem,3vw,3rem);margin-top:2rem;flex-wrap:wrap;color:rgba(234,234,232,.6)}
+  .crow a{border-bottom:1px solid rgba(234,234,232,.3);padding-bottom:.15em;transition:.3s}
+  .crow a:hover{color:#EAEAE8;border-color:var(--acid)}
+
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-block:clamp(40px,6vh,72px);border-top:1px solid var(--line)}
+  .foot .brand{font-size:1.2rem}
+  .foot .s{color:var(--ink)}
+</style>
