@@ -77,7 +77,11 @@ export const unitPlate: Record<string, string> = {
   synergy: plates['syn-mesh'].src,
 };
 
-/** Optional motion for the Producción act. Gated hard at runtime: desktop only,
-    near-viewport, and skipped under reduced-motion or Save-Data. Poster is the
-    exact start frame, so the still and the loop are the same image. */
-export const prodLoop = m('video/prod-loop.mp4');
+/** Real Residencia work, from the client's Drive (Book Resi / Producción 2026).
+    The #t= fragment makes the browser show that frame as the effective poster,
+    which avoids shipping separate poster images. */
+export const work = [
+  { kind: 'video' as const, src: m('work/seat-arona.mp4'), at: '2', title: 'SEAT Arona — Sensor de estacionamiento' },
+  { kind: 'video' as const, src: m('work/apocalipsis-zombie.mp4'), at: '3', title: 'Apocalipsis Zombie' },
+  { kind: 'image' as const, src: m('work/cupra-navidad.webp'), at: '', title: 'CUPRA Navidad' },
+];

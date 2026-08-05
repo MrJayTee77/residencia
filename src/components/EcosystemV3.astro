@@ -5,14 +5,13 @@ import '../styles/ds/styles.css';
 import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { unitList, brand } from '../data/units-v3';
-import { clientLogos, creators, unitPlate, prodLoop } from '../data/media-v3';
+import { clientLogos, unitPlate } from '../data/media-v3';
 
 // The hub shows a taste of each unit; the depth lives on the unit pages.
 const stripLogos = ['netflix', 'volkswagen', 'coca-cola', 'mattel', 'xbox', 'ford', 'nike', 'huawei', 'telcel', 'porsche']
   .map((s) => clientLogos.find((l) => l.src.endsWith(`${s}.webp`))!)
   .filter(Boolean);
 const stripRest = clientLogos.length - stripLogos.length;
-const rosterPeek = creators.slice(0, 4);
 
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -26,7 +25,6 @@ const L = (route: string) => localizedPath(route, lang);
 
 const list = unitList(lang);
 const b = brand[lang];
-const U = Object.fromEntries(list.map((u) => [u.id, u]));
 
 const t = {
   es: {
@@ -72,14 +70,6 @@ const t = {
 }[lang];
 
 const word = 'Residencia'.split('');
-const chapters = [
-  { id: 'ecosystem', label: 'Residencia', tone: 'light' },
-  { id: 'agency', label: U.agency.short, tone: 'light' },
-  { id: 'production', label: U.production.short, tone: 'dark' },
-  { id: 'gr8', label: U.gr8.short, tone: 'dark' },
-  { id: 'synergy', label: U.synergy.short, tone: 'dark' },
-  { id: 'contact', label: t.contact, tone: 'light' },
-];
 ---
 <Base title={t.title} description={t.desc} theme="theme-res-v3" lang={lang}>
 
@@ -115,15 +105,6 @@ const chapters = [
     </div>
   </header>
 
-  <!-- chapter rail -->
-  <nav class="rail" aria-label={t.chapters} data-rail>
-    <ol>
-      {chapters.map((c) => (
-        <li><a href={`#${c.id}`} data-rail-link={c.id}><span class="rail-d" aria-hidden="true"></span><span class="rail-t">{c.label}</span></a></li>
-      ))}
-    </ol>
-  </nav>
-
   <span id="top"></span>
 
   <main id="main">
@@ -132,6 +113,12 @@ const chapters = [
     <section class="ch ch-root" id="ecosystem" data-tone="light" data-chapter="ecosystem">
       <div class="rootstage" data-rootstage>
         <div class="rootstage-in">
+          <div class="backdrop" data-backdrop aria-hidden="true">
+            {list.map((u) => (
+              <div class="bd" data-bd={u.id} style={`--plate:url('${unitPlate[u.id]}')`}
+                   transition:name={`p-${u.id}`}></div>
+            ))}
+          </div>
           <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
           <span class="mk mk-bl" aria-hidden="true"></span><span class="mk mk-br" aria-hidden="true"></span>
 
@@ -161,7 +148,8 @@ const chapters = [
 
               <div class="grid" data-grid>
                 {list.map((u, i) => (
-                  <a class="unit" data-unit={i} style={`--i:${i}`} href={L(`v3/${u.id}`)} data-hot>
+                  <a class="unit" data-unit={i} data-id={u.id} style={`--i:${i}`} href={L(`v3/${u.id}`)}
+                     data-hot transition:name={`u-${u.id}`}>
                     <span class="u-port" aria-hidden="true"></span>
                     <span class="u-top"><span class="u-n">{u.n}</span><span class="u-kind">{u.kind}</span></span>
                     <span class="u-name">{u.short}</span>
@@ -178,83 +166,15 @@ const chapters = [
       </div>
     </section>
 
-    <!-- ══════════════ ACT · AGENCY ══════════════ -->
-    <section class="act pinned ch skin-agency" id="agency" data-act data-tone="light" data-chapter="agency"
-             style={`--plate:url('${unitPlate.agency}')`}>
-      <div class="act-in">
-        <div class="act-plate" aria-hidden="true" transition:name={`p-${"agency"}`}></div>
-        <div class="wrap act-body">
-          <span class="act-n">{U.agency.n}</span>
-          <h2 class="act-title" transition:name={`u-${"agency"}`}>{U.agency.short}</h2>
-          <p class="act-kind">{U.agency.kind}</p>
-          <p class="act-lead">{U.agency.role}</p>
-          <a class="act-go" href={L('v3/agency')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
-          <div class="act-proof">
-            <p class="act-proof-k">{t.agencyBand}</p>
-            <div class="strip">
-              {stripLogos.map((l) => <img src={l.src} alt={l.name} loading="lazy" decoding="async" />)}
-              <a class="strip-more" href={L('v3/agency')} data-hot>{t.andMore(stripRest)}</a>
-            </div>
-          </div>
+    <!-- ══════════════ PROOF — the client marks, kept on the hub ══════════════ -->
+    <section class="proof" id="proof" data-tone="light" data-chapter="proof">
+      <div class="wrap">
+        <p class="sub-k reveal">{t.agencyBand}</p>
+        <div class="strip reveal">
+          {stripLogos.map((l) => <img src={l.src} alt={l.name} loading="lazy" decoding="async" />)}
+          <a class="strip-more" href={L('v3/agency')} data-hot>{t.andMore(stripRest)}</a>
         </div>
       </div>
-      <span class="thread" aria-hidden="true"><i></i><b></b></span>
-    </section>
-
-    <!-- ══════════════ ACT · PRODUCTION ══════════════ -->
-    <section class="act pinned ch skin-production grain" id="production" data-act data-tone="dark" data-chapter="production"
-             style={`--plate:url('${unitPlate.production}')`}>
-      <div class="act-in">
-        <div class="act-plate" aria-hidden="true" transition:name={`p-${"production"}`} data-video={prodLoop}></div>
-        <div class="wrap act-body">
-          <span class="act-n">{U.production.n}</span>
-          <h2 class="act-title" transition:name={`u-${"production"}`}>{U.production.short}</h2>
-          <p class="act-kind">{U.production.kind}</p>
-          <p class="act-lead">{U.production.role}</p>
-          <a class="act-go" href={L('v3/production')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
-        </div>
-      </div>
-      <span class="thread" aria-hidden="true"><i></i><b></b></span>
-    </section>
-
-    <!-- ══════════════ ACT · GR8 ══════════════ -->
-    <section class="act pinned ch skin-gr8 glow" id="gr8" data-act data-tone="dark" data-chapter="gr8"
-             style={`--plate:url('${unitPlate.gr8}')`}>
-      <div class="act-in">
-        <div class="act-plate" aria-hidden="true" transition:name={`p-${"gr8"}`}></div>
-        <div class="wrap act-body">
-          <span class="act-n">{U.gr8.n}</span>
-          <h2 class="act-title grad-title" transition:name={`u-${"gr8"}`}>{U.gr8.short}</h2>
-          <p class="act-kind">{U.gr8.kind}</p>
-          <p class="act-lead">{U.gr8.role}</p>
-          <a class="act-go" href={L('v3/gr8')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
-          <div class="act-proof">
-            <p class="act-proof-k">{t.gr8Roster}</p>
-            <div class="peek">
-              {rosterPeek.map((c) => (
-                <figure class="cr"><img src={c.src} alt={t.creatorAlt} width={c.w} height={c.h} loading="lazy" decoding="async" /></figure>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <span class="thread" aria-hidden="true"><i></i><b></b></span>
-    </section>
-
-    <!-- ══════════════ ACT · SYNERGY ══════════════ -->
-    <section class="act pinned ch skin-synergy" id="synergy" data-act data-tone="dark" data-chapter="synergy"
-             style={`--plate:url('${unitPlate.synergy}')`}>
-      <div class="act-in">
-        <div class="act-plate" aria-hidden="true" transition:name={`p-${"synergy"}`}></div>
-        <div class="wrap act-body">
-          <span class="act-n">{U.synergy.n}</span>
-          <h2 class="act-title" transition:name={`u-${"synergy"}`}>{U.synergy.short}</h2>
-          <p class="act-kind">{U.synergy.kind}</p>
-          <p class="act-lead">{U.synergy.role}</p>
-          <a class="act-go" href={L('v3/synergy')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
-        </div>
-      </div>
-      <span class="thread" aria-hidden="true"><i></i><b></b></span>
     </section>
 
     <!-- ══════════════ PHILOSOPHY + HOW ══════════════ -->
@@ -397,9 +317,7 @@ const chapters = [
   /* ═══════════ 00 · root ═══════════ */
   .ch-root{background:var(--bg)}
   .rootstage{position:relative}
-  .rootstage.scrub{height:230vh}
   .rootstage-in{position:relative;padding-top:clamp(104px,13vh,150px);padding-bottom:clamp(36px,5vh,70px);overflow:hidden}
-  .rootstage.scrub .rootstage-in{position:sticky;top:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
   .mk{position:absolute;width:14px;height:14px;opacity:.55;pointer-events:none}
   .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
   .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
@@ -458,61 +376,33 @@ const chapters = [
   .cue i{font-style:normal;animation:bob 1.9s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(4px)}}
 
-  /* ── scroll-scrubbed choreography (desktop, motion allowed) ──
-     The name, tagline and lead are present on landing — scroll grows the system
-     beneath them, it does not reveal the brand. Only the roots, the ports and
-     the four cards are tied to scroll progress. */
-  .rootstage.scrub .roots .origin{transform:scale(calc(clamp(0, var(--p,0) * 24, 1)))}
-  .rootstage.scrub .roots .strand{
-    stroke-dashoffset:calc(1 - clamp(0, (var(--p,0) - .04 - (var(--i) * .08)) / .34, 1))}
-  .rootstage.scrub .roots .port{transform:scale(calc(clamp(0, (var(--p,0) - .38 - (var(--i) * .08)) * 14, 1)))}
-  .rootstage.scrub .unit{
-    opacity:calc(clamp(0, (var(--p,0) - .42 - (var(--i) * .07)) * 9, 1));
-    transform:translateY(calc((1 - clamp(0, (var(--p,0) - .42 - (var(--i) * .07)) * 9, 1)) * 18px))}
-  .rootstage.scrub .unit .u-port{transform:translate(-50%,-50%) scale(calc(clamp(0, (var(--p,0) - .42 - (var(--i) * .07)) * 9, 1)))}
-  .rootstage.scrub .spine{transform:translateX(-50%) scaleY(calc(clamp(0, var(--p,0) * 4, 1)))}
-  /* the cue has done its job once you have scrolled */
-  .rootstage.scrub .cue{opacity:calc(1 - clamp(0, var(--p,0) * 6, 1))}
-
-  /* While pinned, the whole stage has to live inside one viewport height, so the
-     type and rhythm are capped against vh as well as vw. */
-  .rootstage.scrub .wordmark{font-size:min(14vw,15vh)}
-  .rootstage.scrub .tagline{margin-top:.5em;font-size:clamp(.62rem,1.4vh,.72rem)}
-  .rootstage.scrub .lead{margin-top:min(1.8vh,18px);font-size:clamp(.95rem,2vh,1.22rem)}
-  .rootstage.scrub .stage-head{margin-bottom:min(2.2vh,24px)}
-  .rootstage.scrub .field{margin-top:min(3.4vh,40px);padding-top:min(15vh,180px)}
-  .rootstage.scrub .spine{height:min(15vh,180px)}
-  .rootstage.scrub .unit{min-height:min(21vh,190px);gap:.35em}
-  .rootstage.scrub .cue{margin-top:min(2.6vh,26px)}
-
-  /* one-time settle for the name itself, independent of scroll */
-  .rootstage.scrub .wl{animation:wl-in .5s var(--ease-entrance) both;animation-delay:calc(var(--i)*35ms)}
-  .rootstage.scrub .tagline{animation:fade-in .5s var(--ease-entrance) both .38s}
-  .rootstage.scrub .lead{animation:fade-in .5s var(--ease-entrance) both .47s}
-  @keyframes wl-in{from{opacity:0;transform:translateY(.3em)}to{opacity:1;transform:none}}
-  @keyframes fade-in{from{opacity:0}to{opacity:1}}
-
-  /* ── no-scrub fallback: timed intro (mobile / reduced motion / no JS) ── */
-  .rootstage.js:not(.scrub) .wl{opacity:0;transform:translateY(.3em)}
-  .rootstage.js:not(.scrub) .unit{opacity:0;transform:translateY(14px)}
-  .rootstage.go:not(.scrub) .wl{opacity:1;transform:none;
+  /* ── the intro: plays on arrival ── */
+  .rootstage.js .wl{opacity:0;transform:translateY(.3em)}
+  .rootstage.js .unit{opacity:0;transform:translateY(14px)}
+  .rootstage.go .wl{opacity:1;transform:none;
     transition:opacity .45s var(--ease-entrance) calc(var(--i)*35ms),transform .45s var(--ease-entrance) calc(var(--i)*35ms)}
-  .rootstage.go:not(.scrub) .spine{transform:translateX(-50%) scaleY(1);transition-delay:420ms}
-  .rootstage.go:not(.scrub) .roots .strand{stroke-dashoffset:0;
+  .rootstage.go .spine{transform:translateX(-50%) scaleY(1);transition-delay:420ms}
+  .rootstage.go .roots .strand{stroke-dashoffset:0;
     transition:stroke-dashoffset .56s var(--ease-entrance) calc(500ms + var(--i)*90ms)}
-  .rootstage.go:not(.scrub) .roots .origin,
-  .rootstage.go:not(.scrub) .roots .port{transform:scale(1);transition:transform .3s var(--ease-entrance) calc(900ms + var(--i)*90ms)}
-  .rootstage.go:not(.scrub) .unit{opacity:1;transform:none;
+  .rootstage.go .roots .origin,
+  .rootstage.go .roots .port{transform:scale(1);transition:transform .3s var(--ease-entrance) calc(900ms + var(--i)*90ms)}
+  .rootstage.go .unit{opacity:1;transform:none;
     transition:opacity .4s var(--ease-entrance) calc(950ms + var(--i)*90ms),transform .4s var(--ease-entrance) calc(950ms + var(--i)*90ms)}
-  .rootstage.go:not(.scrub) .unit .u-port{transform:translate(-50%,-50%) scale(1);transition-delay:calc(950ms + var(--i)*90ms)}
+  .rootstage.go .unit .u-port{transform:translate(-50%,-50%) scale(1);transition-delay:calc(950ms + var(--i)*90ms)}
 
 
-  /* ═══════════ chapter media — the hub's taste of each unit ═══════════ */
-  .ch-media{padding-bottom:clamp(56px,9vh,120px)}
-  .peek{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
-  @media (min-width:760px){ .peek{grid-template-columns:repeat(4,1fr)} }
-  .peek .cr{flex:none}
-  .ch-media .tex-plate{aspect-ratio:21/9}
+  .proof{padding-block:clamp(40px,6vh,80px);border-top:1px solid var(--line)}
+  .proof .strip img{width:104px;height:46px}
+
+  /* ═══════════ backdrop — each unit's world, previewed behind the name ═══════════ */
+  .backdrop{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .bd{position:absolute;inset:0;background-image:var(--plate);background-size:cover;background-position:center;
+    opacity:0;transform:scale(1.07);
+    transition:opacity .75s var(--ease-entrance),transform 1.4s var(--ease-entrance)}
+  .bd.on{opacity:.55;transform:scale(1)}
+  /* scrim paints last, so the paper reading stays intact whatever is behind it */
+  .backdrop::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(rgba(242,247,249,.90),rgba(242,247,249,.95) 60%,var(--paper-100) 100%)}
 
   /* ═══════════ philosophy ═══════════ */
   .ch-phil{background:var(--bg);padding-block:clamp(64px,10vh,140px)}
@@ -572,125 +462,89 @@ const chapters = [
 </style>
 
 <script>
-  // Everything is rebuilt on astro:page-load so it survives view transitions.
-  // Guarded so it is safe to run both immediately and on astro:page-load —
-  // a script first executed *after* page-load fired would otherwise never init.
   let ran = false;
   const setup = () => {
     if (ran) return;
-    // Anchor on markup unique to the hub; if it is absent the swap has not
-    // landed yet and claiming init here would block the real pass.
     if (!document.querySelector('[data-rootstage]')) return;
     ran = true;
+
     const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
     const cleanups: Array<() => void> = [];
     const on = (t: EventTarget, ev: string, fn: any, o?: any) => {
       t.addEventListener(ev, fn, o); cleanups.push(() => t.removeEventListener(ev, fn, o));
     };
 
-    /* ─────────────── the root stage ─────────────── */
-    const stage = document.querySelector<HTMLElement>('[data-rootstage]');
-    if (stage) {
-      const field = stage.querySelector<HTMLElement>('[data-field]')!;
-      const svg = stage.querySelector<SVGSVGElement>('[data-roots]')!;
-      const origin = svg.querySelector<SVGCircleElement>('[data-origin]')!;
-      const strands = Array.from(svg.querySelectorAll<SVGPathElement>('[data-strand]'));
-      const ports = Array.from(svg.querySelectorAll<SVGCircleElement>('[data-port]'));
-      const cards = Array.from(stage.querySelectorAll<HTMLElement>('[data-unit]'));
-      const wide = matchMedia('(min-width:1024px)');
-      stage.classList.add('js');
+    const stage = document.querySelector<HTMLElement>('[data-rootstage]')!;
+    const field = stage.querySelector<HTMLElement>('[data-field]')!;
+    const svg = stage.querySelector<SVGSVGElement>('[data-roots]')!;
+    const origin = svg.querySelector<SVGCircleElement>('[data-origin]')!;
+    const strands = Array.from(svg.querySelectorAll<SVGPathElement>('[data-strand]'));
+    const ports = Array.from(svg.querySelectorAll<SVGCircleElement>('[data-port]'));
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>('[data-unit]'));
+    const backdrop = stage.querySelector<HTMLElement>('[data-backdrop]');
+    const wide = matchMedia('(min-width:1024px)');
+    stage.classList.add('js');
 
-      // Strand geometry is measured from the real card positions, so the roots
-      // land on the ports at any width.
-      const draw = () => {
-        if (!wide.matches) return;
-        const fb = field.getBoundingClientRect();
-        const w = Math.round(fb.width), h = Math.round(fb.height);
-        if (w < 2 || h < 2) return;
-        svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-        const ox = w / 2, oy = 2;
-        origin.setAttribute('cx', String(ox)); origin.setAttribute('cy', String(oy));
-        cards.forEach((card, i) => {
-          const cb = card.getBoundingClientRect();
-          const x = cb.left - fb.left + cb.width / 2, y = cb.top - fb.top, run = y - oy;
-          strands[i].setAttribute('d', `M ${ox} ${oy} C ${ox} ${oy + run * 0.42}, ${x} ${y - run * 0.4}, ${x} ${y}`);
-          ports[i].setAttribute('cx', String(x)); ports[i].setAttribute('cy', String(y));
-        });
-      };
-      const canScrub = () => wide.matches && !reduce && innerHeight >= 640;
-      let ticking = false;
-      const setP = () => {
-        ticking = false;
-        const r = stage.getBoundingClientRect();
-        const travel = r.height - innerHeight;
-        const p = travel <= 0 ? 1 : Math.min(1, Math.max(0, -r.top / travel));
-        stage.style.setProperty('--p', p.toFixed(4));
-      };
-      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(setP); } };
-      const applyMode = () => {
-        if (canScrub()) {
-          stage.classList.add('scrub'); stage.classList.remove('go');
-          on(window, 'scroll', onScroll, { passive: true });
-          setP();
-        } else {
-          stage.classList.remove('scrub');
-          stage.style.removeProperty('--p');
-          if (reduce) stage.classList.add('go');
-          else {
-            const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
-            Promise.race([fonts, new Promise((r) => setTimeout(r, 600))])
-              .then(() => requestAnimationFrame(() => stage.classList.add('go')));
-          }
-        }
-        draw();
-      };
-      draw(); applyMode();
-      let raf = 0;
-      const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { draw(); if (stage.classList.contains('scrub')) setP(); }); };
-      if ('ResizeObserver' in window) {
-        const ro = new ResizeObserver(schedule); ro.observe(field);
-        cleanups.push(() => ro.disconnect());
-      }
-      on(window, 'resize', () => { applyMode(); schedule(); }, { passive: true });
-
-      const gaze = (i: number | null) => {
-        field.classList.toggle('gazing', i !== null);
-        cards.forEach((c, j) => c.classList.toggle('gazed', j === i));
-        strands.forEach((sd, j) => sd.classList.toggle('lit', j === i));
-      };
+    // Strand geometry is measured off the real card positions, so the roots land
+    // on the ports at any width.
+    const draw = () => {
+      if (!wide.matches) return;
+      const fb = field.getBoundingClientRect();
+      const w = Math.round(fb.width), h = Math.round(fb.height);
+      if (w < 2 || h < 2) return;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      const ox = w / 2, oy = 2;
+      origin.setAttribute('cx', String(ox)); origin.setAttribute('cy', String(oy));
       cards.forEach((card, i) => {
-        card.addEventListener('mouseenter', () => gaze(i));
-        card.addEventListener('mouseleave', () => gaze(null));
-        card.addEventListener('focus', () => gaze(i));
-        card.addEventListener('blur', () => gaze(null));
+        const cb = card.getBoundingClientRect();
+        const x = cb.left - fb.left + cb.width / 2, y = cb.top - fb.top, run = y - oy;
+        strands[i].setAttribute('d', `M ${ox} ${oy} C ${ox} ${oy + run * 0.42}, ${x} ${y - run * 0.4}, ${x} ${y}`);
+        ports[i].setAttribute('cx', String(x)); ports[i].setAttribute('cy', String(y));
       });
+    };
+
+    draw();
+    // The hero plays on arrival — it is the first thing seen, not a reward for
+    // scrolling. Capped at 600ms so a slow webfont never holds it back.
+    if (reduce) stage.classList.add('go');
+    else {
+      const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+      Promise.race([fonts, new Promise((r) => setTimeout(r, 600))])
+        .then(() => { draw(); stage.classList.add('go'); });
     }
 
-    /* ─────────────── acts, thread, tone, rail ─────────────── */
-    const hdr = document.querySelector<HTMLElement>('[data-nav]');
-    const rail = document.querySelector<HTMLElement>('[data-rail]');
-    const railLinks = new Map<string, HTMLElement>();
-    document.querySelectorAll<HTMLElement>('[data-rail-link]').forEach((a) => railLinks.set(a.dataset.railLink!, a));
-    const toned = Array.from(document.querySelectorAll<HTMLElement>('[data-tone]'));
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-chapter]'));
-    const acts = Array.from(document.querySelectorAll<HTMLElement>('[data-act]'));
+    let raf = 0;
+    const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); };
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(schedule); ro.observe(field);
+      cleanups.push(() => ro.disconnect());
+    }
+    on(window, 'resize', schedule, { passive: true });
 
-    const applyTone = () => {
-      let tone = 'light';
-      for (const el of toned) {
-        const r = el.getBoundingClientRect();
-        if (r.top <= 90 && r.bottom > 90) tone = el.dataset.tone || 'light';
-      }
-      hdr?.classList.toggle('on-dark', tone === 'dark');
-      rail?.classList.toggle('on-dark', tone === 'dark');
+    /* ── discovery: previewing a unit brings its world in behind the name ── */
+    let previewTimer = 0;
+    const preview = (id: string | null) => {
+      clearTimeout(previewTimer);
+      field.classList.toggle('gazing', id !== null);
+      cards.forEach((c) => c.classList.toggle('gazed', c.dataset.id === id));
+      strands.forEach((sd, j) => sd.classList.toggle('lit', cards[j]?.dataset.id === id));
+      if (!backdrop) return;
+      stage.classList.toggle('previewing', id !== null);
+      backdrop.querySelectorAll<HTMLElement>('.bd').forEach((b) => b.classList.toggle('on', b.dataset.bd === id));
     };
-    const applyRail = () => {
-      let active = sections[0]?.dataset.chapter;
-      for (const sec of sections) {
-        if (sec.getBoundingClientRect().top <= innerHeight * 0.4) active = sec.dataset.chapter;
-      }
-      railLinks.forEach((a, id) => a.classList.toggle('on', id === active));
-    };
+    cards.forEach((card) => {
+      const id = card.dataset.id!;
+      card.addEventListener('mouseenter', () => preview(id));
+      card.addEventListener('focus', () => preview(id));
+      card.addEventListener('mouseleave', () => { previewTimer = window.setTimeout(() => preview(null), 90); });
+      card.addEventListener('blur', () => { previewTimer = window.setTimeout(() => preview(null), 90); });
+      // Entering a unit: hold the preview through the navigation so the plate the
+      // card is showing is the plate the next page opens on.
+      card.addEventListener('click', () => { clearTimeout(previewTimer); preview(id); });
+    });
+
+    /* ── the thread that still runs past the hero ── */
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-chapter]'));
     const applyThread = () => {
       for (const sec of sections) {
         const r = sec.getBoundingClientRect();
@@ -699,59 +553,18 @@ const chapters = [
         sec.style.setProperty('--cp', Math.min(1, Math.max(0, cp)).toFixed(3));
       }
     };
-    // Each act publishes its own 0..1 as it moves through the pin.
-    const applyActs = () => {
-      for (const act of acts) {
-        const r = act.getBoundingClientRect();
-        const travel = r.height - innerHeight;
-        const ap = travel <= 0
-          ? Math.min(1, Math.max(0, (innerHeight * 0.8 - r.top) / (r.height * 0.6)))
-          : Math.min(1, Math.max(0, -r.top / travel));
-        act.style.setProperty('--ap', ap.toFixed(4));
-      }
-    };
-
     let t2 = false;
     const onScroll2 = () => {
       if (t2) return;
       t2 = true;
-      requestAnimationFrame(() => { t2 = false; applyTone(); applyRail(); applyThread(); applyActs(); });
+      requestAnimationFrame(() => { t2 = false; applyThread(); });
     };
     on(window, 'scroll', onScroll2, { passive: true });
     on(window, 'resize', onScroll2, { passive: true });
-    applyTone(); applyRail(); applyThread(); applyActs();
+    applyThread();
 
-    /* ─────────────── optional motion on the Producción act ───────────────
-       Only mounted when it can be justified: a real pointer, a wide viewport,
-       motion allowed, and no Save-Data header. Never blocks first paint. */
-    const plateWithVideo = document.querySelector<HTMLElement>('[data-video]');
-    if (plateWithVideo) {
-      const conn = (navigator as any).connection;
-      const allowed = !reduce
-        && matchMedia('(min-width:1024px)').matches
-        && matchMedia('(hover:hover)').matches
-        && !(conn && (conn.saveData || /2g/.test(conn.effectiveType || '')));
-      if (allowed) {
-        const io = new IntersectionObserver((entries) => {
-          for (const e of entries) {
-            if (!e.isIntersecting) continue;
-            io.disconnect();
-            const v = document.createElement('video');
-            v.src = plateWithVideo.dataset.video!;
-            v.muted = true; v.loop = true; v.playsInline = true;
-            v.setAttribute('aria-hidden', 'true');
-            v.preload = 'auto';
-            v.addEventListener('canplay', () => { v.classList.add('ready'); v.play().catch(() => {}); }, { once: true });
-            plateWithVideo.prepend(v);
-            cleanups.push(() => { v.pause(); v.remove(); });
-          }
-        }, { rootMargin: '400px' });
-        io.observe(plateWithVideo);
-        cleanups.push(() => io.disconnect());
-      }
-    }
-
-    /* ─────────────── mobile nav ─────────────── */
+    /* ── mobile nav ── */
+    const hdr = document.querySelector<HTMLElement>('[data-nav]');
     const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
     const panel = document.querySelector<HTMLElement>('[data-menu]');
     if (btn && panel && hdr) {
@@ -772,7 +585,6 @@ const chapters = [
       cleanups.push(() => mq.removeEventListener('change', onMq));
     }
 
-    // Torn down before the next page swaps in, so listeners never stack up.
     document.addEventListener('astro:before-swap', () => {
       ran = false;
       cleanups.forEach((fn) => fn());

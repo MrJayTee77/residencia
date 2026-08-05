@@ -5,7 +5,7 @@ import '../styles/ds/styles.css';
 import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { units, unitList, type UnitId } from '../data/units-v3';
-import { clientLogos, creators, shows, tex, plates, unitPlate } from '../data/media-v3';
+import { clientLogos, creators, shows, tex, plates, unitPlate, work } from '../data/media-v3';
 
 interface Props { unit: UnitId; lang: Lang; }
 const { unit, lang } = Astro.props;
@@ -38,6 +38,7 @@ const t = {
     roster: 'Roster de creadores', rosterHint: 'Desliza para ver el roster',
     showsHead: 'Formatos e IP propios', creatorAlt: 'Creador del roster de GR8',
     atmos: 'Imágenes de atmósfera — no son casos de trabajo.',
+    workHead: 'Trabajo',
   },
   en: {
     contact: 'Contact', menu: 'Menu', back: 'Residencia', backLabel: 'Back to the ecosystem',
@@ -48,6 +49,7 @@ const t = {
     roster: 'Creator roster', rosterHint: 'Swipe to see the roster',
     showsHead: 'Owned formats and IP', creatorAlt: 'Creator from the GR8 roster',
     atmos: 'Atmosphere imagery — not work samples.',
+    workHead: 'Work',
   },
 }[lang];
 
@@ -98,7 +100,7 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
     {unit === 'synergy' && <div class="syn-grid" aria-hidden="true"></div>}
 
     <!-- ═══════════ HERO ═══════════ -->
-    <section class="hero">
+    <section class="hero" transition:name={`u-${unit}`}>
       <div class="hero-plate" aria-hidden="true" transition:name={`p-${unit}`}
            style={`--plate:url('${unitPlate[unit]}')`}></div>
       <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
@@ -108,7 +110,7 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
           <span class="coord coord-r">[ {u.kind} ]</span>
         </div>
         <p class="unit-name">{u.name}</p>
-        <h1 class={unit === 'gr8' ? 'hero-h grad-title' : 'hero-h'} transition:name={`u-${unit}`}>
+        <h1 class={unit === 'gr8' ? 'hero-h grad-title' : 'hero-h'}>
           {u.heroHead[0]}{unit === 'gr8' ? u.heroHead[1] : <span class="accent-i">{u.heroHead[1]}</span>}
         </h1>
         <p class="hero-lead">{u.heroLead}</p>
@@ -171,6 +173,22 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
     )}
 
     <!-- ═══════════ ATMOSPHERE — generated plates, not work samples ═══════════ -->
+    {unit === 'production' && (
+      <section class="wrap work">
+        <div class="shead reveal"><span class="num">{num()}</span><h2>{t.workHead}</h2></div>
+        <div class="work-grid">
+          {work.map((w) => (
+            <figure class="wk reveal">
+              {w.kind === 'video'
+                ? <video src={`${w.src}#t=${w.at}`} preload="metadata" controls playsinline
+                         aria-label={w.title}></video>
+                : <img src={w.src} alt={w.title} loading="lazy" decoding="async" />}
+              <figcaption>{w.title}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
     {unit === 'production' && (
       <section class="wrap plate-row">
         <figure class="plate reveal" style={`--plate:url('${plates['prod-set'].src}')`}></figure>
@@ -306,6 +324,14 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
   .hero-plate::after{content:"";position:absolute;inset:0;
     background:linear-gradient(100deg,var(--scrim-a) 0%,var(--scrim-a) 44%,var(--scrim-b) 100%)}
   .hero>.wrap,.hero>.mk{position:relative;z-index:2}
+
+  .work{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  .work-grid{display:grid;grid-template-columns:1fr;gap:.9rem}
+  @media (min-width:760px){ .work-grid{grid-template-columns:repeat(3,1fr)} }
+  .wk{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-2)}
+  .wk video,.wk img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}
+  .wk figcaption{padding:.75em .9em;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted)}
 
   .plate-row{display:grid;grid-template-columns:1fr;gap:.7rem;padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
   @media (min-width:760px){ .plate-row{grid-template-columns:repeat(2,1fr)} }
