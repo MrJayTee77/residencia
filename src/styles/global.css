@@ -11,7 +11,10 @@ body{
   background:var(--bg);color:var(--ink);
   font-family:var(--body);
   font-size:clamp(15px,1.05vw,17px);line-height:1.55;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  /* `clip` (not `hidden`) — overflow-x:hidden makes body a scroll container,
+     which silently breaks position:sticky on descendants. */
+  overflow-x:clip;
   transition:background .5s ease,color .5s ease;
 }
 @media (hover:hover){ body{cursor:none} }
