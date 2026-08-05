@@ -59,3 +59,25 @@ export const tex = {
   coral: m('tex/iridescent-coral.webp'),
   glitch: m('tex/glitch.webp'),
 };
+
+/* Generated atmosphere plates (Higgsfield, Cinema Studio 2.5). These are mood,
+   not documentation — no plate depicts real Residencia work, and none contains
+   people. GR8 deliberately keeps the client's own iridescent plate instead. */
+export const plates: Record<string, { src: string; tiny: string }> = Object.fromEntries(
+  ['agency-diagram', 'agency-paper', 'prod-set', 'prod-grid', 'prod-lens',
+   'prod-corridor', 'syn-mesh', 'syn-field', 'syn-layers']
+    .map((n) => [n, { src: m(`plates/${n}.webp`), tiny: m(`plates/${n}-tiny.webp`) }]),
+);
+
+/** The plate that fronts each unit, on the hub act and on the unit hero. */
+export const unitPlate: Record<string, string> = {
+  agency: plates['agency-diagram'].src,
+  production: plates['prod-grid'].src,
+  gr8: tex.gr8,
+  synergy: plates['syn-mesh'].src,
+};
+
+/** Optional motion for the Producción act. Gated hard at runtime: desktop only,
+    near-viewport, and skipped under reduced-motion or Save-Data. Poster is the
+    exact start frame, so the still and the loop are the same image. */
+export const prodLoop = m('video/prod-loop.mp4');

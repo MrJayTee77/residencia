@@ -5,7 +5,7 @@ import '../styles/ds/styles.css';
 import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { units, unitList, type UnitId } from '../data/units-v3';
-import { clientLogos, creators, shows, tex } from '../data/media-v3';
+import { clientLogos, creators, shows, tex, plates, unitPlate } from '../data/media-v3';
 
 interface Props { unit: UnitId; lang: Lang; }
 const { unit, lang } = Astro.props;
@@ -37,6 +37,7 @@ const t = {
     clientsBand: 'Marcas con las que hemos trabajado',
     roster: 'Roster de creadores', rosterHint: 'Desliza para ver el roster',
     showsHead: 'Formatos e IP propios', creatorAlt: 'Creador del roster de GR8',
+    atmos: 'Imágenes de atmósfera — no son casos de trabajo.',
   },
   en: {
     contact: 'Contact', menu: 'Menu', back: 'Residencia', backLabel: 'Back to the ecosystem',
@@ -46,6 +47,7 @@ const t = {
     clientsBand: 'Brands we have worked with',
     roster: 'Creator roster', rosterHint: 'Swipe to see the roster',
     showsHead: 'Owned formats and IP', creatorAlt: 'Creator from the GR8 roster',
+    atmos: 'Atmosphere imagery — not work samples.',
   },
 }[lang];
 
@@ -97,6 +99,8 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
 
     <!-- ═══════════ HERO ═══════════ -->
     <section class="hero">
+      <div class="hero-plate" aria-hidden="true" transition:name={`p-${unit}`}
+           style={`--plate:url('${unitPlate[unit]}')`}></div>
       <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
       <div class="wrap">
         <div class="hero-head">
@@ -104,7 +108,7 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
           <span class="coord coord-r">[ {u.kind} ]</span>
         </div>
         <p class="unit-name">{u.name}</p>
-        <h1 class={unit === 'gr8' ? 'hero-h grad-title' : 'hero-h'}>
+        <h1 class={unit === 'gr8' ? 'hero-h grad-title' : 'hero-h'} transition:name={`u-${unit}`}>
           {u.heroHead[0]}{unit === 'gr8' ? u.heroHead[1] : <span class="accent-i">{u.heroHead[1]}</span>}
         </h1>
         <p class="hero-lead">{u.heroLead}</p>
@@ -166,10 +170,19 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
       </section>
     )}
 
-    <!-- ═══════════ SYNERGY · texture plate ═══════════ -->
+    <!-- ═══════════ ATMOSPHERE — generated plates, not work samples ═══════════ -->
+    {unit === 'production' && (
+      <section class="wrap plate-row">
+        <figure class="plate reveal" style={`--plate:url('${plates['prod-set'].src}')`}></figure>
+        <figure class="plate reveal" style={`--plate:url('${plates['prod-lens'].src}')`}></figure>
+        <figcaption class="plate-note reveal">{t.atmos}</figcaption>
+      </section>
+    )}
     {unit === 'synergy' && (
-      <section class="wrap syn-showcase">
-        <div class="tex-plate reveal" aria-hidden="true" style={`--tex:url('${plate}')`}></div>
+      <section class="wrap plate-row">
+        <figure class="plate reveal" style={`--plate:url('${plates['syn-field'].src}')`}></figure>
+        <figure class="plate reveal" style={`--plate:url('${plates['syn-layers'].src}')`}></figure>
+        <figcaption class="plate-note reveal">{t.atmos}</figcaption>
       </section>
     )}
 
@@ -287,7 +300,19 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
   section[id]{scroll-margin-top:84px}
 
   /* ───────────── hero ───────────── */
-  .hero{position:relative;padding-top:clamp(112px,15vh,168px);padding-bottom:clamp(48px,8vh,110px)}
+  .hero{position:relative;padding-top:clamp(112px,15vh,168px);padding-bottom:clamp(48px,8vh,110px);overflow:hidden}
+  .hero-plate{position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:var(--plate);background-size:cover;background-position:center}
+  .hero-plate::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(100deg,var(--scrim-a) 0%,var(--scrim-a) 44%,var(--scrim-b) 100%)}
+  .hero>.wrap,.hero>.mk{position:relative;z-index:2}
+
+  .plate-row{display:grid;grid-template-columns:1fr;gap:.7rem;padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  @media (min-width:760px){ .plate-row{grid-template-columns:repeat(2,1fr)} }
+  .plate{aspect-ratio:21/9;border-radius:var(--radius-lg);border:1px solid var(--line);
+    background-image:var(--plate);background-size:cover;background-position:center}
+  .plate-note{grid-column:1/-1;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted)}
   .mk{position:absolute;width:14px;height:14px;opacity:.55;pointer-events:none}
   .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
   .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
@@ -394,10 +419,18 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
 </style>
 
 <script>
-  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
-  const panel = document.querySelector<HTMLElement>('[data-menu]');
-  const hdr = document.querySelector<HTMLElement>('[data-nav]');
-  if (btn && panel && hdr) {
+  // Guarded so it is safe to run both immediately and on astro:page-load —
+  // a script first executed *after* page-load fired would otherwise never init.
+  let ran = false;
+  const setup = () => {
+    if (ran) return;
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    const panel = document.querySelector<HTMLElement>('[data-menu]');
+    const hdr = document.querySelector<HTMLElement>('[data-nav]');
+    // Bail without claiming init — the script can execute before the swap lands,
+    // and marking it done here would block the real astro:page-load pass.
+    if (!btn || !panel || !hdr) return;
+    ran = true;
     const setOpen = (open: boolean) => {
       btn.setAttribute('aria-expanded', String(open));
       panel.hidden = !open;
@@ -406,9 +439,20 @@ const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
     };
     btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
     panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
-    addEventListener('keydown', (e) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
-    });
-    matchMedia('(min-width:901px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
-  }
+    };
+    document.addEventListener('keydown', onKey);
+    const mq = matchMedia('(min-width:901px)');
+    const onMq = (e: MediaQueryListEvent) => { if (e.matches) setOpen(false); };
+    mq.addEventListener('change', onMq);
+    document.addEventListener('astro:before-swap', () => {
+      ran = false;
+      document.removeEventListener('keydown', onKey);
+      mq.removeEventListener('change', onMq);
+      document.body.style.overflow = '';
+    }, { once: true });
+  };
+  document.addEventListener('astro:page-load', setup);
+  setup();
 </script>

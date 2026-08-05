@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -32,47 +33,66 @@ const fonts =
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href={fonts} rel="stylesheet" />
+  <ViewTransitions />
 </head>
 <body class={theme}>
   <div class="cursor" id="cursor" aria-hidden="true"></div>
   <slot />
 
   <script>
-    // ---- custom cursor (lerped) ----
-    const cursor = document.getElementById('cursor');
-    if (cursor && window.matchMedia('(hover:hover)').matches) {
-      let cx = innerWidth / 2, cy = innerHeight / 2, tx = cx, ty = cy;
-      addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; });
+    // View transitions swap the DOM without re-running module scripts, so every
+    // per-page binding is rebuilt on astro:page-load (which also fires on the
+    // first load). Window-level listeners are bound once and re-query the DOM.
+    let cursorEl: HTMLElement | null = null;
+    let loopRunning = false;
+    let tx = innerWidth / 2, ty = innerHeight / 2, cx = tx, cy = ty;
+
+    const startCursor = () => {
+      if (loopRunning) return;
+      loopRunning = true;
+      addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
       const loop = () => {
         cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
-        cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+        if (cursorEl) cursorEl.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
         requestAnimationFrame(loop);
       };
       requestAnimationFrame(loop);
-      document.querySelectorAll('a, button, [data-hot]').forEach((el) => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hot'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hot'));
-      });
-    }
+    };
 
-    // ---- scroll reveal ----
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0.16 });
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    let lastY = 0;
+    const onNavScroll = () => {
+      const header = document.querySelector('[data-nav]');
+      if (!header) return;
+      const y = scrollY;
+      header.classList.toggle('scrolled', y > 40);
+      if (y > lastY && y > 420) header.classList.add('hide'); else header.classList.remove('hide');
+      lastY = y;
+    };
+    addEventListener('scroll', onNavScroll, { passive: true });
 
-    // ---- hero intro + sticky/hide nav ----
-    document.querySelectorAll('[data-hero]').forEach((h) => requestAnimationFrame(() => h.classList.add('in')));
-    const header = document.querySelector('[data-nav]');
-    if (header) {
-      let lastY = 0;
-      addEventListener('scroll', () => {
-        const y = scrollY;
-        header.classList.toggle('scrolled', y > 40);
-        if (y > lastY && y > 420) header.classList.add('hide'); else header.classList.remove('hide');
-        lastY = y;
-      }, { passive: true });
-    }
+    let io: IntersectionObserver | null = null;
+
+    const initBase = () => {
+      cursorEl = document.getElementById('cursor');
+      if (cursorEl && matchMedia('(hover:hover)').matches) {
+        startCursor();
+        document.querySelectorAll('a, button, [data-hot]').forEach((el) => {
+          el.addEventListener('mouseenter', () => cursorEl?.classList.add('hot'));
+          el.addEventListener('mouseleave', () => cursorEl?.classList.remove('hot'));
+        });
+      }
+
+      io?.disconnect();
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io?.unobserve(e.target); } });
+      }, { threshold: 0.16 });
+      document.querySelectorAll('.reveal').forEach((el) => io!.observe(el));
+
+      lastY = 0;
+      onNavScroll();
+    };
+
+    document.addEventListener('astro:page-load', initBase);
   </script>
 </body>
 </html>

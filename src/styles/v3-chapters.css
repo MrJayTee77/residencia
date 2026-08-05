@@ -164,3 +164,73 @@
   .thread b{display:none}
   .ch .reveal{transform:none}
 }
+
+/* ============================================================
+   ACTS — each unit is discovered by scrolling through it.
+   A single 0..1 progress var per act drives the whole transformation.
+   ============================================================ */
+@property --ap { syntax:'<number>'; inherits:true; initial-value:0 }
+
+.act{position:relative}
+/* 190vh: the transformation resolves by ~50%, and the remainder is a held
+   beat on the composed frame before the next act takes over. */
+.act.pinned{height:190vh}
+.act-in{position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center}
+.act.pinned .act-in{position:sticky;top:0;height:100vh}
+
+/* the plate pushes in from behind a band mask that opens vertically */
+.act-plate{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:var(--plate);background-size:cover;background-position:center;
+  transform:scale(calc(1.18 - .18 * clamp(0, var(--ap) * 1.5, 1)));
+  clip-path:inset(calc(50% - 50% * clamp(0, var(--ap) * 3, 1)) 0%);
+  will-change:transform,clip-path}
+/* scrim keeps the copy legible whatever the plate does */
+.act-plate::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,var(--scrim-a) 0%,var(--scrim-a) 42%,var(--scrim-b) 100%)}
+.skin-agency{--scrim-a:rgba(242,247,249,.90);--scrim-b:rgba(242,247,249,.62)}
+.skin-production{--scrim-a:rgba(0,22,33,.88);--scrim-b:rgba(0,22,33,.55)}
+.skin-gr8{--scrim-a:rgba(10,7,20,.88);--scrim-b:rgba(10,7,20,.58)}
+.skin-synergy{--scrim-a:rgba(0,12,18,.90);--scrim-b:rgba(0,12,18,.58)}
+
+.act-body{position:relative;z-index:2;width:100%}
+.act-n{display:block;font-family:var(--mono);font-size:.76rem;letter-spacing:.18em;color:var(--accent-text);
+  opacity:clamp(0, (var(--ap) - .06) * 8, 1)}
+.act-title{font-family:var(--u-font,var(--display));font-weight:var(--u-weight,700);
+  font-size:calc(clamp(3rem,12vw,10rem) * var(--u-scale,1));
+  text-transform:var(--u-case,none);line-height:.86;letter-spacing:var(--u-track,-.05em);margin-top:.1em;
+  opacity:clamp(0, (var(--ap) - .10) * 7, 1);
+  transform:translateY(calc((1 - clamp(0, (var(--ap) - .10) * 7, 1)) * var(--u-shift,24px)))}
+.act-kind{margin-top:.9em;font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);opacity:clamp(0, (var(--ap) - .18) * 7, 1)}
+.act-lead{margin-top:1.1em;max-width:46ch;font-size:clamp(1.02rem,1.8vw,1.32rem);line-height:1.5;color:var(--ink-2);
+  opacity:clamp(0, (var(--ap) - .24) * 7, 1);
+  transform:translateY(calc((1 - clamp(0, (var(--ap) - .24) * 7, 1)) * 14px))}
+
+/* the act resolves into a deliberate enter state */
+.act-go{display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(26px,4vh,46px);min-height:52px;
+  padding:0 1.5em;border:1px solid currentColor;border-radius:var(--radius-pill);
+  font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;
+  opacity:clamp(0, (var(--ap) - .34) * 7, 1);
+  transform:scale(calc(1 + .05 * clamp(0, (var(--ap) - .62) * 3, 1)));
+  transition:background .3s var(--ease-standard),color .3s var(--ease-standard)}
+.act-go i{font-style:normal;transition:transform .3s var(--ease-standard)}
+.act-go:hover{background:var(--ink);color:var(--bg)}
+.act-go:hover i{transform:translate(3px,3px)}
+
+@media (max-width:1023px){
+  .act.pinned{height:auto}
+  .act.pinned .act-in{position:relative;height:auto;min-height:0;padding-block:clamp(64px,11vh,120px)}
+  .act-plate{clip-path:none;transform:none;opacity:.5}
+  .act-n,.act-title,.act-kind,.act-lead,.act-go{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .act.pinned{height:auto}
+  .act.pinned .act-in{position:relative;height:auto;min-height:0;padding-block:clamp(64px,11vh,120px)}
+  .act-plate{clip-path:none;transform:none}
+  .act-n,.act-title,.act-kind,.act-lead,.act-go{opacity:1!important;transform:none!important}
+}
+
+/* optional motion layer inside an act plate */
+.act-plate video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .8s var(--ease-entrance)}
+.act-plate video.ready{opacity:1}
