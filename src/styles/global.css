@@ -50,6 +50,35 @@ button{font:inherit;cursor:inherit}
   --body:"Archivo",system-ui,sans-serif;--mono:"Space Mono",ui-monospace,monospace;
 }
 
+/* ---- v3: maps the page's semantic variables onto the Combo 09 DS tokens.
+   Shared by the hub and every unit page, so it lives here rather than in one
+   component. The DS tokens themselves come from styles/ds/styles.css, which
+   each v3 component imports. ---- */
+.theme-res-v3{
+  --bg:var(--paper-100);
+  --bg-2:var(--paper-000);
+  --bg-3:var(--paper-200);
+  --ink:var(--noturno-900);
+  --ink-2:var(--noturno-700);
+  --muted:var(--noturno-500);
+  --line:#CED7DC;
+  --accent:var(--vulcanico-500);
+  /* Vulcanico-500 on paper is 3.2:1 — fine for fills, graphics and display-size
+     type, but short of 4.5:1 for the small mono labels. One step down clears AA
+     (4.8:1) and still reads as the brand orange-red. */
+  --accent-text:var(--vulcanico-600);
+  --accent-hover:var(--vulcanico-400);
+  --accent-ink:var(--noturno-900);
+  --display:var(--font-display);
+  --serif:var(--font-display);
+  --body:var(--font-body);
+  --mono:var(--font-mono);
+}
+.theme-res-v3 a:focus-visible,
+.theme-res-v3 button:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--radius-sm);
+}
+
 /* ---- v2 living-ecosystem unit skins (Agency / Production / Synergy; GR8 reuses theme-gr8) ---- */
 .theme-agency{
   --bg:#F4F1E9;--bg-2:#FBF9F3;--ink:#1A1712;--muted:#807769;--line:rgba(26,23,18,.14);

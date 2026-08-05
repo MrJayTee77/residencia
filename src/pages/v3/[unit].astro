@@ -1,0 +1,11 @@
+---
+import UnitPageV3 from '../../components/UnitPageV3.astro';
+import { unitOrder, type UnitId } from '../../data/units-v3';
+
+export function getStaticPaths() {
+  return unitOrder.map((unit) => ({ params: { unit } }));
+}
+
+const { unit } = Astro.params;
+---
+<UnitPageV3 unit={unit as UnitId} lang="es" />

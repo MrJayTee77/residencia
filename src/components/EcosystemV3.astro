@@ -1,0 +1,547 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import '../styles/ds/styles.css';
+import { localizedPath, type Lang } from '../i18n/utils';
+import { unitList, brand } from '../data/units-v3';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+const logo = `${BASE}/ds/residencia-mark-noturno.png`;
+const mail = 'cesar.j@residencia.com.mx';
+const tel = '+525532288017';
+const mailto = (subj: string) => `mailto:${mail}?subject=${encodeURIComponent(subj)}`;
+const L = (route: string) => localizedPath(route, lang);
+
+const list = unitList(lang);
+const b = brand[lang];
+
+const t = {
+  es: {
+    title: 'Residencia — Creative Content Strategy',
+    desc: 'Residencia: creatividad, estrategia, producción y tecnología conectadas en un mismo ecosistema. Agency, Producción, GR8 y Synergy.',
+    coord: 'Ciudad de México',
+    units: '4 unidades · un ecosistema',
+    lead: 'El contenido no es solamente un entregable: es la expresión visible de una estrategia.',
+    cue: 'Elige una unidad',
+    enter: 'Entrar',
+    menu: 'Menú',
+    close: 'Cerrar',
+    contact: 'Contacto',
+    navHome: 'Inicio',
+    manifestoNum: '[ 01 ]',
+    manifestoKicker: 'Filosofía',
+    ecoNum: '[ 02 ]',
+    contactNum: '[ 03 ]',
+    contactKicker: 'Contacto',
+    contactHead: 'Empecemos.',
+    contactSub: 'Cuéntanos qué necesitas y te conectamos con la unidad correcta.',
+    general: { label: 'Conversación general', desc: 'Cualquier otro tema', subj: 'Consulta general — Residencia' },
+    city: 'Ciudad de México, México',
+    rights: '© 2026 Residencia. Todos los derechos reservados.',
+    footTag: 'Creatividad, estrategia, producción y tecnología en un mismo ecosistema.',
+    skip: 'Saltar al contenido',
+  },
+  en: {
+    title: 'Residencia — Creative Content Strategy',
+    desc: 'Residencia: creativity, strategy, production and technology connected in one ecosystem. Agency, Production, GR8 and Synergy.',
+    coord: 'Mexico City',
+    units: '4 units · one ecosystem',
+    lead: 'Content is not simply a deliverable: it is the visible expression of a strategy.',
+    cue: 'Choose a unit',
+    enter: 'Enter',
+    menu: 'Menu',
+    close: 'Close',
+    contact: 'Contact',
+    navHome: 'Home',
+    manifestoNum: '[ 01 ]',
+    manifestoKicker: 'Philosophy',
+    ecoNum: '[ 02 ]',
+    contactNum: '[ 03 ]',
+    contactKicker: 'Contact',
+    contactHead: 'Let’s begin.',
+    contactSub: 'Tell us what you need and we’ll route you to the right unit.',
+    general: { label: 'General conversation', desc: 'Anything else', subj: 'General inquiry — Residencia' },
+    city: 'Mexico City, Mexico',
+    rights: '© 2026 Residencia. All rights reserved.',
+    footTag: 'Creativity, strategy, production and technology in one ecosystem.',
+    skip: 'Skip to content',
+  },
+}[lang];
+
+const word = 'Residencia'.split('');
+---
+<Base title={t.title} description={t.desc} theme="theme-res-v3" lang={lang}>
+
+  <a href="#main" class="skip">{t.skip}</a>
+
+  <header class="hdr" data-nav>
+    <div class="wrap nav">
+      <a href="#top" class="brand" aria-label="Residencia">
+        <img src={logo} alt="" class="mark" width="30" height="30" />
+        <span>Residencia</span>
+      </a>
+
+      <nav class="links" aria-label={t.navHome}>
+        {list.map((u) => <a href={L(`v3/${u.id}`)}>{u.short}</a>)}
+        <a href="#contact" class="muted">{t.contact}</a>
+        <LangToggle lang={lang} route="v3" />
+      </nav>
+
+      <button class="burger" type="button" data-menu-btn aria-expanded="false" aria-controls="mobile-nav">
+        <span class="burger-l" aria-hidden="true"></span>
+        <span class="burger-t">{t.menu}</span>
+      </button>
+    </div>
+
+    <div class="mnav" id="mobile-nav" data-menu hidden>
+      <nav aria-label={t.menu}>
+        {list.map((u) => (
+          <a href={L(`v3/${u.id}`)}>
+            <span class="mn-n">{u.n}</span>
+            <span class="mn-name">{u.short}</span>
+            <span class="mn-kind">{u.kind}</span>
+          </a>
+        ))}
+        <a href="#contact" class="mn-contact"><span class="mn-name">{t.contact}</span></a>
+      </nav>
+      <div class="mnav-foot"><LangToggle lang={lang} route="v3" /></div>
+    </div>
+  </header>
+
+  <span id="top"></span>
+
+  <main id="main">
+
+    <!-- ═══════════ THE ECOSYSTEM: name → roots → four units ═══════════ -->
+    <section class="stage" id="ecosystem" data-stage>
+      <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+      <span class="mk mk-bl" aria-hidden="true"></span><span class="mk mk-br" aria-hidden="true"></span>
+
+      <div class="wrap">
+        <div class="stage-head">
+          <span class="coord">[ {t.coord} ]</span>
+          <span class="coord coord-r">[ {t.units} ]</span>
+        </div>
+
+        <h1 class="wordmark" aria-label="Residencia">
+          <span aria-hidden="true">{word.map((c, i) => <span class="wl" style={`--i:${i}`}>{c}</span>)}</span>
+        </h1>
+        <p class="tagline">{b.tagline}</p>
+        <p class="lead">{t.lead}</p>
+
+        <!-- roots grow from the name down into each unit -->
+        <div class="field" data-field>
+          <svg class="roots" data-roots viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <g class="strands">
+              {list.map((u, i) => <path class="strand" id={`strand-${i}`} data-strand={i} pathLength="1" style={`--i:${i}`} d="" />)}
+            </g>
+            <g class="nodes">
+              <circle class="origin" data-origin r="5" cx="600" cy="0" />
+              {list.map((u, i) => <circle class="port" data-port={i} style={`--i:${i}`} r="6" cx="0" cy="0" />)}
+            </g>
+          </svg>
+
+          <div class="spine" aria-hidden="true"></div>
+
+          <div class="grid" data-grid>
+            {list.map((u, i) => (
+              <a class="unit" data-unit={i} style={`--i:${i}`} href={L(`v3/${u.id}`)} data-hot>
+                <span class="u-port" aria-hidden="true"></span>
+                <span class="u-top">
+                  <span class="u-n">{u.n}</span>
+                  <span class="u-kind">{u.kind}</span>
+                </span>
+                <span class="u-name">{u.short}</span>
+                <span class="u-blurb">{u.blurb}</span>
+                <span class="u-go">{t.enter}<i aria-hidden="true">↘</i></span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <p class="cue"><span>{t.cue}</span></p>
+      </div>
+    </section>
+
+    <!-- ═══════════ PHILOSOPHY ═══════════ -->
+    <section id="philosophy" class="philosophy wrap">
+      <div class="shead reveal"><span class="num">{t.manifestoNum}</span><h2>{t.manifestoKicker}</h2></div>
+      <p class="stmt reveal">{b.manifesto[0]}</p>
+      <div class="mani">
+        {b.manifesto.slice(1).map((p) => <p class="reveal">{p}</p>)}
+      </div>
+    </section>
+
+    <!-- ═══════════ HOW THE ECOSYSTEM WORKS ═══════════ -->
+    <section id="how" class="how wrap">
+      <div class="shead reveal"><span class="num">{t.ecoNum}</span><h2>{b.ecosystemHead}</h2></div>
+      <p class="how-lead reveal">{b.ecosystemLead}</p>
+      <ol class="roles">
+        {list.map((u) => (
+          <li class="role reveal">
+            <span class="r-n">{u.n}</span>
+            <a class="r-name" href={L(`v3/${u.id}`)} data-hot>{u.name}</a>
+            <span class="r-desc">{u.role}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- ═══════════ CONTACT ═══════════ -->
+    <section id="contact" class="contact">
+      <div class="wrap">
+        <div class="shead reveal"><span class="num">{t.contactNum}</span><h2>{t.contactKicker}</h2></div>
+        <h2 class="contact-big reveal">{t.contactHead}</h2>
+        <p class="contact-sub reveal">{t.contactSub}</p>
+
+        <div class="paths">
+          {list.map((u) => (
+            <a class="path reveal" href={mailto(u.mailSubj)} data-hot>
+              <span class="p-label">{u.short}</span>
+              <span class="p-desc">{u.kind}</span>
+              <span class="p-go" aria-hidden="true">↘</span>
+            </a>
+          ))}
+          <a class="path reveal" href={mailto(t.general.subj)} data-hot>
+            <span class="p-label">{t.general.label}</span>
+            <span class="p-desc">{t.general.desc}</span>
+            <span class="p-go" aria-hidden="true">↘</span>
+          </a>
+        </div>
+
+        <div class="crow reveal">
+          <a href={`mailto:${mail}`} data-hot>{mail}</a>
+          <a href={`tel:${tel}`} data-hot>+52 55 3228 8017</a>
+          <span>{t.city}</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <a href="#top" class="brand" data-hot><img src={logo} alt="" class="mark" width="26" height="26" /><span>Residencia</span></a>
+    <span class="muted ftag">{t.footTag}</span>
+    <span class="muted mono-s">{t.rights}</span>
+  </footer>
+
+</Base>
+
+<style>
+  /* ───────────────── skip link ───────────────── */
+  .skip{position:absolute;left:-9999px;top:0;z-index:200;padding:.8em 1.2em;background:var(--ink);color:var(--bg);
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+  .skip:focus{left:12px;top:12px}
+
+  /* ───────────────── header ───────────────── */
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;border-bottom:1px solid transparent;
+    transition:transform .4s var(--ease-standard),background .4s,border-color .4s}
+  .hdr.scrolled{background:color-mix(in srgb,var(--paper-100) 86%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .hdr.open{transform:none;background:var(--bg);border-color:var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:72px}
+  .mark{width:1.9em;height:auto;flex:none;object-fit:contain}
+  .brand{display:flex;align-items:center;gap:.5em;font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.02em}
+  .links{display:flex;gap:1.4rem;align-items:center}
+  .links a{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;transition:color .2s var(--ease-standard)}
+  .links a:hover{color:var(--accent-text)}
+  .links a.muted{color:var(--muted)}
+
+  /* mobile menu button — 44px min target */
+  .burger{display:none;align-items:center;gap:.55em;min-height:44px;padding:0 .2em;background:none;border:0;color:inherit;cursor:pointer}
+  .burger-l{position:relative;display:block;width:22px;height:1.5px;background:currentColor;transition:background .2s}
+  .burger-l::before,.burger-l::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;
+    transition:transform .28s var(--ease-standard)}
+  .burger-l::before{top:-6px}.burger-l::after{top:6px}
+  .burger[aria-expanded="true"] .burger-l{background:transparent}
+  .burger[aria-expanded="true"] .burger-l::before{transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] .burger-l::after{transform:translateY(-6px) rotate(-45deg)}
+  .burger-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+
+  .mnav{border-top:1px solid var(--line);background:var(--bg);padding:0 var(--pad) 1.4rem}
+  .mnav[hidden]{display:none}
+  .mnav nav{display:flex;flex-direction:column}
+  .mnav a{display:grid;grid-template-columns:auto 1fr;gap:.1em .9em;align-items:baseline;
+    padding:1rem 0;border-bottom:1px solid var(--line);min-height:44px}
+  .mn-n{font-family:var(--mono);font-size:.7rem;color:var(--accent-text);letter-spacing:.06em}
+  .mn-name{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em}
+  .mn-kind{grid-column:2;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .mnav .mn-contact{grid-template-columns:1fr}
+  .mnav-foot{padding-top:1.1rem}
+
+  @media (max-width:900px){
+    .links{display:none}
+    .burger{display:inline-flex}
+  }
+
+  section[id]{scroll-margin-top:84px}
+
+  /* ───────────────── stage: name → roots → units ───────────────── */
+  .stage{position:relative;padding-top:clamp(112px,15vh,168px);padding-bottom:clamp(40px,6vh,80px);overflow:hidden}
+  .mk{position:absolute;width:14px;height:14px;opacity:.55;pointer-events:none}
+  .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
+  .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+  .mk-bl{bottom:16px;left:16px;border-bottom:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
+  .mk-br{bottom:16px;right:16px;border-bottom:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+
+  .stage-head{display:flex;justify-content:space-between;gap:1rem;margin-bottom:clamp(18px,3vh,32px);
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .coord-r{text-align:right}
+  @media (max-width:620px){ .coord-r{display:none} }
+
+  .wordmark{font-family:var(--display);font-weight:700;text-align:center;color:var(--ink);
+    font-size:clamp(2.6rem,15vw,12rem);line-height:.9;letter-spacing:-.045em}
+  .wl{display:inline-block;will-change:transform,opacity}
+  .tagline{text-align:center;margin-top:.6em;font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--accent-text)}
+  .lead{text-align:center;max-width:34ch;margin:clamp(14px,2vh,22px) auto 0;font-family:var(--body);font-weight:500;
+    font-size:clamp(1rem,2vw,1.35rem);line-height:1.45;color:var(--ink-2)}
+
+  /* the field holds both the root drawing and the unit grid, so the SVG can be
+     measured against the real card positions at any viewport width. */
+  .field{position:relative;margin-top:clamp(36px,6vh,72px);padding-top:clamp(140px,20vh,260px)}
+  .roots{position:absolute;inset:0;width:100%;height:100%;display:none;pointer-events:none;overflow:visible}
+  .roots .strand{fill:none;stroke:var(--ink);stroke-width:1.6;vector-effect:non-scaling-stroke;
+    stroke-dasharray:1;stroke-dashoffset:1;opacity:.85;
+    transition:stroke .3s var(--ease-standard),opacity .3s var(--ease-standard),stroke-width .3s var(--ease-standard)}
+  .roots .origin,.roots .port{fill:var(--ink);transform-box:fill-box;transform-origin:center;transform:scale(0)}
+  .roots .port{fill:var(--accent)}
+
+  /* mobile / tablet: a plain centred spine instead of the fanned roots */
+  .spine{position:absolute;left:50%;top:0;width:1.5px;height:clamp(140px,20vh,260px);
+    background:linear-gradient(var(--ink),var(--ink));transform:translateX(-50%) scaleY(0);transform-origin:top;
+    transition:transform .7s var(--ease-entrance)}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:clamp(.6rem,1vw,1rem)}
+  @media (min-width:620px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media (min-width:1024px){
+    .grid{grid-template-columns:repeat(4,1fr)}
+    .roots{display:block}
+    .spine{display:none}
+  }
+
+  .unit{position:relative;display:flex;flex-direction:column;gap:.45em;min-height:210px;
+    padding:clamp(18px,1.7vw,26px);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2);
+    transition:background .3s var(--ease-standard),color .3s var(--ease-standard),
+      transform .3s var(--ease-standard),border-color .3s var(--ease-standard),
+      box-shadow .3s var(--ease-standard),opacity .3s var(--ease-standard)}
+  .u-port{position:absolute;left:50%;top:0;width:9px;height:9px;border-radius:50%;background:var(--accent);
+    transform:translate(-50%,-50%) scale(0);transition:transform .3s var(--ease-entrance)}
+  .u-top{display:flex;justify-content:space-between;align-items:baseline;gap:.5em;
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
+  .u-n{font-weight:700;color:var(--accent-text)}
+  .u-kind{color:var(--muted);text-align:right;transition:color .3s var(--ease-standard)}
+  .u-name{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,2.3vw,2rem);letter-spacing:-.03em;line-height:1;margin-top:.15em}
+  .u-blurb{font-size:.92rem;line-height:1.45;color:var(--muted);flex:1;transition:color .3s var(--ease-standard)}
+  .u-go{display:inline-flex;align-items:center;gap:.4em;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+  .u-go i{font-style:normal;transition:transform .3s var(--ease-standard)}
+
+  .unit:hover,.unit:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink);transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .unit:hover .u-kind,.unit:focus-visible .u-kind,
+  .unit:hover .u-blurb,.unit:focus-visible .u-blurb{color:var(--bg-3)}
+  .unit:hover .u-port,.unit:focus-visible .u-port{background:var(--bg)}
+  .unit:hover .u-go i,.unit:focus-visible .u-go i{transform:translate(3px,3px)}
+
+  /* "la mirada" — when one unit is looked at, the rest recede */
+  .field.gazing .unit:not(.gazed){opacity:.45}
+  .field.gazing .roots .strand:not(.lit){opacity:.2}
+  .roots .strand.lit{stroke:var(--accent);stroke-width:3}
+
+  .cue{margin-top:clamp(30px,5vh,56px);text-align:center;font-family:var(--mono);font-size:.68rem;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+  /* ── intro choreography: roots draw, ports land, cards arrive on their own beat ── */
+  .stage.js .wl{opacity:0;transform:translateY(.32em)}
+  .stage.js .tagline,.stage.js .lead,.stage.js .cue{opacity:0}
+  .stage.js .unit{opacity:0;transform:translateY(14px)}
+
+  .stage.go .wl{opacity:1;transform:none;
+    transition:opacity .45s var(--ease-entrance) calc(var(--i)*35ms),transform .45s var(--ease-entrance) calc(var(--i)*35ms)}
+  .stage.go .tagline{opacity:1;transition:opacity .45s var(--ease-entrance) 380ms}
+  .stage.go .lead{opacity:1;transition:opacity .45s var(--ease-entrance) 470ms}
+  .stage.go .spine{transform:translateX(-50%) scaleY(1);transition-delay:520ms}
+  .stage.go .roots .origin{transform:scale(1);transition:transform .3s var(--ease-entrance) 520ms}
+  .stage.go .roots .strand{stroke-dashoffset:0;
+    transition:stroke-dashoffset .56s var(--ease-entrance) calc(560ms + var(--i)*90ms),
+      stroke .3s var(--ease-standard),opacity .3s var(--ease-standard),stroke-width .3s var(--ease-standard)}
+  .stage.go .roots .port{transform:scale(1);transition:transform .3s var(--ease-entrance) calc(1000ms + var(--i)*90ms)}
+  .stage.go .unit{opacity:1;transform:none;
+    transition:opacity .4s var(--ease-entrance) calc(1050ms + var(--i)*90ms),
+      transform .4s var(--ease-entrance) calc(1050ms + var(--i)*90ms),
+      background .3s var(--ease-standard),color .3s var(--ease-standard),
+      border-color .3s var(--ease-standard),box-shadow .3s var(--ease-standard)}
+  .stage.go .unit .u-port{transform:translate(-50%,-50%) scale(1);transition-delay:calc(1050ms + var(--i)*90ms)}
+  .stage.go .cue{opacity:1;transition:opacity .45s var(--ease-entrance) 1500ms}
+
+  /* ───────────────── philosophy ───────────────── */
+  .shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(32px,5vh,64px)}
+  .shead .num{font-family:var(--mono);color:var(--accent-text);font-size:.76rem;letter-spacing:.06em}
+  .shead h2{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+  .philosophy{padding-block:clamp(64px,10vh,140px)}
+  .stmt{font-family:var(--display);font-weight:400;font-size:clamp(1.5rem,3.9vw,3.1rem);line-height:1.08;
+    letter-spacing:-.025em;max-width:24ch}
+  .mani{display:grid;gap:1.1rem;max-width:62ch;margin-top:clamp(32px,5vh,56px);
+    padding-top:clamp(24px,3vh,40px);border-top:1px solid var(--line)}
+  .mani p{color:var(--ink-2);font-size:1.02rem;line-height:1.65}
+
+  /* ───────────────── how it works ───────────────── */
+  .how{padding-block:clamp(56px,9vh,130px);border-top:1px solid var(--line)}
+  .how-lead{max-width:60ch;color:var(--ink-2);font-size:1.02rem;line-height:1.65;margin-bottom:clamp(32px,5vh,56px)}
+  .roles{list-style:none;display:grid;gap:0}
+  .role{display:grid;grid-template-columns:auto minmax(0,14rem) 1fr;gap:.3em 1.6rem;align-items:baseline;
+    padding:1.15rem 0;border-top:1px solid var(--line)}
+  .role:last-child{border-bottom:1px solid var(--line)}
+  .r-n{font-family:var(--mono);font-size:.72rem;color:var(--accent-text);letter-spacing:.06em}
+  .r-name{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.02em;
+    border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
+  .r-name:hover{color:var(--accent-text);border-color:var(--accent-text)}
+  .r-desc{color:var(--muted);font-size:.96rem}
+  @media (max-width:760px){
+    .role{grid-template-columns:auto 1fr}
+    .r-desc{grid-column:2}
+  }
+
+  /* ───────────────── contact ───────────────── */
+  .contact{padding-block:clamp(64px,10vh,140px);border-top:1px solid var(--line)}
+  .contact-big{font-family:var(--display);font-weight:700;font-size:clamp(2.8rem,10vw,8rem);
+    letter-spacing:-.045em;line-height:.9}
+  .contact-sub{margin-top:1.1rem;max-width:46ch;color:var(--ink-2);font-size:1.02rem;line-height:1.6}
+  .paths{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin-top:clamp(36px,5vh,64px)}
+  @media (max-width:680px){ .paths{grid-template-columns:1fr} }
+  .path{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.25em 1em;
+    padding:clamp(20px,2.2vw,30px);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2);
+    transition:background .3s var(--ease-standard),color .3s var(--ease-standard),
+      border-color .3s var(--ease-standard),box-shadow .3s var(--ease-standard)}
+  .path:hover,.path:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink);box-shadow:var(--shadow-md)}
+  .p-label{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em}
+  .p-desc{grid-column:1;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+    transition:color .3s var(--ease-standard)}
+  .path:hover .p-desc,.path:focus-visible .p-desc{color:var(--bg-3)}
+  .p-go{grid-row:1 / span 2;grid-column:2;font-size:1.4rem;color:var(--accent-text);transition:transform .3s var(--ease-standard),color .3s}
+  .path:hover .p-go,.path:focus-visible .p-go{transform:translate(4px,4px);color:var(--bg)}
+  .crow{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:clamp(32px,5vh,56px);
+    font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+  .crow a{border-bottom:1px solid var(--line);padding-bottom:.2em;min-height:24px;transition:color .2s,border-color .2s}
+  .crow a:hover{color:var(--accent-text);border-color:var(--accent-text)}
+
+  /* ───────────────── footer ───────────────── */
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem 2rem;flex-wrap:wrap;
+    padding-block:clamp(36px,5vh,64px);border-top:1px solid var(--line)}
+  .foot .brand{font-size:1rem}
+  .ftag{max-width:34ch;font-family:var(--mono);font-size:.74rem;line-height:1.5}
+  .mono-s{font-family:var(--mono);font-size:.74rem}
+  .muted{color:var(--muted)}
+
+  /* ───────────────── reduced motion: show the finished state ───────────────── */
+  @media (prefers-reduced-motion:reduce){
+    .stage.js .wl,.stage.js .tagline,.stage.js .lead,.stage.js .cue,.stage.js .unit{opacity:1;transform:none}
+    .roots .strand{stroke-dashoffset:0}
+    .roots .origin,.roots .port{transform:scale(1)}
+    .spine{transform:translateX(-50%) scaleY(1)}
+    .unit .u-port{transform:translate(-50%,-50%) scale(1)}
+  }
+</style>
+
+<script>
+  // ── Roots are measured against the real card positions, so they land on the
+  //    cards at every viewport width instead of assuming a fixed 4-up grid.
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  if (stage) {
+    const field = stage.querySelector<HTMLElement>('[data-field]')!;
+    const svg = stage.querySelector<SVGSVGElement>('[data-roots]')!;
+    const origin = svg.querySelector<SVGCircleElement>('[data-origin]')!;
+    const strands = Array.from(svg.querySelectorAll<SVGPathElement>('[data-strand]'));
+    const ports = Array.from(svg.querySelectorAll<SVGCircleElement>('[data-port]'));
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>('[data-unit]'));
+    const fan = matchMedia('(min-width:1024px)');
+
+    // Cards render visible by default; only opt into the intro once JS is running.
+    stage.classList.add('js');
+
+    const draw = () => {
+      if (!fan.matches) return;
+      const fb = field.getBoundingClientRect();
+      const w = Math.round(fb.width);
+      const h = Math.round(fb.height);
+      if (w < 2 || h < 2) return;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      const ox = w / 2;
+      const oy = 2;
+      origin.setAttribute('cx', String(ox));
+      origin.setAttribute('cy', String(oy));
+
+      cards.forEach((card, i) => {
+        const cb = card.getBoundingClientRect();
+        const x = cb.left - fb.left + cb.width / 2;
+        const y = cb.top - fb.top;
+        const run = y - oy;
+        // Leave the origin straight down, arrive at the port straight down:
+        // both control points share their endpoint's x.
+        const d = `M ${ox} ${oy} C ${ox} ${oy + run * 0.42}, ${x} ${y - run * 0.4}, ${x} ${y}`;
+        strands[i].setAttribute('d', d);
+        ports[i].setAttribute('cx', String(x));
+        ports[i].setAttribute('cy', String(y));
+      });
+    };
+
+    draw();
+
+    // Launch once. Waiting on `load` would stall the hero behind the webfont
+    // request, so start as soon as fonts settle — and cap the wait at 600ms.
+    const launch = () => {
+      draw();
+      requestAnimationFrame(() => stage.classList.add('go'));
+    };
+    if (reduce) {
+      stage.classList.add('go');
+    } else {
+      const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+      const cap = new Promise((r) => setTimeout(r, 600));
+      Promise.race([fonts, cap]).then(launch);
+    }
+
+    // Redraw on resize; ResizeObserver catches font-load and grid reflow too.
+    let raf = 0;
+    const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); };
+    if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(field);
+    addEventListener('resize', schedule, { passive: true });
+
+    // "La mirada": pointer or keyboard focus lights one strand and recedes the rest.
+    const gaze = (i: number | null) => {
+      field.classList.toggle('gazing', i !== null);
+      cards.forEach((c, j) => c.classList.toggle('gazed', j === i));
+      strands.forEach((s, j) => s.classList.toggle('lit', j === i));
+    };
+    cards.forEach((card, i) => {
+      card.addEventListener('mouseenter', () => gaze(i));
+      card.addEventListener('mouseleave', () => gaze(null));
+      card.addEventListener('focus', () => gaze(i));
+      card.addEventListener('blur', () => gaze(null));
+    });
+  }
+
+  // ── Mobile navigation ──
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const panel = document.querySelector<HTMLElement>('[data-menu]');
+  const hdr = document.querySelector<HTMLElement>('[data-nav]');
+  if (btn && panel && hdr) {
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      hdr.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+    });
+    // Leaving the mobile breakpoint must not strand the page in the open state.
+    matchMedia('(min-width:901px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+  }
+</script>

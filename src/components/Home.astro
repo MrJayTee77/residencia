@@ -60,7 +60,7 @@ const t = {
 const L = (route: string) => localizedPath(route, lang);
 const brands = meta.map((m, i) => ({ ...m, ...t.brands[i] }));
 ---
-<Base title={t.title} description={t.desc} theme="theme-group">
+<Base title={t.title} description={t.desc} theme="theme-group" lang={lang}>
 
   <header class="hdr" data-nav>
     <div class="wrap nav">

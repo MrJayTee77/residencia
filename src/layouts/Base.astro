@@ -4,9 +4,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
-  theme?: 'theme-group' | 'theme-residencia' | 'theme-gr8' | 'theme-synergy' | 'theme-agency' | 'theme-prod' | 'theme-syn' | 'theme-res' | 'theme-res-ds';
+  theme?: 'theme-group' | 'theme-residencia' | 'theme-gr8' | 'theme-synergy' | 'theme-agency' | 'theme-prod' | 'theme-syn' | 'theme-res' | 'theme-res-ds' | 'theme-res-v3';
+  /** Document language. Drives <html lang>, which screen readers use to pick a voice. */
+  lang?: 'es' | 'en';
 }
-const { title, description = 'Residencia Group — a creative group of three studios.', theme = 'theme-group' } = Astro.props;
+const { title, description = 'Residencia Group — a creative group of three studios.', theme = 'theme-group', lang = 'es' } = Astro.props;
 
 const fonts =
   'https://fonts.googleapis.com/css2?' +
@@ -19,7 +21,7 @@ const fonts =
   'family=Space+Mono:wght@400;700&display=swap';
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />

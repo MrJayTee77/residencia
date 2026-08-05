@@ -27,7 +27,7 @@ const tx = lang === 'es'
 const others = unitOrder.filter((o) => o !== unit).map((o) => ({ id: o, name: units[o][lang].name, accent: units[o].accent }));
 const title = `${c.name} — Residencia`;
 ---
-<Base title={title} description={c.heroLead} theme={u.theme}>
+<Base title={title} description={c.heroLead} theme={u.theme} lang={lang}>
 
   <header class="hdr" data-nav>
     <div class="wrap nav">

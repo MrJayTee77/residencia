@@ -1,0 +1,342 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import '../styles/ds/styles.css';
+import { localizedPath, type Lang } from '../i18n/utils';
+import { units, unitList, type UnitId } from '../data/units-v3';
+
+interface Props { unit: UnitId; lang: Lang; }
+const { unit, lang } = Astro.props;
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+const logo = `${BASE}/ds/residencia-mark-noturno.png`;
+const mail = 'cesar.j@residencia.com.mx';
+const tel = '+525532288017';
+const L = (route: string) => localizedPath(route, lang);
+
+const u = units[unit][lang];
+const n = units[unit].n;
+const all = unitList(lang);
+const siblings = all.filter((s) => s.id !== unit);
+
+const t = {
+  es: {
+    contact: 'Contacto', menu: 'Menú', back: 'Residencia', backLabel: 'Volver al ecosistema',
+    roleLabel: 'Su papel en el ecosistema', siblingsHead: 'Otras unidades', write: 'Escríbenos',
+    city: 'Ciudad de México, México', rights: '© 2026 Residencia. Todos los derechos reservados.',
+    skip: 'Saltar al contenido', unitOf: 'Unidad',
+  },
+  en: {
+    contact: 'Contact', menu: 'Menu', back: 'Residencia', backLabel: 'Back to the ecosystem',
+    roleLabel: 'Its role in the ecosystem', siblingsHead: 'Other units', write: 'Write to us',
+    city: 'Mexico City, Mexico', rights: '© 2026 Residencia. All rights reserved.',
+    skip: 'Skip to content', unitOf: 'Unit',
+  },
+}[lang];
+
+const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
+---
+<Base title={`${u.name} — Residencia`} description={u.heroLead} theme="theme-res-v3" lang={lang}>
+
+  <a href="#main" class="skip">{t.skip}</a>
+
+  <header class="hdr" data-nav>
+    <div class="wrap nav">
+      <a href={L('v3')} class="brand" aria-label={t.backLabel}>
+        <img src={logo} alt="" class="mark" width="30" height="30" />
+        <span>{t.back}</span>
+      </a>
+      <nav class="links" aria-label={t.menu}>
+        {all.map((s) => (
+          <a href={L(`v3/${s.id}`)} class={s.id === unit ? 'on' : ''} aria-current={s.id === unit ? 'page' : undefined}>{s.short}</a>
+        ))}
+        <a href="#contact" class="muted">{t.contact}</a>
+        <LangToggle lang={lang} route={`v3/${unit}`} />
+      </nav>
+      <button class="burger" type="button" data-menu-btn aria-expanded="false" aria-controls="mobile-nav">
+        <span class="burger-l" aria-hidden="true"></span>
+        <span class="burger-t">{t.menu}</span>
+      </button>
+    </div>
+
+    <div class="mnav" id="mobile-nav" data-menu hidden>
+      <nav aria-label={t.menu}>
+        {all.map((s) => (
+          <a href={L(`v3/${s.id}`)} aria-current={s.id === unit ? 'page' : undefined}>
+            <span class="mn-n">{s.n}</span>
+            <span class="mn-name">{s.short}</span>
+            <span class="mn-kind">{s.kind}</span>
+          </a>
+        ))}
+        <a href="#contact" class="mn-contact"><span class="mn-name">{t.contact}</span></a>
+      </nav>
+      <div class="mnav-foot"><LangToggle lang={lang} route={`v3/${unit}`} /></div>
+    </div>
+  </header>
+
+  <span id="top"></span>
+
+  <main id="main">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero">
+      <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+      <div class="wrap">
+        <div class="hero-head">
+          <span class="coord">[ {t.unitOf} {n} / 04 ]</span>
+          <span class="coord coord-r">[ {u.kind} ]</span>
+        </div>
+        <p class="unit-name">{u.name}</p>
+        <h1 class="hero-h">{u.heroHead[0]}<span class="accent">{u.heroHead[1]}</span></h1>
+        <p class="hero-lead">{u.heroLead}</p>
+        <div class="hero-role">
+          <span class="role-k">{t.roleLabel}</span>
+          <span class="role-v">{u.role}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ INTRO ═══════════ -->
+    <section class="intro wrap">
+      <div class="intro-body">
+        {u.intro.map((p) => <p class="reveal">{p}</p>)}
+      </div>
+    </section>
+
+    <!-- ═══════════ PILLARS ═══════════ -->
+    <section class="pillars wrap">
+      <div class="shead reveal"><span class="num">[ 01 ]</span><h2>{u.pillarsHead}</h2></div>
+      <div class="pgrid">
+        {u.pillars.map((p, i) => (
+          <article class="pillar reveal">
+            <span class="p-n">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{p.t}</h3>
+            <p>{p.d}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══════════ SERVICES ═══════════ -->
+    <section class="services wrap">
+      <div class="shead reveal"><span class="num">[ 02 ]</span><h2>{u.servicesHead}</h2></div>
+      <ul class="svc">
+        {u.services.map((s) => <li class="reveal"><span class="dot" aria-hidden="true"></span>{s}</li>)}
+      </ul>
+    </section>
+
+    <!-- ═══════════ CLIENTS ═══════════ -->
+    {u.clients && (
+      <section class="clients wrap">
+        <div class="shead reveal"><span class="num">[ 03 ]</span><h2>{u.clientsHead}</h2></div>
+        <ul class="brands">
+          {u.clients.map((c) => <li class="reveal">{c}</li>)}
+        </ul>
+      </section>
+    )}
+
+    <!-- ═══════════ SIBLINGS ═══════════ -->
+    <section class="siblings wrap">
+      <div class="shead reveal"><span class="num">[ {u.clients ? '04' : '03'} ]</span><h2>{t.siblingsHead}</h2></div>
+      <div class="sgrid">
+        {siblings.map((s) => (
+          <a class="sib reveal" href={L(`v3/${s.id}`)} data-hot>
+            <span class="s-top"><span class="s-n">{s.n}</span><span class="s-kind">{s.kind}</span></span>
+            <span class="s-name">{s.short}</span>
+            <span class="s-role">{s.role}</span>
+            <span class="s-go" aria-hidden="true">↘</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══════════ CTA ═══════════ -->
+    <section id="contact" class="cta">
+      <div class="wrap">
+        <h2 class="cta-h reveal">{u.ctaHead}</h2>
+        <p class="cta-sub reveal">{u.ctaSub}</p>
+        <a class="cta-btn reveal" href={mailto} data-hot>{t.write}<i aria-hidden="true">↘</i></a>
+        <div class="crow reveal">
+          <a href={`mailto:${mail}`} data-hot>{mail}</a>
+          <a href={`tel:${tel}`} data-hot>+52 55 3228 8017</a>
+          <span>{t.city}</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <a href={L('v3')} class="brand" data-hot><img src={logo} alt="" class="mark" width="26" height="26" /><span>{t.back}</span></a>
+    <span class="muted mono-s">{t.rights}</span>
+  </footer>
+
+</Base>
+
+<style>
+  .skip{position:absolute;left:-9999px;top:0;z-index:200;padding:.8em 1.2em;background:var(--ink);color:var(--bg);
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+  .skip:focus{left:12px;top:12px}
+
+  /* header — matches the hub */
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;border-bottom:1px solid transparent;
+    transition:transform .4s var(--ease-standard),background .4s,border-color .4s}
+  .hdr.scrolled{background:color-mix(in srgb,var(--paper-100) 86%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .hdr.open{transform:none;background:var(--bg);border-color:var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:72px}
+  .mark{width:1.9em;height:auto;flex:none;object-fit:contain}
+  .brand{display:flex;align-items:center;gap:.5em;font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.02em}
+  .links{display:flex;gap:1.4rem;align-items:center}
+  .links a{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;transition:color .2s var(--ease-standard)}
+  .links a:hover{color:var(--accent-text)}
+  .links a.muted{color:var(--muted)}
+  .links a.on{color:var(--accent-text);border-bottom:1px solid var(--accent-text);padding-bottom:2px}
+
+  .burger{display:none;align-items:center;gap:.55em;min-height:44px;padding:0 .2em;background:none;border:0;color:inherit;cursor:pointer}
+  .burger-l{position:relative;display:block;width:22px;height:1.5px;background:currentColor;transition:background .2s}
+  .burger-l::before,.burger-l::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;
+    transition:transform .28s var(--ease-standard)}
+  .burger-l::before{top:-6px}.burger-l::after{top:6px}
+  .burger[aria-expanded="true"] .burger-l{background:transparent}
+  .burger[aria-expanded="true"] .burger-l::before{transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] .burger-l::after{transform:translateY(-6px) rotate(-45deg)}
+  .burger-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+
+  .mnav{border-top:1px solid var(--line);background:var(--bg);padding:0 var(--pad) 1.4rem}
+  .mnav[hidden]{display:none}
+  .mnav nav{display:flex;flex-direction:column}
+  .mnav a{display:grid;grid-template-columns:auto 1fr;gap:.1em .9em;align-items:baseline;
+    padding:1rem 0;border-bottom:1px solid var(--line);min-height:44px}
+  .mnav a[aria-current="page"] .mn-name{color:var(--accent-text)}
+  .mn-n{font-family:var(--mono);font-size:.7rem;color:var(--accent-text);letter-spacing:.06em}
+  .mn-name{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em}
+  .mn-kind{grid-column:2;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .mnav .mn-contact{grid-template-columns:1fr}
+  .mnav-foot{padding-top:1.1rem}
+  @media (max-width:900px){ .links{display:none} .burger{display:inline-flex} }
+
+  section[id]{scroll-margin-top:84px}
+
+  /* ───────────── hero ───────────── */
+  .hero{position:relative;padding-top:clamp(112px,15vh,168px);padding-bottom:clamp(48px,8vh,110px);overflow:hidden}
+  .mk{position:absolute;width:14px;height:14px;opacity:.55;pointer-events:none}
+  .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
+  .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+  .hero-head{display:flex;justify-content:space-between;gap:1rem;margin-bottom:clamp(30px,5vh,56px);
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .coord-r{text-align:right}
+  @media (max-width:620px){ .coord-r{display:none} }
+  .unit-name{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-text);margin-bottom:1.2em}
+  .hero-h{font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,6.4vw,5.4rem);line-height:1;
+    letter-spacing:-.04em;max-width:19ch}
+  .hero-h .accent{color:var(--accent)}
+  .hero-lead{margin-top:clamp(22px,3.5vh,40px);max-width:56ch;font-size:clamp(1.02rem,1.7vw,1.3rem);
+    line-height:1.5;color:var(--ink-2)}
+  .hero-role{display:grid;gap:.35em;margin-top:clamp(32px,5vh,60px);padding-top:clamp(20px,3vh,32px);
+    border-top:1px solid var(--line);max-width:56ch}
+  .role-k{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .role-v{font-family:var(--display);font-weight:500;font-size:clamp(1.05rem,1.9vw,1.4rem);letter-spacing:-.02em}
+
+  /* ───────────── intro ───────────── */
+  .intro{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  .intro-body{display:grid;gap:1.2rem;max-width:64ch;margin-left:auto}
+  .intro-body p{font-size:clamp(1.02rem,1.5vw,1.16rem);line-height:1.68;color:var(--ink-2)}
+  .intro-body p:first-child{font-family:var(--display);font-weight:500;color:var(--ink);
+    font-size:clamp(1.25rem,2.5vw,1.8rem);line-height:1.28;letter-spacing:-.02em}
+
+  .shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(32px,5vh,60px)}
+  .shead .num{font-family:var(--mono);color:var(--accent-text);font-size:.76rem;letter-spacing:.06em}
+  .shead h2{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+
+  /* ───────────── pillars ───────────── */
+  .pillars{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  .pgrid{display:grid;grid-template-columns:1fr;gap:.7rem}
+  @media (min-width:680px){ .pgrid{grid-template-columns:repeat(2,1fr)} }
+  @media (min-width:1100px){ .pgrid{grid-template-columns:repeat(4,1fr)} }
+  .pillar{display:flex;flex-direction:column;gap:.5em;padding:clamp(20px,2vw,28px);
+    border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2)}
+  .p-n{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--accent-text)}
+  .pillar h3{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.02em;line-height:1.15}
+  .pillar p{font-size:.94rem;line-height:1.55;color:var(--muted)}
+
+  /* ───────────── services ───────────── */
+  .services{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  .svc{list-style:none;display:grid;grid-template-columns:1fr;gap:0}
+  @media (min-width:680px){ .svc{grid-template-columns:repeat(2,1fr);column-gap:clamp(2rem,4vw,5rem)} }
+  @media (min-width:1100px){ .svc{grid-template-columns:repeat(3,1fr)} }
+  .svc li{display:flex;align-items:baseline;gap:.8em;padding:.85rem 0;border-bottom:1px solid var(--line);
+    font-family:var(--display);font-weight:500;font-size:1.02rem;letter-spacing:-.01em}
+  .svc .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex:none}
+
+  /* ───────────── clients ───────────── */
+  .clients{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  .brands{list-style:none;display:flex;flex-wrap:wrap;gap:.6rem}
+  .brands li{padding:.7em 1.1em;border:1px solid var(--line);border-radius:var(--radius-pill);background:var(--bg-2);
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+
+  /* ───────────── siblings ───────────── */
+  .siblings{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
+  .sgrid{display:grid;grid-template-columns:1fr;gap:.7rem}
+  @media (min-width:760px){ .sgrid{grid-template-columns:repeat(3,1fr)} }
+  .sib{position:relative;display:flex;flex-direction:column;gap:.4em;min-height:180px;
+    padding:clamp(20px,2vw,28px);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2);
+    transition:background .3s var(--ease-standard),color .3s var(--ease-standard),
+      transform .3s var(--ease-standard),border-color .3s var(--ease-standard),box-shadow .3s var(--ease-standard)}
+  .sib:hover,.sib:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink);
+    transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .s-top{display:flex;justify-content:space-between;gap:.5em;align-items:baseline;
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
+  .s-n{color:var(--accent-text);font-weight:700}
+  .s-kind{color:var(--muted);text-align:right;transition:color .3s var(--ease-standard)}
+  .sib:hover .s-kind,.sib:focus-visible .s-kind{color:var(--bg-3)}
+  .s-name{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.03em;line-height:1;margin-top:.1em}
+  .s-role{font-size:.9rem;line-height:1.45;color:var(--muted);flex:1;transition:color .3s var(--ease-standard)}
+  .sib:hover .s-role,.sib:focus-visible .s-role{color:var(--bg-3)}
+  .s-go{font-size:1.2rem;color:var(--accent-text);transition:transform .3s var(--ease-standard),color .3s}
+  .sib:hover .s-go,.sib:focus-visible .s-go{transform:translate(3px,3px);color:var(--bg)}
+
+  /* ───────────── cta ───────────── */
+  .cta{padding-block:clamp(64px,10vh,140px);border-top:1px solid var(--line)}
+  .cta-h{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,7vw,5.6rem);
+    letter-spacing:-.045em;line-height:.95;max-width:17ch}
+  .cta-sub{margin-top:1.1rem;max-width:46ch;color:var(--ink-2);font-size:1.02rem;line-height:1.6}
+  .cta-btn{display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(28px,4vh,44px);min-height:52px;
+    padding:0 1.6em;border-radius:var(--radius-pill);background:var(--accent);color:var(--accent-ink);
+    font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+    transition:background .2s var(--ease-standard),transform .2s var(--ease-standard)}
+  .cta-btn i{font-style:normal;transition:transform .3s var(--ease-standard)}
+  .cta-btn:hover{background:var(--accent-hover)}
+  .cta-btn:hover i{transform:translate(3px,3px)}
+  .cta-btn:active{transform:translateY(1px)}
+  .crow{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:clamp(32px,5vh,56px);
+    font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+  .crow a{border-bottom:1px solid var(--line);padding-bottom:.2em;transition:color .2s,border-color .2s}
+  .crow a:hover{color:var(--accent-text);border-color:var(--accent-text)}
+
+  /* ───────────── footer ───────────── */
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem 2rem;flex-wrap:wrap;
+    padding-block:clamp(36px,5vh,64px);border-top:1px solid var(--line)}
+  .foot .brand{font-size:1rem}
+  .mono-s{font-family:var(--mono);font-size:.74rem}
+  .muted{color:var(--muted)}
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const panel = document.querySelector<HTMLElement>('[data-menu]');
+  const hdr = document.querySelector<HTMLElement>('[data-nav]');
+  if (btn && panel && hdr) {
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      hdr.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+    });
+    matchMedia('(min-width:901px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+  }
+</script>
