@@ -234,3 +234,18 @@
 .act-plate video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   opacity:0;transition:opacity .8s var(--ease-entrance)}
 .act-plate video.ready{opacity:1}
+
+/* Proof inside an act: the real client marks and the real roster, arriving once
+   the act has resolved. Generated atmosphere sets the mood; this carries the
+   substance. */
+.act-proof{margin-top:clamp(22px,3.4vh,40px);
+  opacity:clamp(0, (var(--ap) - .46) * 7, 1);
+  transform:translateY(calc((1 - clamp(0, (var(--ap) - .46) * 7, 1)) * 12px))}
+.act-proof-k{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.7em}
+.act-proof .strip{padding-block:0;gap:clamp(8px,1.3vw,20px)}
+.act-proof .strip img{width:96px;height:42px}
+.act-proof .peek{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;max-width:560px}
+.act-proof .peek .cr{flex:none}
+@media (max-width:1023px){ .act-proof{opacity:1;transform:none} }
+@media (prefers-reduced-motion:reduce){ .act-proof{opacity:1!important;transform:none!important} }

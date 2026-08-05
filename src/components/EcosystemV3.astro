@@ -5,7 +5,7 @@ import '../styles/ds/styles.css';
 import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { unitList, brand } from '../data/units-v3';
-import { clientLogos, creators, tex, unitPlate, prodLoop } from '../data/media-v3';
+import { clientLogos, creators, unitPlate, prodLoop } from '../data/media-v3';
 
 // The hub shows a taste of each unit; the depth lives on the unit pages.
 const stripLogos = ['netflix', 'volkswagen', 'coca-cola', 'mattel', 'xbox', 'ford', 'nike', 'huawei', 'telcel', 'porsche']
@@ -150,11 +150,11 @@ const chapters = [
             <div class="field" data-field>
               <svg class="roots" data-roots viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
                 <g class="strands">
-                  {list.map((u, i) => <path class="strand" data-strand={i} pathLength="1" style={`--i:${i}`} d="" />)}
+                  {list.map((_u, i) => <path class="strand" data-strand={i} pathLength="1" style={`--i:${i}`} d="" />)}
                 </g>
                 <g class="nodes">
                   <circle class="origin" data-origin r="5" cx="600" cy="0" />
-                  {list.map((u, i) => <circle class="port" data-port={i} style={`--i:${i}`} r="6" cx="0" cy="0" />)}
+                  {list.map((_u, i) => <circle class="port" data-port={i} style={`--i:${i}`} r="6" cx="0" cy="0" />)}
                 </g>
               </svg>
               <div class="spine" aria-hidden="true"></div>
@@ -189,6 +189,13 @@ const chapters = [
           <p class="act-kind">{U.agency.kind}</p>
           <p class="act-lead">{U.agency.role}</p>
           <a class="act-go" href={L('v3/agency')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
+          <div class="act-proof">
+            <p class="act-proof-k">{t.agencyBand}</p>
+            <div class="strip">
+              {stripLogos.map((l) => <img src={l.src} alt={l.name} loading="lazy" decoding="async" />)}
+              <a class="strip-more" href={L('v3/agency')} data-hot>{t.andMore(stripRest)}</a>
+            </div>
+          </div>
         </div>
       </div>
       <span class="thread" aria-hidden="true"><i></i><b></b></span>
@@ -221,6 +228,14 @@ const chapters = [
           <p class="act-kind">{U.gr8.kind}</p>
           <p class="act-lead">{U.gr8.role}</p>
           <a class="act-go" href={L('v3/gr8')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
+          <div class="act-proof">
+            <p class="act-proof-k">{t.gr8Roster}</p>
+            <div class="peek">
+              {rosterPeek.map((c) => (
+                <figure class="cr"><img src={c.src} alt={t.creatorAlt} width={c.w} height={c.h} loading="lazy" decoding="async" /></figure>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <span class="thread" aria-hidden="true"><i></i><b></b></span>
