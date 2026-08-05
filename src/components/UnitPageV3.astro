@@ -2,14 +2,17 @@
 import Base from '../layouts/Base.astro';
 import LangToggle from './LangToggle.astro';
 import '../styles/ds/styles.css';
+import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { units, unitList, type UnitId } from '../data/units-v3';
+import { clientLogos, creators, shows, tex } from '../data/media-v3';
 
 interface Props { unit: UnitId; lang: Lang; }
 const { unit, lang } = Astro.props;
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
-const logo = `${BASE}/ds/residencia-mark-noturno.png`;
+const markInk = `${BASE}/ds/residencia-mark-noturno.png`;
+const markPaper = `${BASE}/ds/residencia-mark-paper.png`;
 const mail = 'cesar.j@residencia.com.mx';
 const tel = '+525532288017';
 const L = (route: string) => localizedPath(route, lang);
@@ -19,28 +22,43 @@ const n = units[unit].n;
 const all = unitList(lang);
 const siblings = all.filter((s) => s.id !== unit);
 
+/* Each unit carries its own skin and its own media. This is the depth that used
+   to sit on the hub — the hub now only shows a taste of it. */
+const dark = unit !== 'agency';
+const logo = dark ? markPaper : markInk;
+const plate = unit === 'gr8' ? tex.gr8 : unit === 'synergy' ? tex.glitch : tex.iridescent;
+
 const t = {
   es: {
     contact: 'Contacto', menu: 'Menú', back: 'Residencia', backLabel: 'Volver al ecosistema',
     roleLabel: 'Su papel en el ecosistema', siblingsHead: 'Otras unidades', write: 'Escríbenos',
     city: 'Ciudad de México, México', rights: '© 2026 Residencia. Todos los derechos reservados.',
     skip: 'Saltar al contenido', unitOf: 'Unidad',
+    clientsBand: 'Marcas con las que hemos trabajado',
+    roster: 'Roster de creadores', rosterHint: 'Desliza para ver el roster',
+    showsHead: 'Formatos e IP propios', creatorAlt: 'Creador del roster de GR8',
   },
   en: {
     contact: 'Contact', menu: 'Menu', back: 'Residencia', backLabel: 'Back to the ecosystem',
     roleLabel: 'Its role in the ecosystem', siblingsHead: 'Other units', write: 'Write to us',
     city: 'Mexico City, Mexico', rights: '© 2026 Residencia. All rights reserved.',
     skip: 'Skip to content', unitOf: 'Unit',
+    clientsBand: 'Brands we have worked with',
+    roster: 'Creator roster', rosterHint: 'Swipe to see the roster',
+    showsHead: 'Owned formats and IP', creatorAlt: 'Creator from the GR8 roster',
   },
 }[lang];
 
 const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
+// Section numbering has to stay in reading order, and the media blocks differ per unit.
+let step = 0;
+const num = () => `[ ${String(++step).padStart(2, '0')} ]`;
 ---
 <Base title={`${u.name} — Residencia`} description={u.heroLead} theme="theme-res-v3" lang={lang}>
 
   <a href="#main" class="skip">{t.skip}</a>
 
-  <header class="hdr" data-nav>
+  <header class={`hdr skin-${unit}`} data-nav>
     <div class="wrap nav">
       <a href={L('v3')} class="brand" aria-label={t.backLabel}>
         <img src={logo} alt="" class="mark" width="30" height="30" />
@@ -58,14 +76,11 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
         <span class="burger-t">{t.menu}</span>
       </button>
     </div>
-
     <div class="mnav" id="mobile-nav" data-menu hidden>
       <nav aria-label={t.menu}>
         {all.map((s) => (
           <a href={L(`v3/${s.id}`)} aria-current={s.id === unit ? 'page' : undefined}>
-            <span class="mn-n">{s.n}</span>
-            <span class="mn-name">{s.short}</span>
-            <span class="mn-kind">{s.kind}</span>
+            <span class="mn-n">{s.n}</span><span class="mn-name">{s.short}</span><span class="mn-kind">{s.kind}</span>
           </a>
         ))}
         <a href="#contact" class="mn-contact"><span class="mn-name">{t.contact}</span></a>
@@ -76,7 +91,9 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
 
   <span id="top"></span>
 
-  <main id="main">
+  <main id="main" class={`skin-${unit}${unit === 'production' ? ' grain' : ''}${unit === 'gr8' ? ' glow' : ''}`}>
+    {unit === 'gr8' && <div class="gr8-glow" aria-hidden="true" style={`--tex:url('${plate}')`}></div>}
+    {unit === 'synergy' && <div class="syn-grid" aria-hidden="true"></div>}
 
     <!-- ═══════════ HERO ═══════════ -->
     <section class="hero">
@@ -87,7 +104,9 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
           <span class="coord coord-r">[ {u.kind} ]</span>
         </div>
         <p class="unit-name">{u.name}</p>
-        <h1 class="hero-h">{u.heroHead[0]}<span class="accent">{u.heroHead[1]}</span></h1>
+        <h1 class={unit === 'gr8' ? 'hero-h grad-title' : 'hero-h'}>
+          {u.heroHead[0]}{unit === 'gr8' ? u.heroHead[1] : <span class="accent-i">{u.heroHead[1]}</span>}
+        </h1>
         <p class="hero-lead">{u.heroLead}</p>
         <div class="hero-role">
           <span class="role-k">{t.roleLabel}</span>
@@ -98,28 +117,65 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
 
     <!-- ═══════════ INTRO ═══════════ -->
     <section class="intro wrap">
-      <div class="intro-body">
-        {u.intro.map((p) => <p class="reveal">{p}</p>)}
-      </div>
+      <div class="intro-body">{u.intro.map((p) => <p class="reveal">{p}</p>)}</div>
     </section>
+
+    <!-- ═══════════ PRODUCTION · letterbox ═══════════ -->
+    {unit === 'production' && (
+      <div class="letterbox reveal">
+        <div class="lb-bars" aria-hidden="true"></div>
+        <p class="lb-quote">{u.heroHead[0]}<span class="hot">{u.heroHead[1]}</span></p>
+      </div>
+    )}
 
     <!-- ═══════════ PILLARS ═══════════ -->
     <section class="pillars wrap">
-      <div class="shead reveal"><span class="num">[ 01 ]</span><h2>{u.pillarsHead}</h2></div>
+      <div class="shead reveal"><span class="num">{num()}</span><h2>{u.pillarsHead}</h2></div>
       <div class="pgrid">
         {u.pillars.map((p, i) => (
           <article class="pillar reveal">
             <span class="p-n">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{p.t}</h3>
-            <p>{p.d}</p>
+            <h3>{p.t}</h3><p>{p.d}</p>
           </article>
         ))}
       </div>
     </section>
 
+    <!-- ═══════════ GR8 · roster + shows ═══════════ -->
+    {unit === 'gr8' && (
+      <section class="gr8-media">
+        <div class="wrap"><div class="shead reveal"><span class="num">{num()}</span><h2>{t.roster}</h2></div></div>
+        <div class="roster" tabindex="0" role="group" aria-label={t.roster}>
+          {creators.map((c) => (
+            <figure class="cr"><img src={c.src} alt={t.creatorAlt} width={c.w} height={c.h} loading="lazy" decoding="async" /></figure>
+          ))}
+        </div>
+        <p class="wrap scroll-hint" aria-hidden="true">{t.rosterHint}</p>
+
+        <div class="wrap">
+          <div class="shead shead-gap reveal"><span class="num">{num()}</span><h2>{t.showsHead}</h2></div>
+          <div class="mosaic">
+            {shows.map((s) => (
+              <figure class={s.big ? 'sh sh-big reveal' : 'sh reveal'}>
+                <img src={s.src} alt={s.title} loading="lazy" decoding="async" />
+                <figcaption>{s.title}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ═══════════ SYNERGY · texture plate ═══════════ -->
+    {unit === 'synergy' && (
+      <section class="wrap syn-showcase">
+        <div class="tex-plate reveal" aria-hidden="true" style={`--tex:url('${plate}')`}></div>
+      </section>
+    )}
+
     <!-- ═══════════ SERVICES ═══════════ -->
     <section class="services wrap">
-      <div class="shead reveal"><span class="num">[ 02 ]</span><h2>{u.servicesHead}</h2></div>
+      <div class="shead reveal"><span class="num">{num()}</span><h2>{u.servicesHead}</h2></div>
       <ul class="svc">
         {u.services.map((s) => <li class="reveal"><span class="dot" aria-hidden="true"></span>{s}</li>)}
       </ul>
@@ -128,16 +184,28 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
     <!-- ═══════════ CLIENTS ═══════════ -->
     {u.clients && (
       <section class="clients wrap">
-        <div class="shead reveal"><span class="num">[ 03 ]</span><h2>{u.clientsHead}</h2></div>
-        <ul class="brands">
-          {u.clients.map((c) => <li class="reveal">{c}</li>)}
-        </ul>
+        <div class="shead reveal"><span class="num">{num()}</span><h2>{u.clientsHead}</h2></div>
+        <ul class="brands">{u.clients.map((c) => <li class="reveal">{c}</li>)}</ul>
       </section>
+    )}
+
+    <!-- ═══════════ AGENCY · the full client wall ═══════════ -->
+    {unit === 'agency' && (
+      <div class="band">
+        <div class="wrap">
+          <p class="band-k reveal">{t.clientsBand}</p>
+          <ul class="logos">
+            {clientLogos.map((l) => (
+              <li class="reveal"><img src={l.src} alt={l.name} loading="lazy" decoding="async" /></li>
+            ))}
+          </ul>
+        </div>
+      </div>
     )}
 
     <!-- ═══════════ SIBLINGS ═══════════ -->
     <section class="siblings wrap">
-      <div class="shead reveal"><span class="num">[ {u.clients ? '04' : '03'} ]</span><h2>{t.siblingsHead}</h2></div>
+      <div class="shead reveal"><span class="num">{num()}</span><h2>{t.siblingsHead}</h2></div>
       <div class="sgrid">
         {siblings.map((s) => (
           <a class="sib reveal" href={L(`v3/${s.id}`)} data-hot>
@@ -165,9 +233,11 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
     </section>
   </main>
 
-  <footer class="wrap foot">
-    <a href={L('v3')} class="brand" data-hot><img src={logo} alt="" class="mark" width="26" height="26" /><span>{t.back}</span></a>
-    <span class="muted mono-s">{t.rights}</span>
+  <footer class={`foot-wrap skin-${unit}`}>
+    <div class="wrap foot">
+      <a href={L('v3')} class="brand" data-hot><img src={logo} alt="" class="mark" width="26" height="26" /><span>{t.back}</span></a>
+      <span class="muted mono-s">{t.rights}</span>
+    </div>
   </footer>
 
 </Base>
@@ -177,10 +247,10 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
     font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
   .skip:focus{left:12px;top:12px}
 
-  /* header — matches the hub */
-  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;border-bottom:1px solid transparent;
+  /* header adopts the unit's skin */
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;border-bottom:1px solid transparent;background:transparent;
     transition:transform .4s var(--ease-standard),background .4s,border-color .4s}
-  .hdr.scrolled{background:color-mix(in srgb,var(--paper-100) 86%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.scrolled{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
   .hdr.hide{transform:translateY(-110%)}
   .hdr.open{transform:none;background:var(--bg);border-color:var(--line)}
   .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:72px}
@@ -194,19 +264,16 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
 
   .burger{display:none;align-items:center;gap:.55em;min-height:44px;padding:0 .2em;background:none;border:0;color:inherit;cursor:pointer}
   .burger-l{position:relative;display:block;width:22px;height:1.5px;background:currentColor;transition:background .2s}
-  .burger-l::before,.burger-l::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;
-    transition:transform .28s var(--ease-standard)}
+  .burger-l::before,.burger-l::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;transition:transform .28s var(--ease-standard)}
   .burger-l::before{top:-6px}.burger-l::after{top:6px}
   .burger[aria-expanded="true"] .burger-l{background:transparent}
   .burger[aria-expanded="true"] .burger-l::before{transform:translateY(6px) rotate(45deg)}
   .burger[aria-expanded="true"] .burger-l::after{transform:translateY(-6px) rotate(-45deg)}
   .burger-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
-
   .mnav{border-top:1px solid var(--line);background:var(--bg);padding:0 var(--pad) 1.4rem}
   .mnav[hidden]{display:none}
   .mnav nav{display:flex;flex-direction:column}
-  .mnav a{display:grid;grid-template-columns:auto 1fr;gap:.1em .9em;align-items:baseline;
-    padding:1rem 0;border-bottom:1px solid var(--line);min-height:44px}
+  .mnav a{display:grid;grid-template-columns:auto 1fr;gap:.1em .9em;align-items:baseline;padding:1rem 0;border-bottom:1px solid var(--line);min-height:44px}
   .mnav a[aria-current="page"] .mn-name{color:var(--accent-text)}
   .mn-n{font-family:var(--mono);font-size:.7rem;color:var(--accent-text);letter-spacing:.06em}
   .mn-name{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em}
@@ -215,10 +282,12 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
   .mnav-foot{padding-top:1.1rem}
   @media (max-width:900px){ .links{display:none} .burger{display:inline-flex} }
 
+  main{position:relative;overflow:hidden}
+  main>*{position:relative;z-index:2}
   section[id]{scroll-margin-top:84px}
 
   /* ───────────── hero ───────────── */
-  .hero{position:relative;padding-top:clamp(112px,15vh,168px);padding-bottom:clamp(48px,8vh,110px);overflow:hidden}
+  .hero{position:relative;padding-top:clamp(112px,15vh,168px);padding-bottom:clamp(48px,8vh,110px)}
   .mk{position:absolute;width:14px;height:14px;opacity:.55;pointer-events:none}
   .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
   .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
@@ -227,13 +296,10 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
   .coord-r{text-align:right}
   @media (max-width:620px){ .coord-r{display:none} }
   .unit-name{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-text);margin-bottom:1.2em}
-  .hero-h{font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,6.4vw,5.4rem);line-height:1;
-    letter-spacing:-.04em;max-width:19ch}
-  .hero-h .accent{color:var(--accent)}
-  .hero-lead{margin-top:clamp(22px,3.5vh,40px);max-width:56ch;font-size:clamp(1.02rem,1.7vw,1.3rem);
-    line-height:1.5;color:var(--ink-2)}
-  .hero-role{display:grid;gap:.35em;margin-top:clamp(32px,5vh,60px);padding-top:clamp(20px,3vh,32px);
-    border-top:1px solid var(--line);max-width:56ch}
+  .hero-h{font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,6.4vw,5.4rem);line-height:1;letter-spacing:-.04em;max-width:19ch}
+  .accent-i{color:var(--accent-text)}
+  .hero-lead{margin-top:clamp(22px,3.5vh,40px);max-width:56ch;font-size:clamp(1.02rem,1.7vw,1.3rem);line-height:1.5;color:var(--ink-2)}
+  .hero-role{display:grid;gap:.35em;margin-top:clamp(32px,5vh,60px);padding-top:clamp(20px,3vh,32px);border-top:1px solid var(--line);max-width:56ch}
   .role-k{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
   .role-v{font-family:var(--display);font-weight:500;font-size:clamp(1.05rem,1.9vw,1.4rem);letter-spacing:-.02em}
 
@@ -245,6 +311,7 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
     font-size:clamp(1.25rem,2.5vw,1.8rem);line-height:1.28;letter-spacing:-.02em}
 
   .shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(32px,5vh,60px)}
+  .shead-gap{margin-top:clamp(48px,7vh,96px)}
   .shead .num{font-family:var(--mono);color:var(--accent-text);font-size:.76rem;letter-spacing:.06em}
   .shead h2{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
 
@@ -258,6 +325,10 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
   .p-n{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--accent-text)}
   .pillar h3{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.02em;line-height:1.15}
   .pillar p{font-size:.94rem;line-height:1.55;color:var(--muted)}
+
+  /* ───────────── gr8 media / synergy plate ───────────── */
+  .gr8-media{padding-block:clamp(48px,8vh,110px) clamp(20px,3vh,40px);border-top:1px solid var(--line)}
+  .syn-showcase{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
 
   /* ───────────── services ───────────── */
   .services{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
@@ -278,12 +349,11 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
   .siblings{padding-block:clamp(48px,8vh,110px);border-top:1px solid var(--line)}
   .sgrid{display:grid;grid-template-columns:1fr;gap:.7rem}
   @media (min-width:760px){ .sgrid{grid-template-columns:repeat(3,1fr)} }
-  .sib{position:relative;display:flex;flex-direction:column;gap:.4em;min-height:180px;
-    padding:clamp(20px,2vw,28px);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2);
-    transition:background .3s var(--ease-standard),color .3s var(--ease-standard),
-      transform .3s var(--ease-standard),border-color .3s var(--ease-standard),box-shadow .3s var(--ease-standard)}
-  .sib:hover,.sib:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink);
-    transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .sib{position:relative;display:flex;flex-direction:column;gap:.4em;min-height:180px;padding:clamp(20px,2vw,28px);
+    border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2);
+    transition:background .3s var(--ease-standard),color .3s var(--ease-standard),transform .3s var(--ease-standard),
+      border-color .3s var(--ease-standard),box-shadow .3s var(--ease-standard)}
+  .sib:hover,.sib:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink);transform:translateY(-4px);box-shadow:var(--shadow-md)}
   .s-top{display:flex;justify-content:space-between;gap:.5em;align-items:baseline;
     font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
   .s-n{color:var(--accent-text);font-weight:700}
@@ -297,19 +367,17 @@ const mailto = `mailto:${mail}?subject=${encodeURIComponent(u.mailSubj)}`;
 
   /* ───────────── cta ───────────── */
   .cta{padding-block:clamp(64px,10vh,140px);border-top:1px solid var(--line)}
-  .cta-h{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,7vw,5.6rem);
-    letter-spacing:-.045em;line-height:.95;max-width:17ch}
+  .cta-h{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,7vw,5.6rem);letter-spacing:-.045em;line-height:.95;max-width:17ch}
   .cta-sub{margin-top:1.1rem;max-width:46ch;color:var(--ink-2);font-size:1.02rem;line-height:1.6}
-  .cta-btn{display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(28px,4vh,44px);min-height:52px;
-    padding:0 1.6em;border-radius:var(--radius-pill);background:var(--accent);color:var(--accent-ink);
+  .cta-btn{display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(28px,4vh,44px);min-height:52px;padding:0 1.6em;
+    border-radius:var(--radius-pill);background:var(--accent);color:var(--noturno-900);
     font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
     transition:background .2s var(--ease-standard),transform .2s var(--ease-standard)}
   .cta-btn i{font-style:normal;transition:transform .3s var(--ease-standard)}
-  .cta-btn:hover{background:var(--accent-hover)}
+  .cta-btn:hover{background:var(--vulcanico-400)}
   .cta-btn:hover i{transform:translate(3px,3px)}
   .cta-btn:active{transform:translateY(1px)}
-  .crow{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:clamp(32px,5vh,56px);
-    font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+  .crow{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:clamp(32px,5vh,56px);font-family:var(--mono);font-size:.8rem;color:var(--muted)}
   .crow a{border-bottom:1px solid var(--line);padding-bottom:.2em;transition:color .2s,border-color .2s}
   .crow a:hover{color:var(--accent-text);border-color:var(--accent-text)}
 

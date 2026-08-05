@@ -2,9 +2,17 @@
 import Base from '../layouts/Base.astro';
 import LangToggle from './LangToggle.astro';
 import '../styles/ds/styles.css';
+import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { unitList, brand } from '../data/units-v3';
-import { clientLogos, creators, shows, tex } from '../data/media-v3';
+import { clientLogos, creators, tex } from '../data/media-v3';
+
+// The hub shows a taste of each unit; the depth lives on the unit pages.
+const stripLogos = ['netflix', 'volkswagen', 'coca-cola', 'mattel', 'xbox', 'ford', 'nike', 'huawei', 'telcel', 'porsche']
+  .map((s) => clientLogos.find((l) => l.src.endsWith(`${s}.webp`))!)
+  .filter(Boolean);
+const stripRest = clientLogos.length - stripLogos.length;
+const rosterPeek = creators.slice(0, 4);
 
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -28,11 +36,9 @@ const t = {
     lead: 'El contenido no es solamente un entregable: es la expresión visible de una estrategia.',
     scroll: 'Desplázate', enter: 'Entrar', menu: 'Menú', contact: 'Contacto', index: 'Índice',
     chapters: 'Capítulos', see: 'Ver la unidad',
-    agencyBand: 'Marcas con las que hemos trabajado',
-    prodNote: 'Producción audiovisual, social-first, con creadores y asistida por IA.',
-    gr8Roster: 'Roster de creadores', gr8Shows: 'Formatos e IP propios',
-    gr8ScrollHint: 'Desliza para ver el roster',
-    synLab: 'Laboratorio', synTech: ['Inteligencia artificial', 'CGI', 'Realidad aumentada', 'Phygital'],
+    agencyBand: 'Algunas de las marcas',
+    andMore: (n: number) => `+${n} más ↘`,
+    gr8Roster: 'Roster de creadores',
     manifestoKicker: 'Filosofía', ecoHead: b.ecosystemHead,
     contactKicker: 'Contacto', contactHead: 'Empecemos.',
     contactSub: 'Cuéntanos qué necesitas y te conectamos con la unidad correcta.',
@@ -50,11 +56,9 @@ const t = {
     lead: 'Content is not simply a deliverable: it is the visible expression of a strategy.',
     scroll: 'Scroll', enter: 'Enter', menu: 'Menu', contact: 'Contact', index: 'Index',
     chapters: 'Chapters', see: 'See the unit',
-    agencyBand: 'Brands we have worked with',
-    prodNote: 'Film, social-first, creator-led and AI-assisted production.',
-    gr8Roster: 'Creator roster', gr8Shows: 'Owned formats and IP',
-    gr8ScrollHint: 'Swipe to see the roster',
-    synLab: 'Laboratory', synTech: ['Artificial intelligence', 'CGI', 'Augmented reality', 'Phygital'],
+    agencyBand: 'Some of the brands',
+    andMore: (n: number) => `+${n} more ↘`,
+    gr8Roster: 'Creator roster',
     manifestoKicker: 'Philosophy', ecoHead: b.ecosystemHead,
     contactKicker: 'Contact', contactHead: 'Let’s begin.',
     contactSub: 'Tell us what you need and we’ll route you to the right unit.',
@@ -174,111 +178,71 @@ const chapters = [
       </div>
     </section>
 
-    <!-- ══════════════ 01 · AGENCY — editorial paper ══════════════ -->
-    <section class="ch ch-agency" id="agency" data-tone="light" data-chapter="agency">
+    <!-- ══════════════ 01 · AGENCY ══════════════ -->
+    <section class="ch skin-agency" id="agency" data-tone="light" data-chapter="agency">
       <div class="wrap ch-head">
         <span class="ch-n reveal">{U.agency.n}</span>
         <h2 class="ch-title reveal">{U.agency.short}</h2>
         <p class="ch-kind reveal">{U.agency.kind}</p>
-        <p class="ch-lead reveal">{U.agency.heroLead}</p>
+        <p class="ch-lead reveal">{U.agency.role}</p>
         <a class="ch-go reveal" href={L('v3/agency')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
       </div>
-
-      <div class="wrap pill-row">
-        {U.agency.pillars.map((p, i) => (
-          <article class="pill reveal">
-            <span class="pill-n">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{p.t}</h3><p>{p.d}</p>
-          </article>
-        ))}
-      </div>
-
-      <!-- full-bleed ink band: the client marks -->
-      <div class="band" data-tone="dark">
-        <div class="wrap">
-          <p class="band-k reveal">{t.agencyBand}</p>
-          <ul class="logos">
-            {clientLogos.map((l) => (
-              <li class="reveal"><img src={l.src} alt={l.name} loading="lazy" decoding="async" /></li>
-            ))}
-          </ul>
+      <div class="wrap ch-media">
+        <p class="sub-k reveal">{t.agencyBand}</p>
+        <div class="strip reveal">
+          {stripLogos.map((l) => <img src={l.src} alt={l.name} loading="lazy" decoding="async" />)}
+          <a class="strip-more" href={L('v3/agency')} data-hot>{t.andMore(stripRest)}</a>
         </div>
       </div>
     </section>
 
-    <!-- ══════════════ 02 · PRODUCCIÓN — cinematic dark ══════════════ -->
-    <section class="ch ch-prod" id="production" data-tone="dark" data-chapter="production">
+    <!-- ══════════════ 02 · PRODUCCIÓN ══════════════ -->
+    <section class="ch skin-production grain" id="production" data-tone="dark" data-chapter="production">
       <div class="wrap ch-head">
         <span class="ch-n reveal">{U.production.n}</span>
         <h2 class="ch-title reveal">{U.production.short}</h2>
         <p class="ch-kind reveal">{U.production.kind}</p>
-        <p class="ch-lead reveal">{U.production.heroLead}</p>
+        <p class="ch-lead reveal">{U.production.role}</p>
         <a class="ch-go reveal" href={L('v3/production')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
       </div>
-
       <div class="letterbox reveal">
         <div class="lb-bars" aria-hidden="true"></div>
-        <p class="lb-quote">{U.production.heroHead[0]}<span class="accent">{U.production.heroHead[1]}</span></p>
-      </div>
-
-      <div class="wrap svc-row">
-        <p class="svc-note reveal">{t.prodNote}</p>
-        <ul class="svc-chips">
-          {U.production.services.map((s) => <li class="reveal">{s}</li>)}
-        </ul>
+        <p class="lb-quote">{U.production.heroHead[0]}<span class="hot">{U.production.heroHead[1]}</span></p>
       </div>
     </section>
 
-    <!-- ══════════════ 03 · GR8 — iridescent ══════════════ -->
-    <section class="ch ch-gr8" id="gr8" data-tone="dark" data-chapter="gr8" style={`--tex:url('${tex.gr8}')`}>
+    <!-- ══════════════ 03 · GR8 ══════════════ -->
+    <section class="ch skin-gr8 glow" id="gr8" data-tone="dark" data-chapter="gr8" style={`--tex:url('${tex.gr8}')`}>
       <div class="gr8-glow" aria-hidden="true"></div>
       <div class="wrap ch-head">
         <span class="ch-n reveal">{U.gr8.n}</span>
-        <h2 class="ch-title reveal">{U.gr8.short}</h2>
+        <h2 class="ch-title grad-title reveal">{U.gr8.short}</h2>
         <p class="ch-kind reveal">{U.gr8.kind}</p>
-        <p class="ch-lead reveal">{U.gr8.heroLead}</p>
+        <p class="ch-lead reveal">{U.gr8.role}</p>
         <a class="ch-go reveal" href={L('v3/gr8')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
       </div>
-
-      <p class="wrap sub-k reveal">{t.gr8Roster}</p>
-      <div class="roster" tabindex="0" role="group" aria-label={t.gr8Roster}>
-        {creators.map((c) => (
-          <figure class="cr">
-            <img src={c.src} alt={t.creatorAlt} width={c.w} height={c.h} loading="lazy" decoding="async" />
-          </figure>
-        ))}
-      </div>
-      <p class="wrap scroll-hint" aria-hidden="true">{t.gr8ScrollHint}</p>
-
-      <p class="wrap sub-k reveal">{t.gr8Shows}</p>
-      <div class="wrap mosaic">
-        {shows.map((s) => (
-          <figure class={s.big ? 'sh sh-big reveal' : 'sh reveal'}>
-            <img src={s.src} alt={s.title} loading="lazy" decoding="async" />
-            <figcaption>{s.title}</figcaption>
-          </figure>
-        ))}
+      <div class="wrap ch-media">
+        <p class="sub-k reveal">{t.gr8Roster}</p>
+        <div class="peek reveal">
+          {rosterPeek.map((c) => (
+            <figure class="cr"><img src={c.src} alt={t.creatorAlt} width={c.w} height={c.h} loading="lazy" decoding="async" /></figure>
+          ))}
+        </div>
       </div>
     </section>
 
-    <!-- ══════════════ 04 · SYNERGY — the lab ══════════════ -->
-    <section class="ch ch-syn" id="synergy" data-tone="dark" data-chapter="synergy" style={`--tex:url('${tex.glitch}')`}>
+    <!-- ══════════════ 04 · SYNERGY ══════════════ -->
+    <section class="ch skin-synergy" id="synergy" data-tone="dark" data-chapter="synergy" style={`--tex:url('${tex.glitch}')`}>
       <div class="syn-grid" aria-hidden="true"></div>
       <div class="wrap ch-head">
         <span class="ch-n reveal">{U.synergy.n}</span>
         <h2 class="ch-title reveal">{U.synergy.short}</h2>
         <p class="ch-kind reveal">{U.synergy.kind}</p>
-        <p class="ch-lead reveal">{U.synergy.heroLead}</p>
+        <p class="ch-lead reveal">{U.synergy.role}</p>
         <a class="ch-go reveal" href={L('v3/synergy')} data-hot>{t.see}<i aria-hidden="true">↘</i></a>
       </div>
-
-      <div class="wrap syn-body">
-        <div class="syn-tex reveal" aria-hidden="true"></div>
-        <ul class="syn-list">
-          {t.synTech.map((s, i) => (
-            <li class="reveal"><span class="sy-n">{String(i + 1).padStart(2, '0')}</span>{s}</li>
-          ))}
-        </ul>
+      <div class="wrap ch-media">
+        <div class="tex-plate reveal" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -528,110 +492,13 @@ const chapters = [
     transition:opacity .4s var(--ease-entrance) calc(950ms + var(--i)*90ms),transform .4s var(--ease-entrance) calc(950ms + var(--i)*90ms)}
   .rootstage.go:not(.scrub) .unit .u-port{transform:translate(-50%,-50%) scale(1);transition-delay:calc(950ms + var(--i)*90ms)}
 
-  /* ═══════════ 01 · agency ═══════════ */
-  .ch-agency{background:var(--bg)}
-  .pill-row{display:grid;grid-template-columns:1fr;gap:.7rem;padding-bottom:clamp(56px,9vh,120px)}
-  @media (min-width:680px){ .pill-row{grid-template-columns:repeat(2,1fr)} }
-  @media (min-width:1100px){ .pill-row{grid-template-columns:repeat(4,1fr)} }
-  .pill{display:flex;flex-direction:column;gap:.45em;padding:clamp(18px,1.8vw,26px);
-    border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2)}
-  .pill-n{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--accent-text)}
-  .pill h3{font-family:var(--display);font-weight:700;font-size:1.1rem;letter-spacing:-.02em;line-height:1.15}
-  .pill p{font-size:.92rem;line-height:1.55;color:var(--muted)}
 
-  /* full-bleed ink band */
-  .band{background:var(--noturno-900);color:var(--paper-100);padding-block:clamp(52px,8vh,110px)}
-  .band-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--noturno-300);margin-bottom:clamp(28px,4vh,48px)}
-  .logos{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);
-    gap:clamp(20px,3vw,44px) clamp(16px,2.5vw,40px);align-items:center}
-  @media (min-width:560px){ .logos{grid-template-columns:repeat(3,1fr)} }
-  @media (min-width:900px){ .logos{grid-template-columns:repeat(5,1fr)} }
-  @media (min-width:1280px){ .logos{grid-template-columns:repeat(6,1fr)} }
-  .logos li{display:flex;align-items:center;justify-content:center;min-height:46px}
-  .logos img{max-height:38px;width:auto;max-width:100%;object-fit:contain;
-    opacity:.72;transition:opacity .3s var(--ease-standard),transform .3s var(--ease-standard)}
-  .logos li:hover img{opacity:1;transform:scale(1.06)}
-
-  /* ═══════════ 02 · producción ═══════════ */
-  .ch-prod{background:var(--noturno-900);color:var(--paper-100);
-    --ink:var(--paper-100);--ink-2:var(--paper-200);--muted:var(--noturno-300);--line:rgba(242,247,249,.18);
-    --accent-text:var(--vulcanico-400)}
-  .ch-prod::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .ch-prod>*{position:relative;z-index:2}
-  .letterbox{position:relative;margin-block:clamp(20px,3vh,40px);padding-block:clamp(56px,11vh,140px);
-    background:#000;display:flex;align-items:center;justify-content:center}
-  .lb-bars{position:absolute;inset:0;pointer-events:none;
-    border-top:clamp(14px,3vh,34px) solid var(--noturno-900);border-bottom:clamp(14px,3vh,34px) solid var(--noturno-900)}
-  .lb-quote{position:relative;z-index:2;padding-inline:var(--pad);max-width:22ch;text-align:center;
-    font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,5.2vw,4.2rem);line-height:1.02;letter-spacing:-.04em}
-  .lb-quote .accent{color:var(--vulcanico-500)}
-  .svc-row{padding-block:clamp(40px,6vh,90px) clamp(64px,10vh,140px)}
-  .svc-note{max-width:52ch;color:var(--ink-2);font-size:1.02rem;line-height:1.6;margin-bottom:clamp(24px,3.5vh,40px)}
-  .svc-chips{list-style:none;display:flex;flex-wrap:wrap;gap:.55rem}
-  .svc-chips li{padding:.62em 1.05em;border:1px solid var(--line);border-radius:var(--radius-pill);
-    font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--ink-2)}
-
-  /* ═══════════ 03 · gr8 ═══════════ */
-  .ch-gr8{position:relative;background:#0A0714;color:var(--paper-100);overflow:hidden;
-    --ink:var(--paper-100);--ink-2:#DCD6EC;--muted:#A79FC4;--line:rgba(242,247,249,.16);
-    --accent-text:#8BE9FF}
-  .gr8-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
-    background-image:var(--tex);background-size:cover;background-position:center;
-    opacity:.4;filter:saturate(1.15)}
-  .ch-gr8::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,rgba(10,7,20,.55) 0%,rgba(10,7,20,.86) 42%,rgba(10,7,20,.96) 100%)}
-  .ch-gr8>*{position:relative;z-index:2}
-  /* Solid first: transparent text with no background-clip support would erase
-     the word entirely, so the gradient is layered on only where it works. */
-  .ch-gr8 .ch-title{color:var(--paper-100)}
-  @supports ((-webkit-background-clip:text) or (background-clip:text)){
-    .ch-gr8 .ch-title{background:linear-gradient(96deg,#FFF 0%,#8BE9FF 34%,#E5A6FF 62%,#FFD59E 100%);
-      -webkit-background-clip:text;background-clip:text;color:transparent}
-  }
-  @media (forced-colors:active){ .ch-gr8 .ch-title{color:CanvasText;background:none;-webkit-text-fill-color:CanvasText} }
-  .sub-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
-    margin-top:clamp(34px,5vh,64px);margin-bottom:clamp(16px,2.4vh,26px)}
-  .roster{display:flex;gap:clamp(.6rem,1.2vw,1rem);overflow-x:auto;scroll-snap-type:x mandatory;
-    padding-inline:var(--pad);padding-bottom:1rem;scrollbar-width:thin}
-  .roster:focus-visible{outline:2px solid var(--vulcanico-400);outline-offset:4px}
-  .cr{flex:0 0 clamp(200px,26vw,300px);scroll-snap-align:start;border-radius:var(--radius-lg);overflow:hidden;
-    background:linear-gradient(160deg,rgba(139,233,255,.16),rgba(229,166,255,.12));border:1px solid var(--line)}
-  .cr img{width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;object-position:top center;display:block}
-  .scroll-hint{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
-  @media (min-width:1180px){ .scroll-hint{display:none} }
-  .mosaic{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;padding-bottom:clamp(64px,10vh,140px)}
-  @media (min-width:760px){ .mosaic{grid-template-columns:repeat(4,1fr)} }
-  .sh{position:relative;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--line);background:#120C1F}
-  .sh-big{grid-column:span 2}
-  .sh img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;
-    transition:transform .45s var(--ease-standard)}
-  .sh:hover img{transform:scale(1.045)}
-  .sh figcaption{position:absolute;left:0;right:0;bottom:0;padding:.7em .9em;
-    background:linear-gradient(transparent,rgba(10,7,20,.92));
-    font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-100)}
-
-  /* ═══════════ 04 · synergy ═══════════ */
-  .ch-syn{position:relative;background:#000C12;color:var(--paper-100);overflow:hidden;
-    --ink:var(--paper-100);--ink-2:var(--paper-200);--muted:var(--noturno-300);--line:rgba(242,247,249,.16);
-    --accent-text:var(--vulcanico-400)}
-  .syn-grid{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
-    background-image:linear-gradient(rgba(242,247,249,.055) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(242,247,249,.055) 1px,transparent 1px);
-    background-size:64px 64px}
-  .ch-syn>*{position:relative;z-index:2}
-  .syn-body{display:grid;grid-template-columns:1fr;gap:clamp(28px,4vw,56px);
-    padding-bottom:clamp(64px,10vh,140px);align-items:center}
-  @media (min-width:900px){ .syn-body{grid-template-columns:1.1fr .9fr} }
-  .syn-tex{aspect-ratio:16/10;border-radius:var(--radius-lg);border:1px solid var(--line);
-    background-image:var(--tex);background-size:cover;background-position:center;
-    filter:saturate(1.2) contrast(1.05)}
-  .syn-list{list-style:none;display:grid;gap:0}
-  .syn-list li{display:flex;align-items:baseline;gap:1em;padding:1.05rem 0;border-top:1px solid var(--line);
-    font-family:var(--display);font-weight:600;font-size:clamp(1.1rem,2.1vw,1.6rem);letter-spacing:-.02em}
-  .syn-list li:last-child{border-bottom:1px solid var(--line)}
-  .sy-n{font-family:var(--mono);font-weight:400;font-size:.72rem;letter-spacing:.08em;color:var(--accent-text)}
+  /* ═══════════ chapter media — the hub's taste of each unit ═══════════ */
+  .ch-media{padding-bottom:clamp(56px,9vh,120px)}
+  .peek{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
+  @media (min-width:760px){ .peek{grid-template-columns:repeat(4,1fr)} }
+  .peek .cr{flex:none}
+  .ch-media .tex-plate{aspect-ratio:21/9}
 
   /* ═══════════ philosophy ═══════════ */
   .ch-phil{background:var(--bg);padding-block:clamp(64px,10vh,140px)}

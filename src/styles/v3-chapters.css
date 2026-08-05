@@ -1,0 +1,125 @@
+/* ============================================================
+   Residencia v3 — chapter skins + shared media modules.
+
+   One skeleton, four voices. The hub uses these to give each unit a compact
+   chapter; the unit pages use the same classes to carry the full treatment.
+   Kept here rather than inside a component so both consume one definition.
+   ============================================================ */
+
+/* ── skins: each swaps the semantic variables, nothing structural ── */
+.skin-agency{
+  --bg:var(--paper-100); --bg-2:var(--paper-000); --bg-3:var(--paper-200);
+  --ink:var(--noturno-900); --ink-2:var(--noturno-700); --muted:var(--noturno-500);
+  --line:#CED7DC; --accent-text:var(--vulcanico-600);
+}
+.skin-production{
+  --bg:var(--noturno-900); --bg-2:#0F2129; --bg-3:var(--paper-200);
+  --ink:var(--paper-100); --ink-2:var(--paper-200); --muted:var(--noturno-300);
+  --line:rgba(242,247,249,.18); --accent-text:var(--vulcanico-400);
+}
+.skin-gr8{
+  --bg:#0A0714; --bg-2:#120C1F; --bg-3:#DCD6EC;
+  --ink:var(--paper-100); --ink-2:#DCD6EC; --muted:#A79FC4;
+  --line:rgba(242,247,249,.16); --accent-text:#8BE9FF;
+}
+.skin-synergy{
+  --bg:#000C12; --bg-2:#04141C; --bg-3:var(--paper-200);
+  --ink:var(--paper-100); --ink-2:var(--paper-200); --muted:var(--noturno-300);
+  --line:rgba(242,247,249,.16); --accent-text:var(--vulcanico-400);
+}
+.skin-agency, .skin-production, .skin-gr8, .skin-synergy{
+  background:var(--bg); color:var(--ink);
+}
+
+/* film grain — production only */
+.skin-production.grain::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* iridescent plate + scrim — gr8 only */
+.gr8-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:var(--tex);background-size:cover;background-position:center;
+  opacity:.4;filter:saturate(1.15)}
+.skin-gr8.glow::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,7,20,.55) 0%,rgba(10,7,20,.86) 42%,rgba(10,7,20,.96) 100%)}
+
+/* blueprint grid — synergy only */
+.syn-grid{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(242,247,249,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(242,247,249,.055) 1px,transparent 1px);
+  background-size:64px 64px}
+
+/* the gradient wordmark. Solid first: transparent text with no background-clip
+   support would erase the word entirely. */
+.grad-title{color:var(--paper-100)}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .grad-title{background:linear-gradient(96deg,#FFF 0%,#8BE9FF 34%,#E5A6FF 62%,#FFD59E 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+}
+@media (forced-colors:active){
+  .grad-title{color:CanvasText;background:none;-webkit-text-fill-color:CanvasText}
+}
+
+/* ── module: client logo band ── */
+.band{background:var(--noturno-900);color:var(--paper-100);padding-block:clamp(52px,8vh,110px)}
+.band-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--noturno-300);margin-bottom:clamp(28px,4vh,48px)}
+.logos{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);
+  gap:clamp(20px,3vw,44px) clamp(16px,2.5vw,40px);align-items:center}
+@media (min-width:560px){ .logos{grid-template-columns:repeat(3,1fr)} }
+@media (min-width:900px){ .logos{grid-template-columns:repeat(5,1fr)} }
+@media (min-width:1280px){ .logos{grid-template-columns:repeat(6,1fr)} }
+.logos li{display:flex;align-items:center;justify-content:center;min-height:46px}
+.logos img{max-height:38px;width:auto;max-width:100%;object-fit:contain;opacity:.72;
+  transition:opacity .3s var(--ease-standard),transform .3s var(--ease-standard)}
+.logos li:hover img{opacity:1;transform:scale(1.06)}
+
+/* ── module: logo strip (the hub's compact taste of the wall) ── */
+.strip{display:flex;flex-wrap:wrap;align-items:center;gap:clamp(22px,3.4vw,52px);
+  padding-block:clamp(26px,4vh,44px)}
+.strip img{height:26px;width:auto;object-fit:contain;opacity:.66;
+  transition:opacity .3s var(--ease-standard)}
+.strip img:hover{opacity:1}
+.strip-more{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* ── module: letterbox pull-quote ── */
+.letterbox{position:relative;margin-block:clamp(20px,3vh,40px);padding-block:clamp(56px,11vh,140px);
+  background:#000;display:flex;align-items:center;justify-content:center}
+.lb-bars{position:absolute;inset:0;pointer-events:none;
+  border-top:clamp(14px,3vh,34px) solid var(--noturno-900);
+  border-bottom:clamp(14px,3vh,34px) solid var(--noturno-900)}
+.lb-quote{position:relative;z-index:2;padding-inline:var(--pad);max-width:22ch;text-align:center;
+  font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,5.2vw,4.2rem);
+  line-height:1.02;letter-spacing:-.04em;color:var(--paper-100)}
+.lb-quote .hot{color:var(--vulcanico-500)}
+
+/* ── module: creator roster ── */
+.roster{display:flex;gap:clamp(.6rem,1.2vw,1rem);overflow-x:auto;scroll-snap-type:x mandatory;
+  padding-inline:var(--pad);padding-bottom:1rem;scrollbar-width:thin}
+.roster:focus-visible{outline:2px solid var(--vulcanico-400);outline-offset:4px}
+.cr{flex:0 0 clamp(190px,25vw,290px);scroll-snap-align:start;border-radius:var(--radius-lg);overflow:hidden;
+  background:linear-gradient(160deg,rgba(139,233,255,.16),rgba(229,166,255,.12));border:1px solid var(--line)}
+.cr img{width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;object-position:top center;display:block}
+.scroll-hint{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-top:.4rem}
+
+/* ── module: show mosaic ── */
+.mosaic{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
+@media (min-width:760px){ .mosaic{grid-template-columns:repeat(4,1fr)} }
+.sh{position:relative;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--line);background:#120C1F}
+.sh-big{grid-column:span 2}
+.sh img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;transition:transform .45s var(--ease-standard)}
+.sh:hover img{transform:scale(1.045)}
+.sh figcaption{position:absolute;left:0;right:0;bottom:0;padding:.7em .9em;
+  background:linear-gradient(transparent,rgba(10,7,20,.92));
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-100)}
+
+/* ── module: technical texture plate ── */
+.tex-plate{aspect-ratio:16/10;border-radius:var(--radius-lg);border:1px solid var(--line);
+  background-image:var(--tex);background-size:cover;background-position:center;
+  filter:saturate(1.2) contrast(1.05)}
+
+/* ── shared: mono sub-label ── */
+.sub-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-top:clamp(34px,5vh,64px);margin-bottom:clamp(16px,2.4vh,26px)}
