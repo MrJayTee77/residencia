@@ -26,7 +26,7 @@ const u = unit ? units[unit] : null;
 <header class={`v4hdr${heroDark ? ' on-dark' : ''}`} data-nav>
   <div class="wrap v4nav">
     <a class="v4brand" href={R()} aria-label={u ? `${u.name} — volver al ecosistema` : 'Residencia'}>
-      <img src={mark} alt="" width="28" height="28" />
+      <img src={mark} alt="" width="28" height="28" decoding="async" />
       {u
         ? <span class="v4lock"><b>{u.name.replace(' by Residencia', '')}</b><i>by Residencia</i></span>
         : <span class="v4lock"><b>Residencia</b></span>}
@@ -79,7 +79,7 @@ const u = unit ? units[unit] : null;
   <div class="wrap">
     <div class="v4foot-top">
       <a class="v4brand" href={R()}>
-        <img src={mark} alt="" width="26" height="26" /><span class="v4lock"><b>Residencia</b></span>
+        <img src={mark} alt="" width="26" height="26" loading="lazy" decoding="async" /><span class="v4lock"><b>Residencia</b></span>
       </a>
       <p class="thesis">{brand.thesis}</p>
     </div>
@@ -127,19 +127,21 @@ const u = unit ? units[unit] : null;
   .v4hdr.on-dark:not(.scrolled) .v4cta{border-color:color-mix(in srgb,#F0EBF7 42%,transparent)}
   .v4hdr.on-dark:not(.scrolled) .v4cta:hover{background:#F0EBF7;color:#1B1226;border-color:#F0EBF7}
   .v4nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:74px}
-  .v4brand{display:flex;align-items:center;gap:.55em}
+  .v4brand{display:flex;align-items:center;gap:.55em;min-height:44px}
   .v4brand img{flex:none}
   .v4lock{display:flex;flex-direction:column;line-height:1.05}
   .v4lock b{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.02em}
   .v4lock i{font-family:var(--mono);font-style:normal;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 
   .v4links{display:flex;align-items:center;gap:1.5rem}
-  .v4links > a,.v4dropbtn{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    /* 44px minimum touch target — the labels are only ~18px tall on their own. */
+  .v4links > a,.v4dropbtn{display:inline-flex;align-items:center;min-height:44px;
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
     background:none;border:0;color:inherit;cursor:pointer;padding:0}
   .v4links > a:hover,.v4dropbtn:hover{color:var(--accent-text)}
   .v4dropbtn i{font-style:normal;margin-left:.35em;font-size:.6em;display:inline-block;transition:transform .25s}
   .v4dropbtn[aria-expanded="true"] i{transform:rotate(180deg)}
-  .v4cta{padding:.7em 1.2em;border:1px solid var(--line-2);border-radius:99px;transition:background .25s,color .25s,border-color .25s}
+  .v4cta{min-height:44px;padding:0 1.2em;border:1px solid var(--line-2);border-radius:99px;transition:background .25s,color .25s,border-color .25s}
   .v4cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
   .v4drop{position:relative}
@@ -177,8 +179,9 @@ const u = unit ? units[unit] : null;
 
   .v4foot{background:var(--ink);color:var(--paper);padding-block:clamp(48px,7vh,90px)}
   .v4foot .label{color:color-mix(in srgb,var(--paper) 62%,transparent);margin-bottom:.9em}
-  .v4foot ul{list-style:none;padding:0;display:grid;gap:.55em}
+  .v4foot ul{list-style:none;padding:0;display:grid;gap:.1em}
   .v4foot li{font-size:.92rem}
+  .v4foot li a,.v4foot li span{display:inline-flex;align-items:center;min-height:44px}
   .v4foot a:hover{color:var(--accent)}
   .v4foot .muted{color:color-mix(in srgb,var(--paper) 62%,transparent)}
   .v4foot .v4lock b{color:var(--paper)}
