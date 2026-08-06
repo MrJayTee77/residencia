@@ -1,0 +1,187 @@
+---
+import Base from '../../layouts/Base.astro';
+import Shell from './Shell.astro';
+import { home, ecosystemCards, units, brand, clientsMaster } from '../../data/v4/content';
+import { featured } from '../../data/v4/cases';
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+
+const years = home.who.stats[0];
+const heroSub = home.hero.sub.replace('{years}', years.value);
+// duplicated so the marquee can loop seamlessly
+const marquee = [...clientsMaster, ...clientsMaster];
+---
+<Base title="Residencia — Creative Content Strategy" description={brand.thesis} theme="theme-res-v3" lang="es" og="home">
+  <div class="v4">
+    <Shell active="home">
+
+      <!-- ══════ 01 · HERO ══════ -->
+      <section class="hero">
+        <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+        <div class="wrap">
+          <p class="kicker">{home.hero.eyebrow}</p>
+          <h1 class="h-xl">
+            {home.hero.h1[0]}<br /><span class="hero-2">{home.hero.h1[1]}</span>
+          </h1>
+          <p class="lead hero-sub">
+            Somos un ecosistema creativo con <span class="pend">{years.value} años<span class="pend-chip">Por confirmar</span></span> construyendo marcas relevantes dentro de los ecosistemas digitales.
+          </p>
+          <a class="btn" href="#cambio">{home.hero.cta}<i aria-hidden="true">↓</i></a>
+        </div>
+        <p class="hero-note pend-note">Visual pendiente: loop de video con lo mejor de las cuatro unidades.</p>
+      </section>
+
+      <!-- ══════ 02 · EL MUNDO CAMBIÓ ══════ -->
+      <section id="cambio" class="changed">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 01 ]</span><h2>El mundo cambió</h2></div>
+          <h2 class="h-lg">{home.changed.title}</h2>
+          <div class="ba">
+            <div class="ba-col">
+              <p class="label">{home.changed.before.k}</p>
+              <ul>{home.changed.before.items.map((i) => <li>{i}</li>)}</ul>
+            </div>
+            <div class="ba-col now">
+              <p class="label">{home.changed.now.k}</p>
+              <ul>{home.changed.now.items.map((i) => <li>{i}</li>)}</ul>
+            </div>
+          </div>
+          <blockquote class="insight">
+            <p class="h-md">«{home.changed.insight}»</p>
+            <p class="body">{home.changed.insightTail}</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- ══════ 03 · QUIÉNES SOMOS + CIFRAS ══════ -->
+      <section id="nosotros" class="who">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 02 ]</span><h2>{home.who.kicker}</h2></div>
+          <p class="body who-copy">{home.who.copy}</p>
+          <ul class="stats">
+            {home.who.stats.map((s) => (
+              <li>
+                <span class={s.pending ? 'stat-v pending' : 'stat-v'}>{s.value}</span>
+                <span class="stat-l">{s.label}{s.pending && <span class="pend-chip">Por confirmar</span>}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="pend-note stats-note">{home.who.statsNote}</p>
+        </div>
+      </section>
+
+      <!-- ══════ 04 · EL ECOSISTEMA ══════ -->
+      <section id="ecosistema" class="eco-sec">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 03 ]</span><h2>{home.ecosystem.kicker}</h2></div>
+          <h2 class="h-lg eco-title">{home.ecosystem.title}</h2>
+          <div class="eco">
+            {ecosystemCards.map((c) => {
+              const u = units[c.id];
+              return (
+                <a class={`eco-card u-${c.id}`} href={R(u.slug)}>
+                  <span class="eco-n">{u.n} — {u.kicker}</span>
+                  <span class="eco-name">{u.name}</span>
+                  <span class="eco-lead">{c.lead}</span>
+                  <span class="eco-body">{c.body}</span>
+                  <span class="eco-go">{u.role} ↘</span>
+                </a>
+              );
+            })}
+          </div>
+          <p class="body eco-close">{home.ecosystem.close}</p>
+        </div>
+      </section>
+
+      <!-- ══════ 05 · TRABAJO DESTACADO ══════ -->
+      <section id="trabajo" class="work">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 04 ]</span><h2>{home.work.kicker}</h2></div>
+          <ul class="cases">
+            {featured.map((c) => (
+              <li>
+                <a class={`kase u-${c.units[0]}`} href={R(`trabajo/${c.slug}`)}>
+                  <span class="kase-shot">
+                    {c.media?.kind === 'image' && <img src={c.media.src} alt="" loading="lazy" decoding="async" />}
+                  </span>
+                  <span class="kase-b">
+                    <span class="kase-brand">{c.brand}</span>
+                    <span class="kase-t">{c.title}</span>
+                    <span class="kase-d">{c.blurb}</span>
+                    <span class="kase-m">Falta: {c.missing}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a class="btn btn-ghost work-cta" href={R('trabajo')}>{home.work.cta}<i aria-hidden="true">↘</i></a>
+        </div>
+      </section>
+
+      <!-- ══════ 06 · CLIENTES ══════ -->
+      <section class="clients">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 05 ]</span><h2>{home.clients.kicker}</h2></div>
+          <p class="h-md clients-copy">{home.clients.copy}</p>
+        </div>
+        <div class="marq">
+          <div class="marq-track">{marquee.map((c) => <span>{c}</span>)}</div>
+        </div>
+        <div class="wrap">
+          <p class="pend-note clients-note">
+            Logos pendientes: confirmar qué marcas tienen autorización de uso en un sitio público.
+          </p>
+        </div>
+      </section>
+
+      <!-- ══════ 07 · CIERRE + CONTACTO ══════ -->
+      <section id="contacto" class="closing invert">
+        <span class="mk mk-bl" aria-hidden="true"></span><span class="mk mk-br" aria-hidden="true"></span>
+        <div class="wrap">
+          <h2 class="h-xl close-h">
+            {home.closing.manifesto[0]}<br /><span class="close-2">{home.closing.manifesto[1]}</span>
+          </h2>
+          <a class="btn close-btn" href={`mailto:${home.closing.email}`}>
+            {home.closing.cta} — {home.closing.email}<i aria-hidden="true">↗</i>
+          </a>
+          <p class="pend-note close-note">
+            Correo por confirmar. El guiño «lo bueno → más grande» prepara el remate de GR8 sin gastarlo aquí.
+          </p>
+        </div>
+      </section>
+
+    </Shell>
+  </div>
+</Base>
+
+<style>
+  .hero{position:relative;padding-top:clamp(140px,20vh,230px);padding-bottom:clamp(50px,8vh,110px)}
+  .hero-2{color:var(--accent-text)}
+  .hero-sub{margin-top:clamp(20px,3vh,34px)}
+  .hero .btn{margin-top:clamp(26px,4vh,44px)}
+  .hero-note{margin-top:clamp(30px,4vh,50px);padding-inline:var(--pad)}
+
+  .changed{background:var(--card);border-block:1px solid var(--line)}
+  .changed .h-lg{margin-bottom:clamp(28px,4vh,50px);max-width:22ch}
+  .insight{margin:clamp(30px,4.5vh,56px) 0 0;padding:clamp(22px,3vw,36px);border-left:3px solid var(--accent);
+    background:var(--paper);border-radius:0 8px 8px 0}
+  .insight .h-md{max-width:34ch}
+  .insight .body{margin-top:.9em}
+
+  .who-copy{margin-bottom:clamp(30px,4.5vh,52px)}
+  .stats-note{margin-top:1.1em;max-width:70ch}
+
+  .eco-title{max-width:20ch;margin-bottom:clamp(30px,4.5vh,54px)}
+  .eco-close{margin-top:clamp(26px,4vh,44px)}
+
+  .work-cta{margin-top:clamp(28px,4vh,46px)}
+  .clients{background:var(--card);border-block:1px solid var(--line)}
+  .clients-copy{max-width:24ch;margin-bottom:clamp(26px,4vh,46px)}
+  .clients-note{margin-top:clamp(24px,3.4vh,40px)}
+
+  .closing{position:relative;padding-block:clamp(80px,14vh,180px)}
+  .close-2{color:var(--accent-text)}
+  .close-btn{margin-top:clamp(30px,4.5vh,50px)}
+  .close-note{margin-top:clamp(22px,3vh,36px);max-width:64ch}
+</style>

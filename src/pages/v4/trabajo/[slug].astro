@@ -1,0 +1,10 @@
+---
+import CaseV4 from '../../../components/v4/CaseV4.astro';
+import { cases } from '../../../data/v4/cases';
+
+export function getStaticPaths() {
+  return cases.map((c) => ({ params: { slug: c.slug } }));
+}
+const { slug } = Astro.params;
+---
+<CaseV4 slug={slug!} />

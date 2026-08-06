@@ -1,0 +1,11 @@
+---
+import UnitV4 from '../../components/v4/UnitV4.astro';
+import { unitOrder, units } from '../../data/v4/content';
+import type { UnitId } from '../../data/v4/content';
+
+export function getStaticPaths() {
+  return unitOrder.map((id) => ({ params: { unit: units[id].slug }, props: { id } }));
+}
+const { id } = Astro.props as { id: UnitId };
+---
+<UnitV4 unit={id} />

@@ -1,0 +1,282 @@
+---
+import Base from '../../layouts/Base.astro';
+import Shell from './Shell.astro';
+import {
+  units, agencyCopy, produccionCopy, gr8Copy, synergyCopy, clientsMaster,
+} from '../../data/v4/content';
+import type { UnitId } from '../../data/v4/content';
+import { casesForUnit } from '../../data/v4/cases';
+import { creators, categories } from '../../data/v4/roster';
+
+interface Props { unit: UnitId; }
+const { unit } = Astro.props;
+const u = units[unit];
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+const kases = casesForUnit(unit);
+
+const ogMap: Record<UnitId, 'agency' | 'production' | 'gr8' | 'synergy'> = {
+  agency: 'agency', produccion: 'production', gr8: 'gr8', synergy: 'synergy',
+};
+let n = 0;
+const num = () => `[ 0${++n} ]`;
+---
+<Base title={`${u.name} — Residencia`} description={u.sub} theme="theme-res-v3" lang="es" og={ogMap[unit]}>
+  <div class={`v4 u-${unit}`}>
+    <Shell active={unit} unit={unit} heroDark>
+
+      <!-- ══════ HERO ══════ -->
+      <section class="uhero invert">
+        <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+        <div class="wrap">
+          <p class="kicker">/{u.slug} · {u.kicker}</p>
+          <h1 class="h-xl uh1">{u.h1}</h1>
+          <p class="lead uh-sub">{u.sub}</p>
+          <p class="urole"><span class="label">Su papel en el ecosistema</span><span class="urole-v">{u.role}</span></p>
+        </div>
+      </section>
+
+      {unit === 'agency' && (
+        <>
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{agencyCopy.thinkHead}</h2></div>
+            <div class="stack">{agencyCopy.think.map((p) => <p class="body">{p}</p>)}</div>
+          </section>
+
+          <section class="wrap model">
+            <div class="shead"><span class="n">{num()}</span><h2>{agencyCopy.modelHead}</h2></div>
+            <ol class="chain">
+              {agencyCopy.chain.map((c, i) => (
+                <li><span class="chain-n">0{i + 1}</span><span class="chain-t">{c}</span></li>
+              ))}
+            </ol>
+            <p class="label sat-k">Alimentando tres motores de ejecución</p>
+            <ul class="sats">
+              {agencyCopy.satellites.map((s) => (
+                <li><a class={`sat u-${s.to}`} href={R(units[s.to].slug)}>
+                  <span class="sat-t">{s.t}</span><span class="sat-go">{units[s.to].name} ↘</span>
+                </a></li>
+              ))}
+            </ul>
+            <p class="pend-note">Diagrama del deck de GR8 (pág. 5) pendiente de reproducir como pieza animada.</p>
+          </section>
+        </>
+      )}
+
+      {unit === 'produccion' && (
+        <>
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{produccionCopy.whatHead}</h2></div>
+            <div class="stack">{produccionCopy.what.map((p) => <p class="body">{p}</p>)}</div>
+            <ol class="spectrum">
+              {produccionCopy.spectrum.map((s, i) => (
+                <li><span class="sp-n">{String(i + 1).padStart(2, '0')}</span><span class="sp-t">{s}</span></li>
+              ))}
+            </ol>
+            <p class="pend-note">De blockbuster a always-on. Reel de la unidad pendiente.</p>
+          </section>
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{produccionCopy.aiHead}</h2></div>
+            <p class="body">{produccionCopy.ai}</p>
+          </section>
+        </>
+      )}
+
+      {unit === 'gr8' && (
+        <>
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{gr8Copy.momentHead}</h2></div>
+            <div class="proof">
+              {gr8Copy.proof.map((p) => (
+                <article class="proof-card">
+                  <p class="proof-big">{p.big}</p>
+                  <p class="proof-l">{p.label}</p>
+                  <p class="proof-d">{p.detail}</p>
+                </article>
+              ))}
+            </div>
+            <p class="pend-note proof-note">{gr8Copy.proofNote}</p>
+            <p class="h-md proof-close">{gr8Copy.proofClose}</p>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{gr8Copy.posHead}</h2></div>
+            <div class="stack">{gr8Copy.pos.map((p) => <p class="body">{p}</p>)}</div>
+            <p class="label shift-k">{gr8Copy.shiftHead}</p>
+            <ul class="shift">
+              {gr8Copy.shift.map((s) => (
+                <li><span class="from">{s.from}</span><span class="arrow">→</span><span class="to">{s.to}</span></li>
+              ))}
+            </ul>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{gr8Copy.pathsHead}</h2></div>
+            <div class="paths">
+              {gr8Copy.paths.map((p) => (
+                <article class="path">
+                  <span class="path-n">{p.n}</span>
+                  <h3 class="h-md">{p.t}</h3>
+                  <p class="path-lead">{p.lead}</p>
+                  <p class="body">{p.body}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{gr8Copy.pairsHead}</h2></div>
+            {gr8Copy.pairs.map((p) => (
+              <div class="pair">
+                <div class="pair-a">{p.bueno} <b>es bueno.</b></div>
+                <div class="pair-b">
+                  <span>{p.gr8.replace(p.hi, '')}<b>{p.hi}</b> es GR8.</span>
+                  <span class="pair-tag">{p.tag}</span>
+                </div>
+              </div>
+            ))}
+            <p class="pend-note">
+              {gr8Copy.pairPending.bueno} — {gr8Copy.pairPending.tag}
+            </p>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>Roster de creadores</h2></div>
+            <ul class="catrow">
+              {categories.map((c) => (
+                <li><span class="cat-n">{creators.filter((x) => x.category === c.id).length}</span><span class="cat-l">{c.label}</span></li>
+              ))}
+            </ul>
+            <a class="btn btn-ghost roster-cta" href={R('gr8/creadores')}>Ver el roster completo<i aria-hidden="true">↘</i></a>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{gr8Copy.partnersHead}</h2></div>
+            <ul class="chips">{gr8Copy.partners.map((p) => <li>{p}</li>)}</ul>
+          </section>
+        </>
+      )}
+
+      {unit === 'synergy' && (
+        <>
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.philHead}</h2></div>
+            <div class="stack">{synergyCopy.phil.map((p) => <p class="body">{p}</p>)}</div>
+          </section>
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.labHead}</h2></div>
+            <p class="body">{synergyCopy.lab}</p>
+            <p class="pend-note lab-note">{synergyCopy.labNote}</p>
+            <p class="pend-note">{synergyCopy.statusNote}</p>
+          </section>
+        </>
+      )}
+
+      <!-- ══════ SERVICIOS ══════ -->
+      <section class="wrap">
+        <div class="shead"><span class="n">{num()}</span><h2>Servicios</h2></div>
+        <ul class="chips">{u.services.map((s) => <li>{s}</li>)}</ul>
+      </section>
+
+      <!-- ══════ CASOS ══════ -->
+      {kases.length > 0 && (
+        <section class="wrap">
+          <div class="shead"><span class="n">{num()}</span><h2>Casos</h2></div>
+          <ul class="cases">
+            {kases.map((c) => (
+              <li>
+                <a class="kase" href={R(`trabajo/${c.slug}`)}>
+                  <span class="kase-shot">
+                    {c.media?.kind === 'image' && <img src={c.media.src} alt="" loading="lazy" decoding="async" />}
+                  </span>
+                  <span class="kase-b">
+                    <span class="kase-brand">{c.brand}</span>
+                    <span class="kase-t">{c.title}</span>
+                    <span class="kase-d">{c.blurb}</span>
+                    <span class="kase-m">Falta: {c.missing}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- ══════ MARCAS ══════ -->
+      {u.brands && (
+        <section class="wrap">
+          <div class="shead"><span class="n">{num()}</span><h2>Marcas</h2></div>
+          <ul class="chips">{u.brands.map((b) => <li>{b}</li>)}</ul>
+        </section>
+      )}
+
+      <!-- ══════ CTA ══════ -->
+      <section class="ucta invert">
+        <div class="wrap">
+          {unit === 'gr8' && <p class="h-md gr8-close">{gr8Copy.closing}</p>}
+          <h2 class="h-lg ucta-h">{u.cta}</h2>
+          <a class="btn" href="mailto:hola@residencia.com.mx">Hablemos<i aria-hidden="true">↗</i></a>
+        </div>
+      </section>
+
+    </Shell>
+  </div>
+</Base>
+
+<style>
+  .uhero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(50px,8vh,110px)}
+  .uh1{max-width:20ch}
+  .uh-sub{margin-top:clamp(20px,3vh,34px)}
+  .urole{display:grid;gap:.4em;margin-top:clamp(30px,4.5vh,52px);padding-top:clamp(20px,3vh,32px);
+    border-top:1px solid var(--line);max-width:56ch}
+  .urole-v{font-family:var(--display);font-weight:600;font-size:clamp(1.05rem,2vw,1.4rem);letter-spacing:-.02em}
+
+  .stack{display:grid;gap:1.1rem}
+
+  .chain{list-style:none;padding:0;display:grid;grid-template-columns:1fr;gap:.7rem}
+  @media(min-width:760px){.chain{grid-template-columns:repeat(3,1fr)}}
+  .chain li{display:grid;gap:.3em;padding:clamp(20px,2vw,30px);border:1px solid var(--line);
+    border-radius:8px;background:var(--card);border-top:3px solid var(--accent)}
+  .chain-n{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;color:var(--accent-text)}
+  .chain-t{font-family:var(--display);font-weight:700;font-size:1.4rem;letter-spacing:-.02em}
+  .sat-k{margin:clamp(26px,4vh,42px) 0 1rem}
+  .sats{list-style:none;padding:0;display:grid;grid-template-columns:1fr;gap:.7rem}
+  @media(min-width:860px){.sats{grid-template-columns:repeat(3,1fr)}}
+  .sat{display:grid;gap:.5em;height:100%;padding:clamp(18px,1.8vw,26px);border:1px solid var(--line);
+    border-radius:8px;background:var(--card);transition:border-color .25s,transform .25s}
+  .sat:hover{border-color:var(--accent);transform:translateY(-3px)}
+  .sat-t{font-size:.98rem;line-height:1.45}
+  .sat-go{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-text)}
+
+  .spectrum{list-style:none;padding:0;margin-top:clamp(26px,4vh,44px);display:grid;
+    grid-template-columns:1fr;gap:.5rem}
+  @media(min-width:760px){.spectrum{grid-template-columns:repeat(5,1fr)}}
+  .spectrum li{display:grid;gap:.3em;padding:1rem;border-radius:8px;background:var(--card);
+    border:1px solid var(--line);border-bottom:3px solid var(--accent)}
+  .sp-n{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--accent-text)}
+  .sp-t{font-family:var(--display);font-weight:600;font-size:.98rem;letter-spacing:-.01em}
+
+  .proof-note{margin-top:1rem}
+  .proof-close{margin-top:clamp(24px,3.4vh,40px);max-width:26ch}
+  .shift-k{margin:clamp(28px,4vh,46px) 0 .6rem}
+
+  .paths{display:grid;grid-template-columns:1fr;gap:.8rem}
+  @media(min-width:860px){.paths{grid-template-columns:repeat(2,1fr)}}
+  .path{display:grid;gap:.6em;padding:clamp(22px,2.4vw,34px);border:1px solid var(--line);
+    border-radius:8px;background:var(--card);border-top:3px solid var(--accent)}
+  .path-n{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--accent-text)}
+  .path-lead{font-family:var(--display);font-weight:600;font-size:1.08rem;letter-spacing:-.015em}
+
+  .catrow{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+  @media(min-width:760px){.catrow{grid-template-columns:repeat(4,1fr)}}
+  .catrow li{display:grid;gap:.2em}
+  .cat-n{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.04em;line-height:1}
+  .cat-l{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .roster-cta{margin-top:clamp(24px,3.4vh,40px)}
+
+  .lab-note{margin-top:1.1em}
+  .ucta{padding-block:clamp(70px,12vh,150px)}
+  .gr8-close{max-width:26ch;margin-bottom:clamp(20px,3vh,34px)}
+  .ucta-h{max-width:24ch;margin-bottom:clamp(26px,4vh,44px)}
+</style>

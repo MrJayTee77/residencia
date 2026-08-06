@@ -1,0 +1,99 @@
+---
+import Base from '../../layouts/Base.astro';
+import Shell from './Shell.astro';
+import { caseBySlug, cases } from '../../data/v4/cases';
+import { units } from '../../data/v4/content';
+
+interface Props { slug: string; }
+const { slug } = Astro.props;
+const c = caseBySlug(slug)!;
+const primary = c.units[0];
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+const more = cases.filter((x) => x.slug !== slug).slice(0, 3);
+const ogMap = { agency: 'agency', produccion: 'production', gr8: 'gr8', synergy: 'synergy' } as const;
+---
+<Base title={`${c.brand} — ${c.title} — Residencia`} description={c.blurb ?? c.title} theme="theme-res-v3" lang="es" og={ogMap[primary]}>
+  <div class={`v4 u-${primary}`}>
+    <Shell active="trabajo" unit={primary} heroDark>
+      <section class="chero invert">
+        <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+        <div class="wrap">
+          <p class="kicker">{c.brand}</p>
+          <h1 class="h-xl ch1">{c.title}</h1>
+          {c.blurb && <p class="lead">{c.blurb}</p>}
+          <dl class="cfacts">
+            <div><dt class="label">Unidades</dt><dd>{c.units.map((u) => units[u].name).join(' + ')}</dd></div>
+            <div><dt class="label">Estado</dt><dd class="pend">Falta {c.missing}<span class="pend-chip">Pendiente</span></dd></div>
+          </dl>
+        </div>
+      </section>
+
+      {c.media && (
+        <section class="wrap">
+          <figure class="cmedia">
+            {c.media.kind === 'video'
+              ? <video src={`${c.media.src}#t=${c.media.at}`} preload="metadata" controls playsinline aria-label={c.title}></video>
+              : <img src={c.media.src} alt={c.title} loading="lazy" decoding="async" />}
+          </figure>
+        </section>
+      )}
+
+      <section class="wrap">
+        <div class="shead"><span class="n">[ 01 ]</span><h2>Resultados</h2></div>
+        <ul class="metrics">
+          {(c.metrics ?? []).map((m) => (
+            <li>
+              <span class={m.value ? 'stat-v' : 'stat-v pending'}>{m.value ?? '—'}</span>
+              <span class="stat-l">{m.label}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="pend-note mnote">Métricas por confirmar con Residencia.</p>
+      </section>
+
+      <section class="wrap">
+        <div class="shead"><span class="n">[ 02 ]</span><h2>Más casos</h2></div>
+        <ul class="cases">
+          {more.map((o) => (
+            <li>
+              <a class={`kase u-${o.units[0]}`} href={R(`trabajo/${o.slug}`)}>
+                <span class="kase-shot">
+                  {o.media?.kind === 'image' && <img src={o.media.src} alt="" loading="lazy" decoding="async" />}
+                </span>
+                <span class="kase-b">
+                  <span class="kase-brand">{o.brand}</span>
+                  <span class="kase-t">{o.title}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a class="btn btn-ghost backall" href={R('trabajo')}>Todos los casos<i aria-hidden="true">↘</i></a>
+      </section>
+
+      <section class="ucta invert">
+        <div class="wrap">
+          <h2 class="h-lg">¿Hablamos de tu proyecto?</h2>
+          <a class="btn" href="mailto:hola@residencia.com.mx">Hablemos<i aria-hidden="true">↗</i></a>
+        </div>
+      </section>
+    </Shell>
+  </div>
+</Base>
+
+<style>
+  .chero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(44px,7vh,90px)}
+  .ch1{max-width:18ch}
+  .cfacts{display:flex;flex-wrap:wrap;gap:1.4rem 3rem;margin-top:clamp(28px,4vh,48px);
+    padding-top:clamp(18px,2.6vh,30px);border-top:1px solid var(--line)}
+  .cfacts dd{font-family:var(--display);font-weight:600;font-size:1rem;margin-top:.3em}
+  .cmedia{margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#000}
+  .cmedia video,.cmedia img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+  .metrics{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;
+    padding-block:clamp(22px,3vh,36px);border-block:1px solid var(--line)}
+  .mnote{margin-top:1em}
+  .backall{margin-top:clamp(24px,3.4vh,40px)}
+  .ucta{padding-block:clamp(70px,12vh,150px)}
+  .ucta .btn{margin-top:clamp(24px,3.4vh,40px)}
+</style>

@@ -1,0 +1,86 @@
+---
+import Base from '../../layouts/Base.astro';
+import Shell from './Shell.astro';
+import { categories, byCategory, igUrl, twUrl, missingLinks, creators } from '../../data/v4/roster';
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+---
+<Base title="Roster de creadores — GR8 by Residencia" description="El roster de creadores de GR8 by Residencia: top creadores, equipos de Kings League, casters y cosplayers." theme="theme-res-v3" lang="es" og="gr8">
+  <div class="v4 u-gr8">
+    <Shell active="creadores" unit="gr8" heroDark>
+
+      <section class="rhero invert">
+        <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+        <div class="wrap">
+          <p class="kicker">/gr8/creadores</p>
+          <h1 class="h-xl">Roster de creadores.</h1>
+          <p class="lead">Unimos nuestro expertise con el talento de los streamers más potentes de habla hispana.</p>
+          <p class="pend-note rnote">
+            Alcance combinado del roster pendiente — es el titular natural de esta página (gap 03).
+          </p>
+        </div>
+      </section>
+
+      <section class="wrap">
+        <ul class="catnav">
+          {categories.map((c) => (
+            <li><a href={`#${c.id}`}><b>{byCategory(c.id).length}</b> {c.label}</a></li>
+          ))}
+        </ul>
+      </section>
+
+      {categories.map((c, i) => (
+        <section class="wrap" id={c.id}>
+          <div class="shead"><span class="n">[ 0{i + 1} ]</span><h2>{c.label}</h2></div>
+          <p class="body catblurb">{c.blurb}</p>
+          <ul class="roster">
+            {byCategory(c.id).map((cr) => (
+              <li class="cr">
+                <span class="cr-n">{cr.name}</span>
+                <span class="cr-c">{c.label}{cr.est ? ` · est. ${cr.est}` : ''}</span>
+                <span class="cr-links">
+                  {cr.instagram
+                    ? <a href={igUrl(cr.instagram)} target="_blank" rel="noopener noreferrer">IG {cr.instagram}</a>
+                    : <span class="none">IG pendiente</span>}
+                  {cr.twitch
+                    ? <a href={twUrl(cr.twitch)} target="_blank" rel="noopener noreferrer">Twitch</a>
+                    : <span class="none">Twitch pendiente</span>}
+                </span>
+                {cr.note && <span class="cr-note">{cr.note}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      <section class="wrap">
+        <p class="pend-note">
+          {missingLinks} de {creators.length} perfiles tienen enlaces incompletos en el deck (gap 07).
+          Fotografía del roster pendiente.
+        </p>
+      </section>
+
+      <section class="ucta invert">
+        <div class="wrap">
+          <h2 class="h-lg">Hagamos algo GR8</h2>
+          <a class="btn" href="mailto:hola@residencia.com.mx">Hablemos<i aria-hidden="true">↗</i></a>
+        </div>
+      </section>
+    </Shell>
+  </div>
+</Base>
+
+<style>
+  .rhero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(50px,8vh,100px)}
+  .rnote{margin-top:clamp(24px,3.4vh,40px)}
+  .catnav{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.6rem}
+  .catnav a{display:inline-flex;align-items:baseline;gap:.5em;padding:.7em 1.1em;border-radius:99px;
+    border:1px solid var(--line-2);background:var(--card);
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;transition:border-color .2s,background .2s}
+  .catnav a:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+  .catnav b{font-family:var(--display);font-size:1rem;color:var(--accent-text)}
+  .catblurb{margin-bottom:clamp(20px,3vh,32px)}
+  .ucta{padding-block:clamp(70px,12vh,150px)}
+  .ucta .btn{margin-top:clamp(24px,3.4vh,40px)}
+</style>

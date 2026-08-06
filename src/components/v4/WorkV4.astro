@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+import Shell from './Shell.astro';
+import { cases } from '../../data/v4/cases';
+import { units } from '../../data/v4/content';
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+const withMetrics = cases.filter((c) => c.metrics?.some((m) => m.value)).length;
+---
+<Base title="Trabajo — Residencia" description="Casos de Residencia: estrategia, producción, creator marketing e innovación para marcas en México." theme="theme-res-v3" lang="es" og="work">
+  <div class="v4">
+    <Shell active="trabajo">
+      <section class="whero">
+        <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+        <div class="wrap">
+          <p class="kicker">Trabajo</p>
+          <h1 class="h-xl">La prueba.</h1>
+          <p class="lead">{cases.length} casos detectados en el material de Residencia, cruzando las cuatro unidades.</p>
+          <p class="pend-note wnote">
+            {withMetrics === 0
+              ? 'Ningún caso tiene métricas todavía. Es el gap 02 del documento y el que más pesa: sin resultados los casos son galería; con resultados son argumento de venta.'
+              : `${withMetrics} de ${cases.length} casos con métricas.`}
+          </p>
+        </div>
+      </section>
+
+      <section class="wrap">
+        <ul class="cases">
+          {cases.map((c) => (
+            <li>
+              <a class={`kase u-${c.units[0]}`} href={R(`trabajo/${c.slug}`)}>
+                <span class="kase-shot">
+                  {c.media?.kind === 'image' && <img src={c.media.src} alt="" loading="lazy" decoding="async" />}
+                </span>
+                <span class="kase-b">
+                  <span class="kase-brand">{c.brand}</span>
+                  <span class="kase-t">{c.title}</span>
+                  <span class="kase-d">{c.blurb}</span>
+                  <span class="kase-m">
+                    {c.units.map((x) => units[x].name.replace('Residencia ', '').replace(' by Residencia', '')).join(' + ')} · falta: {c.missing}
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="ucta invert">
+        <div class="wrap">
+          <h2 class="h-lg">¿Hablamos de tu proyecto?</h2>
+          <a class="btn" href="mailto:hola@residencia.com.mx">Hablemos<i aria-hidden="true">↗</i></a>
+        </div>
+      </section>
+    </Shell>
+  </div>
+</Base>
+
+<style>
+  .whero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(40px,6vh,80px)}
+  .wnote{margin-top:clamp(24px,3.4vh,40px);max-width:72ch}
+  .ucta{padding-block:clamp(70px,12vh,150px)}
+  .ucta .btn{margin-top:clamp(24px,3.4vh,40px)}
+</style>

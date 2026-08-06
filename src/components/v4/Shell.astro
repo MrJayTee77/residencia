@@ -1,0 +1,244 @@
+---
+// v4 shell: header with the Ecosistema dropdown the architecture document
+// specifies, plus footer. Inside a unit the brand lockup reads
+// "<Unit> by Residencia" with a route back to the ecosystem, so a unit page can
+// be shared as a standalone URL to its own prospects.
+import '../../styles/ds/styles.css';
+import '../../styles/v4.css';
+import { units, unitOrder, brand } from '../../data/v4/content';
+import type { UnitId } from '../../data/v4/content';
+
+interface Props {
+  active?: UnitId | 'trabajo' | 'creadores' | 'home';
+  /** Set inside a unit so the header carries that unit's lockup and accent. */
+  unit?: UnitId;
+  /** True when the page opens on an inverted hero — the bar has to sit light
+   *  over it until the scrolled (paper) background kicks in. */
+  heroDark?: boolean;
+}
+const { active = 'home', unit, heroDark = false } = Astro.props;
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+const mark = `${B}/ds/residencia-mark-noturno.png`;
+const u = unit ? units[unit] : null;
+---
+<header class={`v4hdr${heroDark ? ' on-dark' : ''}`} data-nav>
+  <div class="wrap v4nav">
+    <a class="v4brand" href={R()} aria-label={u ? `${u.name} — volver al ecosistema` : 'Residencia'}>
+      <img src={mark} alt="" width="28" height="28" />
+      {u
+        ? <span class="v4lock"><b>{u.name.replace(' by Residencia', '')}</b><i>by Residencia</i></span>
+        : <span class="v4lock"><b>Residencia</b></span>}
+    </a>
+
+    <nav class="v4links" aria-label="Principal">
+      <div class="v4drop" data-drop>
+        <button type="button" class="v4dropbtn" data-drop-btn aria-expanded="false" aria-controls="v4-eco">
+          Ecosistema<i aria-hidden="true">▾</i>
+        </button>
+        <div class="v4dropmenu" id="v4-eco" data-drop-menu hidden>
+          {unitOrder.map((id) => (
+            <a href={R(units[id].slug)} class={`v4dropitem u-${id}`} aria-current={active === id ? 'page' : undefined}>
+              <span class="dn">{units[id].n}</span>
+              <span class="dname">{units[id].name}</span>
+              <span class="drole">{units[id].role}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+      <a href={R('trabajo')} aria-current={active === 'trabajo' ? 'page' : undefined}>Trabajo</a>
+      <a href={`${R()}#nosotros`}>Nosotros</a>
+      <a class="v4cta" href={`${R()}#contacto`}>Contacto</a>
+    </nav>
+
+    <button class="v4burger" type="button" data-menu-btn aria-expanded="false" aria-controls="v4-menu">
+      <span class="v4bar" aria-hidden="true"></span><span class="v4bt">Menú</span>
+    </button>
+  </div>
+
+  <div class="v4mob" id="v4-menu" data-menu hidden>
+    <nav aria-label="Menú">
+      {unitOrder.map((id) => (
+        <a href={R(units[id].slug)} class={`u-${id}`}>
+          <span class="mn">{units[id].n}</span>
+          <span class="mname">{units[id].name}</span>
+          <span class="mrole">{units[id].role}</span>
+        </a>
+      ))}
+      <a href={R('trabajo')} class="flat"><span class="mname">Trabajo</span></a>
+      <a href={`${R()}#nosotros`} class="flat"><span class="mname">Nosotros</span></a>
+      <a href={`${R()}#contacto`} class="flat"><span class="mname">Contacto</span></a>
+    </nav>
+  </div>
+</header>
+
+<slot />
+
+<footer class="v4foot">
+  <div class="wrap">
+    <div class="v4foot-top">
+      <a class="v4brand" href={R()}>
+        <img src={mark} alt="" width="26" height="26" /><span class="v4lock"><b>Residencia</b></span>
+      </a>
+      <p class="thesis">{brand.thesis}</p>
+    </div>
+    <div class="v4foot-grid">
+      <div>
+        <p class="label">Unidades</p>
+        <ul>{unitOrder.map((id) => <li><a href={R(units[id].slug)}>{units[id].name}</a></li>)}</ul>
+      </div>
+      <div>
+        <p class="label">Sitio</p>
+        <ul>
+          <li><a href={R('trabajo')}>Trabajo</a></li>
+          <li><a href={R('gr8/creadores')}>Creadores</a></li>
+          <li><a href={`${R()}#nosotros`}>Nosotros</a></li>
+          <li><a href={`${R()}#contacto`}>Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Contacto</p>
+        <ul>
+          <li><a href="mailto:hola@residencia.com.mx">hola@residencia.com.mx <span class="pend-chip">Por confirmar</span></a></li>
+          <li><span class="muted">Ciudad de México</span></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Legal</p>
+        <ul>
+          <li><span class="muted pend">Aviso de privacidad<span class="pend-chip">Pendiente</span></span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="v4foot-note pend-note">© 2026 Residencia · {brand.domain} · Sitio en español — versión EN pendiente</p>
+  </div>
+</footer>
+
+<style>
+  .v4hdr{position:fixed;inset:0 0 auto 0;z-index:120;border-bottom:1px solid transparent;
+    transition:background .35s,border-color .35s,transform .35s}
+  .v4hdr.scrolled{background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
+  /* Over an inverted hero the bar is light; once scrolled the paper background
+     returns and it goes back to ink. */
+  .v4hdr.on-dark:not(.scrolled){color:#F0EBF7}
+  .v4hdr.on-dark:not(.scrolled) .v4lock i{color:color-mix(in srgb,#F0EBF7 62%,transparent)}
+  .v4hdr.on-dark:not(.scrolled) .v4brand img{filter:invert(1) brightness(1.9)}
+  .v4hdr.on-dark:not(.scrolled) .v4cta{border-color:color-mix(in srgb,#F0EBF7 42%,transparent)}
+  .v4hdr.on-dark:not(.scrolled) .v4cta:hover{background:#F0EBF7;color:#1B1226;border-color:#F0EBF7}
+  .v4nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:74px}
+  .v4brand{display:flex;align-items:center;gap:.55em}
+  .v4brand img{flex:none}
+  .v4lock{display:flex;flex-direction:column;line-height:1.05}
+  .v4lock b{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.02em}
+  .v4lock i{font-family:var(--mono);font-style:normal;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  .v4links{display:flex;align-items:center;gap:1.5rem}
+  .v4links > a,.v4dropbtn{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    background:none;border:0;color:inherit;cursor:pointer;padding:0}
+  .v4links > a:hover,.v4dropbtn:hover{color:var(--accent-text)}
+  .v4dropbtn i{font-style:normal;margin-left:.35em;font-size:.6em;display:inline-block;transition:transform .25s}
+  .v4dropbtn[aria-expanded="true"] i{transform:rotate(180deg)}
+  .v4cta{padding:.7em 1.2em;border:1px solid var(--line-2);border-radius:99px;transition:background .25s,color .25s,border-color .25s}
+  .v4cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  .v4drop{position:relative}
+  .v4dropmenu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);
+    width:min(88vw,560px);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;
+    background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;
+    box-shadow:0 18px 44px rgba(27,18,38,.18)}
+  .v4dropmenu[hidden]{display:none}
+  .v4dropitem{display:grid;gap:.2em;padding:1rem 1.1rem;background:var(--card);border-top:3px solid var(--accent)}
+  .v4dropitem:hover{background:color-mix(in srgb,var(--accent) 7%,var(--card))}
+  .dn{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--accent-text)}
+  .dname{font-family:var(--display);font-weight:700;font-size:1rem;letter-spacing:-.02em}
+  .drole{font-size:.8rem;line-height:1.4;color:var(--muted)}
+  @media(max-width:620px){.v4dropmenu{grid-template-columns:1fr}}
+
+  .v4burger{display:none;align-items:center;gap:.55em;min-height:44px;background:none;border:0;color:inherit;cursor:pointer}
+  .v4bar{position:relative;display:block;width:22px;height:1.5px;background:currentColor}
+  .v4bar::before,.v4bar::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;transition:transform .28s}
+  .v4bar::before{top:-6px}.v4bar::after{top:6px}
+  .v4burger[aria-expanded="true"] .v4bar{background:transparent}
+  .v4burger[aria-expanded="true"] .v4bar::before{transform:translateY(6px) rotate(45deg)}
+  .v4burger[aria-expanded="true"] .v4bar::after{transform:translateY(-6px) rotate(-45deg)}
+  .v4bt{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
+
+  .v4mob{background:var(--paper);border-top:1px solid var(--line);padding:0 var(--pad) 1.5rem;max-height:80vh;overflow-y:auto}
+  .v4mob[hidden]{display:none}
+  .v4mob nav{display:flex;flex-direction:column}
+  .v4mob a{display:grid;gap:.15em;padding:1rem 0;border-bottom:1px solid var(--line);border-left:3px solid var(--accent);padding-left:.9rem}
+  .v4mob a.flat{border-left-color:transparent}
+  .mn{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--accent-text)}
+  .mname{font-family:var(--display);font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
+  .mrole{font-size:.85rem;color:var(--muted);line-height:1.4}
+
+  @media(max-width:980px){ .v4links{display:none} .v4burger{display:inline-flex} }
+
+  .v4foot{background:var(--ink);color:var(--paper);padding-block:clamp(48px,7vh,90px)}
+  .v4foot .label{color:color-mix(in srgb,var(--paper) 62%,transparent);margin-bottom:.9em}
+  .v4foot ul{list-style:none;padding:0;display:grid;gap:.55em}
+  .v4foot li{font-size:.92rem}
+  .v4foot a:hover{color:var(--accent)}
+  .v4foot .muted{color:color-mix(in srgb,var(--paper) 62%,transparent)}
+  .v4foot .v4lock b{color:var(--paper)}
+  .v4foot-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:1.4rem;
+    padding-bottom:clamp(30px,4vh,50px);border-bottom:1px solid color-mix(in srgb,var(--paper) 20%,transparent)}
+  .thesis{font-family:var(--display);font-weight:500;font-size:clamp(1.05rem,2vw,1.5rem);letter-spacing:-.02em;max-width:34ch}
+  .v4foot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;padding-block:clamp(30px,4.5vh,54px)}
+  @media(min-width:860px){.v4foot-grid{grid-template-columns:repeat(4,1fr)}}
+  .v4foot-note{color:color-mix(in srgb,var(--paper) 55%,transparent)}
+</style>
+
+<script>
+  let ran = false;
+  const setup = () => {
+    if (ran) return;
+    const hdr = document.querySelector<HTMLElement>('[data-nav]');
+    if (!hdr) return;
+    ran = true;
+
+    const onScroll = () => hdr.classList.toggle('scrolled', scrollY > 30);
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Ecosistema dropdown — click to open, Escape and outside-click to close.
+    const drop = document.querySelector<HTMLElement>('[data-drop]');
+    const dBtn = document.querySelector<HTMLButtonElement>('[data-drop-btn]');
+    const dMenu = document.querySelector<HTMLElement>('[data-drop-menu]');
+    const setDrop = (open: boolean) => {
+      dBtn?.setAttribute('aria-expanded', String(open));
+      if (dMenu) dMenu.hidden = !open;
+    };
+    dBtn?.addEventListener('click', () => setDrop(dBtn.getAttribute('aria-expanded') !== 'true'));
+    addEventListener('click', (e) => {
+      if (drop && !drop.contains(e.target as Node)) setDrop(false);
+    });
+
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    const panel = document.querySelector<HTMLElement>('[data-menu]');
+    const setOpen = (open: boolean) => {
+      btn?.setAttribute('aria-expanded', String(open));
+      if (panel) panel.hidden = !open;
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setDrop(false);
+      if (btn?.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+
+    document.addEventListener('astro:before-swap', () => {
+      ran = false;
+      removeEventListener('scroll', onScroll);
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    }, { once: true });
+  };
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>
