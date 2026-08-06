@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Shell from './Shell.astro';
-import { categories, byCategory, igUrl, twUrl, reach, kingsNote } from '../../data/v4/roster';
+import { categories, byCategory, igUrl, twUrl, reach, kingsNote, portraits, portraitCount, creators } from '../../data/v4/roster';
 
 const B = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -35,7 +35,10 @@ const B = import.meta.env.BASE_URL.replace(/\/$/, '');
           {c.id === 'kings' && <p class="pend-note kn">{kingsNote}</p>}
           <ul class="roster">
             {byCategory(c.id).map((cr) => (
-              <li class="cr">
+              <li class={portraits[cr.name] ? 'cr has-shot' : 'cr'}>
+                {portraits[cr.name] && (
+                  <span class="cr-shot"><img src={portraits[cr.name]} alt={`Retrato de ${cr.name}`} loading="lazy" decoding="async" /></span>
+                )}
                 <span class="cr-n">{cr.name}</span>
                 <span class="cr-c">{c.label}{cr.est ? ` · est. ${cr.est}` : ''}</span>
                 {(cr.ig || cr.tw) && (
@@ -60,6 +63,7 @@ const B = import.meta.env.BASE_URL.replace(/\/$/, '');
 
       <section class="wrap">
         <p class="pend-note">
+          {portraitCount} de {creators.length} perfiles tienen retrato en el deck — falta la fotografía del resto.
           Handles corregidos por investigación (Caprimint, aldo_geo, nataliamx, PIO FC, Cry → Kick).
           Solo falta el Twitch de HeyBell. Cifras de audiencia sin validar por GR8. Fotografía pendiente.
         </p>
@@ -90,6 +94,9 @@ const B = import.meta.env.BASE_URL.replace(/\/$/, '');
   .catnav a:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
   .catnav b{font-family:var(--display);font-size:1rem;color:var(--accent-text)}
   .catblurb{margin-bottom:clamp(20px,3vh,32px)}
+  .cr-shot{display:block;margin:-1px -1px .8em;border-radius:7px 7px 0 0;overflow:hidden;background:#0A0714}
+  .cr-shot img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top center}
+  .cr.has-shot{padding-top:0}
   .ucta{padding-block:clamp(70px,12vh,150px)}
   .ucta .btn{margin-top:clamp(24px,3.4vh,40px)}
 </style>

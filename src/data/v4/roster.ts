@@ -72,6 +72,18 @@ export const creators: Creator[] = [
 ];
 
 /** Headline figure for /gr8/creadores. Public sources, pending GR8 validation. */
+/** Portraits from the GR8 deck. Only six arrived, so the rest of the roster
+ *  renders as a typographic card — we do not put a stock face on a real person. */
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+export const portraits: Record<string, string> = {
+  'Alana': `${B}/media/creators/creator-01.webp`,
+  'Ari Gameplays': `${B}/media/creators/creator-02.webp`,
+  'Rivers': `${B}/media/creators/creator-03.webp`,
+  'Juan Guarnizo': `${B}/media/creators/creator-04.webp`,
+  'Roberto Cein': `${B}/media/creators/creator-05.webp`,
+};
+export const portraitCount = 5;
+
 export const reach = {
   igTwitch: '~85M',
   total: '+100M',

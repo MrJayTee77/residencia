@@ -7,6 +7,7 @@ import {
 import type { UnitId } from '../../data/v4/content';
 import { casesForUnit } from '../../data/v4/cases';
 import { creators, categories } from '../../data/v4/roster';
+import { plate, atmosphereNote, gr8Loop } from '../../data/v4/media';
 
 interface Props { unit: UnitId; }
 const { unit } = Astro.props;
@@ -27,7 +28,8 @@ const num = () => `[ 0${++n} ]`;
     <Shell active={unit} unit={unit} heroDark>
 
       <!-- ══════ HERO ══════ -->
-      <section class="uhero invert">
+      <section class="uhero invert" style={`--plate:url('${plate[unit]}')`}>
+        <div class="uhero-bg" aria-hidden="true" data-motion={unit === 'gr8' ? gr8Loop : undefined}></div>
         <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
         <div class="wrap">
           <p class="kicker">/{u.slug} · {u.kicker}</p>
@@ -35,6 +37,7 @@ const num = () => `[ 0${++n} ]`;
           <p class="lead uh-sub">{u.sub}</p>
           <p class="urole"><span class="label">Su papel en el ecosistema</span><span class="urole-v">{u.role}</span></p>
         </div>
+        <p class="pend-note uhero-note">{atmosphereNote}</p>
       </section>
 
       {unit === 'agency' && (
@@ -256,8 +259,48 @@ const num = () => `[ 0${++n} ]`;
   </div>
 </Base>
 
+<script>
+  let ran = false;
+  const setup = () => {
+    if (ran) return;
+    const host = document.querySelector<HTMLElement>('[data-motion]');
+    if (!host) return;
+    ran = true;
+    const conn = (navigator as any).connection;
+    const ok = !matchMedia('(prefers-reduced-motion:reduce)').matches
+      && matchMedia('(min-width:1024px)').matches
+      && matchMedia('(hover:hover)').matches
+      && !(conn && (conn.saveData || /2g/.test(conn.effectiveType || '')));
+    if (!ok) return;
+    const io = new IntersectionObserver((es) => {
+      for (const e of es) {
+        if (!e.isIntersecting) continue;
+        io.disconnect();
+        const v = document.createElement('video');
+        v.src = host.dataset.motion!;
+        v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+        v.setAttribute('aria-hidden', 'true');
+        v.addEventListener('canplay', () => { v.classList.add('ready'); v.play().catch(() => {}); }, { once: true });
+        host.prepend(v);
+      }
+    }, { rootMargin: '300px' });
+    io.observe(host);
+    document.addEventListener('astro:before-swap', () => { ran = false; io.disconnect(); }, { once: true });
+  };
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>
+
 <style>
-  .uhero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(50px,8vh,110px)}
+  .uhero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(50px,8vh,110px);overflow:hidden}
+  .uhero-bg{position:absolute;inset:0;background-image:var(--plate);background-size:cover;background-position:center;opacity:.5}
+  .uhero-bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    opacity:0;transition:opacity .9s var(--ease-entrance)}
+  .uhero-bg video.ready{opacity:1}
+  .uhero-bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(100deg,rgba(23,16,33,.93) 0%,rgba(23,16,33,.84) 46%,rgba(23,16,33,.55) 100%)}
+  .uhero > .wrap,.uhero > .mk{position:relative;z-index:2}
+  .uhero-note{position:absolute;left:var(--pad);bottom:14px;z-index:2}
   .uh1{max-width:20ch}
   .uh-sub{margin-top:clamp(20px,3vh,34px)}
   .urole{display:grid;gap:.4em;margin-top:clamp(30px,4.5vh,52px);padding-top:clamp(20px,3vh,32px);

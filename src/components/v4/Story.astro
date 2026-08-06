@@ -9,14 +9,16 @@
 //   04 EL ECOSISTEMA (reveal) · 05 la prueba · 06 clientes · 07 cierre
 import Base from '../../layouts/Base.astro';
 import Shell from './Shell.astro';
-import { home, ecosystemCards, units, brand, clientsMaster } from '../../data/v4/content';
+import { home, ecosystemCards, units, brand } from '../../data/v4/content';
 import { featured } from '../../data/v4/cases';
-import { unitPlate } from '../../data/media-v3';
+import { clientLogos } from '../../data/media-v3';
+import { plate, scene, atmosphereNote } from '../../data/v4/media';
 
 const B = import.meta.env.BASE_URL.replace(/\/$/, '');
 const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
 const heroSub = home.hero.sub.replace('{years}', home.who.stats[0].value);
-const marquee = [...clientsMaster, ...clientsMaster];
+// real marks from the credentials deck, doubled so the marquee loops seamlessly
+const marquee = [...clientLogos, ...clientLogos];
 const word = 'Residencia'.split('');
 ---
 <Base title="Residencia — Creative Content Strategy" description={brand.thesis} theme="theme-res-v3" lang="es" og="home">
@@ -41,6 +43,10 @@ const word = 'Residencia'.split('');
         <div class="wrap">
           <p class="act-n rv">[ 01 ]</p>
           <h2 class="h-lg rv ch-h">{home.changed.title}</h2>
+          <figure class="split rv">
+            <img src={scene.cambio} alt="" width="2600" height="1103" loading="lazy" decoding="async" />
+            <figcaption class="pend-note">{atmosphereNote}</figcaption>
+          </figure>
           <div class="ba">
             <div class="ba-col rv">
               <p class="label">{home.changed.before.k}</p>
@@ -55,8 +61,9 @@ const word = 'Residencia'.split('');
       </section>
 
       <!-- ══════ 02 · EL INSIGHT ══════ -->
-      <section class="act insight invert" data-act>
-        <div class="wrap">
+      <section class="act insight invert" data-act style={`--plate:url('${scene.iridescent}')`}>
+        <div class="ins-bg" aria-hidden="true"></div>
+        <div class="wrap ins-in">
           <p class="act-n rv">[ 02 ]</p>
           <blockquote class="rv">
             <p class="h-lg ins-q">«{home.changed.insight}»</p>
@@ -86,7 +93,7 @@ const word = 'Residencia'.split('');
       <section class="act eco-act" id="ecosistema" data-act data-eco>
         <div class="backdrop" data-backdrop aria-hidden="true">
           {ecosystemCards.map((c) => (
-            <div class="bd" data-bd={c.id} style={`--plate:url('${unitPlate[c.id === 'produccion' ? 'production' : c.id]}')`}></div>
+            <div class="bd" data-bd={c.id} style={`--plate:url('${plate[c.id]}')`}></div>
           ))}
         </div>
         <div class="wrap eco-in">
@@ -161,7 +168,11 @@ const word = 'Residencia'.split('');
           <p class="act-n rv">[ 06 ]</p>
           <p class="h-md rv cl-copy">{home.clients.copy}</p>
         </div>
-        <div class="marq"><div class="marq-track">{marquee.map((c) => <span>{c}</span>)}</div></div>
+        <div class="marq" role="img" aria-label={`Marcas: ${clientLogos.map((l) => l.name).join(', ')}`}>
+          <div class="marq-track">
+            {marquee.map((l) => <img src={l.src} alt="" width="170" height="75" loading="lazy" decoding="async" />)}
+          </div>
+        </div>
       </section>
 
       <!-- ══════ 07 · CIERRE ══════ -->
@@ -210,7 +221,15 @@ const word = 'Residencia'.split('');
   .ba-col.rv:nth-child(2){transition-delay:.12s}
 
   /* ── 02 insight ── */
-  .insight{padding-block:clamp(90px,17vh,220px)}
+  .insight{position:relative;padding-block:clamp(90px,17vh,220px);overflow:hidden}
+  .ins-bg{position:absolute;inset:0;background-image:var(--plate);background-size:cover;background-position:center;
+    opacity:.34;filter:saturate(1.1)}
+  .ins-bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(96deg,rgba(23,16,33,.94) 0%,rgba(23,16,33,.86) 48%,rgba(23,16,33,.62) 100%)}
+  .ins-in{position:relative;z-index:2}
+  .split{margin:0 0 clamp(28px,4.5vh,54px);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .split img{display:block;width:100%;height:auto;aspect-ratio:2600/1103;object-fit:cover}
+  .split figcaption{padding:.8em 1em;background:var(--card);border-top:1px solid var(--line)}
   .ins-q{max-width:24ch}
   .ins-t{margin-top:1.2em}
 
@@ -287,7 +306,12 @@ const word = 'Residencia'.split('');
 
   .work-cta{margin-top:clamp(26px,4vh,44px)}
   .cl-copy{max-width:24ch;margin-bottom:clamp(24px,3.5vh,42px)}
-  .clients{background:var(--card);border-block:1px solid var(--line)}
+  .clients{background:var(--ink);color:var(--paper);border-block:1px solid var(--line)}
+  .clients .act-n{color:var(--accent)}
+  .clients .marq-track img{height:52px;width:auto;object-fit:contain;opacity:.72;flex:none;
+    transition:opacity .3s var(--ease-standard)}
+  .clients .marq-track img:hover{opacity:1}
+  .clients .marq-track{align-items:center;gap:clamp(30px,4vw,68px)}
 
   .closing{padding-block:clamp(90px,16vh,200px)}
   .cl-h{display:grid;gap:.06em;max-width:16ch}
