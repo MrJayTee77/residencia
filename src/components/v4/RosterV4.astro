@@ -1,10 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Shell from './Shell.astro';
-import { categories, byCategory, igUrl, twUrl, missingLinks, creators } from '../../data/v4/roster';
+import { categories, byCategory, igUrl, twUrl, reach, kingsNote } from '../../data/v4/roster';
 
 const B = import.meta.env.BASE_URL.replace(/\/$/, '');
-const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
 ---
 <Base title="Roster de creadores — GR8 by Residencia" description="El roster de creadores de GR8 by Residencia: top creadores, equipos de Kings League, casters y cosplayers." theme="theme-res-v3" lang="es" og="gr8">
   <div class="v4 u-gr8">
@@ -16,9 +15,8 @@ const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
           <p class="kicker">/gr8/creadores</p>
           <h1 class="h-xl">Roster de creadores.</h1>
           <p class="lead">Unimos nuestro expertise con el talento de los streamers más potentes de habla hispana.</p>
-          <p class="pend-note rnote">
-            Alcance combinado del roster pendiente — es el titular natural de esta página (gap 03).
-          </p>
+          <p class="reach"><span class="reach-v">{reach.total}</span><span class="reach-l">de audiencia combinada<span class="pend-chip">Sin validar</span></span></p>
+          <p class="pend-note rnote">{reach.note}</p>
         </div>
       </section>
 
@@ -34,18 +32,24 @@ const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
         <section class="wrap" id={c.id}>
           <div class="shead"><span class="n">[ 0{i + 1} ]</span><h2>{c.label}</h2></div>
           <p class="body catblurb">{c.blurb}</p>
+          {c.id === 'kings' && <p class="pend-note kn">{kingsNote}</p>}
           <ul class="roster">
             {byCategory(c.id).map((cr) => (
               <li class="cr">
                 <span class="cr-n">{cr.name}</span>
                 <span class="cr-c">{c.label}{cr.est ? ` · est. ${cr.est}` : ''}</span>
+                {(cr.ig || cr.tw) && (
+                  <span class="cr-aud">{[cr.ig && `IG ${cr.ig}`, cr.tw && `Twitch ${cr.tw}`].filter(Boolean).join(' · ')}</span>
+                )}
+                {cr.other && <span class="cr-note">{cr.other}</span>}
+                {cr.president && <span class="cr-note">Presidencia: {cr.president}</span>}
                 <span class="cr-links">
                   {cr.instagram
                     ? <a href={igUrl(cr.instagram)} target="_blank" rel="noopener noreferrer">IG {cr.instagram}</a>
                     : <span class="none">IG pendiente</span>}
                   {cr.twitch
                     ? <a href={twUrl(cr.twitch)} target="_blank" rel="noopener noreferrer">Twitch</a>
-                    : <span class="none">Twitch pendiente</span>}
+                    : <span class="none">{c.id === 'kings' ? 'Twitch inactivo' : 'Twitch pendiente'}</span>}
                 </span>
                 {cr.note && <span class="cr-note">{cr.note}</span>}
               </li>
@@ -56,8 +60,8 @@ const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
 
       <section class="wrap">
         <p class="pend-note">
-          {missingLinks} de {creators.length} perfiles tienen enlaces incompletos en el deck (gap 07).
-          Fotografía del roster pendiente.
+          Handles corregidos por investigación (Caprimint, aldo_geo, nataliamx, PIO FC, Cry → Kick).
+          Solo falta el Twitch de HeyBell. Cifras de audiencia sin validar por GR8. Fotografía pendiente.
         </p>
       </section>
 
@@ -73,7 +77,12 @@ const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
 
 <style>
   .rhero{position:relative;padding-top:clamp(140px,20vh,220px);padding-bottom:clamp(50px,8vh,100px)}
-  .rnote{margin-top:clamp(24px,3.4vh,40px)}
+  .reach{display:flex;flex-wrap:wrap;align-items:baseline;gap:.7em;margin-top:clamp(26px,4vh,44px)}
+  .reach-v{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,7vw,5rem);letter-spacing:-.045em;line-height:1;color:var(--accent-text)}
+  .reach-l{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .rnote{margin-top:clamp(14px,2vh,22px);max-width:74ch}
+  .kn{margin-bottom:1.1em}
+  .cr-aud{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;color:var(--accent-text)}
   .catnav{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.6rem}
   .catnav a{display:inline-flex;align-items:baseline;gap:.5em;padding:.7em 1.1em;border-radius:99px;
     border:1px solid var(--line-2);background:var(--card);

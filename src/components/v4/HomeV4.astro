@@ -24,9 +24,7 @@ const marquee = [...clientsMaster, ...clientsMaster];
           <h1 class="h-xl">
             {home.hero.h1[0]}<br /><span class="hero-2">{home.hero.h1[1]}</span>
           </h1>
-          <p class="lead hero-sub">
-            Somos un ecosistema creativo con <span class="pend">{years.value} años<span class="pend-chip">Por confirmar</span></span> construyendo marcas relevantes dentro de los ecosistemas digitales.
-          </p>
+          <p class="lead hero-sub">{heroSub}</p>
           <a class="btn" href="#cambio">{home.hero.cta}<i aria-hidden="true">↓</i></a>
         </div>
         <p class="hero-note pend-note">Visual pendiente: loop de video con lo mejor de las cuatro unidades.</p>
@@ -135,7 +133,43 @@ const marquee = [...clientsMaster, ...clientsMaster];
         </div>
       </section>
 
-      <!-- ══════ 07 · CIERRE + CONTACTO ══════ -->
+      <!-- ══════ 07 · EQUIPO ══════ -->
+      <section class="team">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 06 ]</span><h2>{home.team.kicker}</h2><span class="pend-chip">Pendiente</span></div>
+          <h2 class="h-lg team-t">{home.team.title}</h2>
+          <ul class="people">
+            {home.team.people.map((p) => (
+              <li class="person">
+                <span class="avatar" aria-hidden="true">—</span>
+                <span class="p-name pend">[Nombre]</span>
+                <span class="p-role pend">{p.role}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="pend-note team-n">{home.team.note}</p>
+        </div>
+      </section>
+
+      <!-- ══════ 08 · RECONOCIMIENTOS ══════ -->
+      <section class="awards">
+        <div class="wrap">
+          <div class="shead"><span class="n">[ 07 ]</span><h2>{home.awards.kicker}</h2><span class="pend-chip">Pendiente</span></div>
+          <h2 class="h-lg team-t">{home.awards.title}</h2>
+          <ul class="aw">
+            {home.awards.entries.map((e) => (
+              <li>
+                <span class="aw-y pend">{e.y}</span>
+                <span class="aw-a pend">[{e.a}]</span>
+                <span class="aw-b pend">{e.b}{e.c ? ` — ${e.c}` : ''}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="pend-note team-n">{home.awards.note}</p>
+        </div>
+      </section>
+
+      <!-- ══════ 09 · CIERRE + CONTACTO ══════ -->
       <section id="contacto" class="closing invert">
         <span class="mk mk-bl" aria-hidden="true"></span><span class="mk mk-br" aria-hidden="true"></span>
         <div class="wrap">
@@ -146,7 +180,7 @@ const marquee = [...clientsMaster, ...clientsMaster];
             {home.closing.cta} — {home.closing.email}<i aria-hidden="true">↗</i>
           </a>
           <p class="pend-note close-note">
-            Correo por confirmar. El guiño «lo bueno → más grande» prepara el remate de GR8 sin gastarlo aquí.
+            El guiño «lo bueno → más grande» prepara el remate de GR8 sin gastarlo aquí.
           </p>
         </div>
       </section>
@@ -179,6 +213,24 @@ const marquee = [...clientsMaster, ...clientsMaster];
   .clients{background:var(--card);border-block:1px solid var(--line)}
   .clients-copy{max-width:24ch;margin-bottom:clamp(26px,4vh,46px)}
   .clients-note{margin-top:clamp(24px,3.4vh,40px)}
+
+  .team,.awards{background:var(--card);border-top:1px solid var(--line)}
+  .team-t{max-width:22ch;margin-bottom:clamp(26px,4vh,46px)}
+  .team-n{margin-top:clamp(20px,3vh,32px)}
+  .people{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,26px)}
+  @media(min-width:760px){.people{grid-template-columns:repeat(4,1fr)}}
+  .person{display:grid;gap:.5em;justify-items:start}
+  .avatar{width:100%;aspect-ratio:1;border-radius:8px;border:1px dashed var(--line-2);display:grid;place-items:center;
+    background:var(--paper);font-family:var(--mono);color:var(--muted)}
+  .p-name{font-family:var(--display);font-weight:700;font-size:1rem}
+  .p-role{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .aw{list-style:none;padding:0}
+  .aw li{display:grid;grid-template-columns:auto 1fr;gap:.2em 1.4rem;align-items:baseline;
+    padding:1rem 0;border-top:1px solid var(--line)}
+  .aw li:last-child{border-bottom:1px solid var(--line)}
+  .aw-y{font-family:var(--mono);font-size:.72rem;color:var(--accent-text)}
+  .aw-a{font-family:var(--display);font-weight:600;font-size:1.05rem}
+  .aw-b{grid-column:2;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
   .closing{position:relative;padding-block:clamp(80px,14vh,180px)}
   .close-2{color:var(--accent-text)}

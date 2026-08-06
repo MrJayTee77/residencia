@@ -36,7 +36,7 @@ export const cases: CaseItem[] = [
   {
     slug: 'seat-14-febrero', title: '14 de Febrero', brand: 'SEAT', units: ['agency'],
     blurb: 'Serie de «vales virtuales para movilizar tu amor»: carrusel ilustrado en Instagram — una pizza, una comida en tu casa, un paseo, un beso, un viaje inolvidable. Social content con voz de marca cálida y compartible.',
-    missing: 'métricas', featured: true,
+    missing: 'métricas',
     metrics: [{ label: 'Alcance' }, { label: 'Guardados' }, { label: 'Engagement' }],
   },
   {
@@ -61,7 +61,7 @@ export const cases: CaseItem[] = [
   {
     slug: 'iprikene-creators', title: 'Content + Creators', brand: 'Iprikene', units: ['agency', 'gr8'],
     blurb: 'Campaña integral farma: key visual «El rival no debería ser tu estómago», más contenido con creadores — POV de viaje por México y personaje animado del estómago.',
-    missing: 'métricas', featured: true,
+    missing: 'métricas',
     metrics: [{ label: 'Alcance' }, { label: 'Recuerdo' }, { label: 'Conversión' }],
   },
   {
@@ -89,6 +89,55 @@ export const cases: CaseItem[] = [
     slug: 'amazon-videojuegos', title: 'Activación con equipo', brand: 'Amazon', units: ['gr8'],
     blurb: 'Que te gusten los videojuegos es bueno. Que tú y tu equipo sean parte de uno es GR8.',
     missing: 'detalle completo',
+  },
+  // ── Synergy · BOOK SYNERGY 2026 ──
+  {
+    slug: 'nike-air-liquid-max', title: 'Air Liquid Max × Lust', brand: 'Nike', units: ['synergy'],
+    blurb: 'Un universo visual inmersivo para el lanzamiento del Air Max en México: videos CGI con influencers, art toys con NFC que desbloqueaban experiencias AR, set de DJ con AR en vivo, camión photo-opp, espejo Reflex para try-on y prints de Helena Garza, Pablo Valdés y Gibrán Turón con capa de AR.',
+    missing: 'métricas + permisos de uso', featured: true,
+    metrics: [{ label: 'Interacciones AR' }, { label: 'UGC' }, { label: 'Datos capturados' }],
+  },
+  {
+    slug: 'f1-gp-cdmx', title: 'Gran Premio de la Ciudad de México en AR', brand: 'Formula 1 / Heineken',
+    units: ['synergy'],
+    blurb: 'El póster oficial convertido en detonador interactivo (2024–2025): AR sobre las tres variantes del cartel, vasos reutilizables con águilas de papel picado en AR, hand-tracking con el auto de F1, y la revelación en CGI del póster 2026 al cierre del evento.',
+    missing: 'métricas + permisos de uso', featured: true,
+    metrics: [{ label: 'Activaciones' }, { label: 'UGC en TikTok' }, { label: 'Alcance' }],
+  },
+  {
+    slug: 'nissan-e-rally', title: 'Formula E «e-Rally»', brand: 'Nissan', units: ['synergy'],
+    blurb: 'Una semana de experiencia gamificada a escala ciudad: CDMX en cuatro zonas con checkpoints revelados por día, plataforma de registro, flyer que ensamblaba el auto en AR, mini-juego en pista virtual y espejo Reflex en showrooms.',
+    missing: 'métricas + permisos de uso',
+    metrics: [{ label: 'Registros' }, { label: 'Tráfico a tienda' }, { label: 'Participación' }],
+  },
+  {
+    slug: 'museo-cabanas-snapchat', title: 'AR sobre los murales de Orozco', brand: 'Museo Cabañas × Snapchat',
+    units: ['synergy'],
+    blurb: 'Realidad aumentada sobre los murales de Orozco con mecánicas de descuento y lentes AR.',
+    missing: 'métricas',
+  },
+  {
+    slug: 'lagavulin-spirited-xchange', title: '«A Spirited Xchange»', brand: 'Lagavulin / Diageo',
+    units: ['synergy'],
+    blurb: 'Con la artista XR Nadia Tamez: cena inmersiva con projection mapping inspirada en las notas ahumadas del whisky.',
+    missing: 'métricas',
+  },
+  {
+    slug: 'cloe-alebrijes', title: 'Alebrijes en AR × Jacobo & María Ángeles', brand: 'Cloe', units: ['synergy'],
+    blurb: 'Alebrijes oaxaqueños vivos en AR, campaña audiovisual y Reflex en centros comerciales. Más films de producto CGI para la colección SS 2026.',
+    missing: 'métricas',
+  },
+  {
+    slug: 'volcan-de-mi-tierra', title: 'Cajas AR en punto de venta', brand: 'Volcán de mi Tierra (Moët Hennessy)',
+    units: ['synergy'],
+    blurb: 'Cajas de regalo ilustradas que hacen erupción en AR en el punto de venta.',
+    missing: 'métricas',
+  },
+  {
+    slug: 'reflex-ar', title: 'Reflex.AR — espejo inteligente', brand: 'Producto propio', units: ['synergy'],
+    blurb: 'Espejo AR propio en tres formatos: Pro para showrooms y aeropuertos, Lite vertical para pop-ups y seeding, y Custom a medida. Try-on, beauty, interactive branding y mini-juegos, siempre con captura de datos.',
+    missing: 'especificaciones + pricing (si se publica)', featured: true,
+    metrics: [{ label: 'Formatos', value: '3' }, { label: 'Modos', value: '4' }, { label: 'Instalaciones' }],
   },
   {
     slug: 'seat-arona', title: 'Arona — Sensor de estacionamiento', brand: 'SEAT', units: ['produccion'],

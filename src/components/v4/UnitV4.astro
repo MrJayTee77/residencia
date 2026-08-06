@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Shell from './Shell.astro';
 import {
-  units, agencyCopy, produccionCopy, gr8Copy, synergyCopy, clientsMaster,
+  units, agencyCopy, produccionCopy, gr8Copy, synergyCopy,
 } from '../../data/v4/content';
 import type { UnitId } from '../../data/v4/content';
 import { casesForUnit } from '../../data/v4/cases';
@@ -161,14 +161,46 @@ const num = () => `[ 0${++n} ]`;
       {unit === 'synergy' && (
         <>
           <section class="wrap">
-            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.philHead}</h2></div>
-            <div class="stack">{synergyCopy.phil.map((p) => <p class="body">{p}</p>)}</div>
+            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.methodHead}</h2></div>
+            <ol class="method">
+              {synergyCopy.method.map((m, i) => (
+                <li><span class="me-n">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="me-t">{m.t}</span><span class="me-d">{m.d}</span></li>
+              ))}
+            </ol>
+            <p class="h-md method-close">{synergyCopy.methodClose}</p>
+            <p class="body phil">{synergyCopy.phil}</p>
           </section>
+
           <section class="wrap">
-            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.labHead}</h2></div>
-            <p class="body">{synergyCopy.lab}</p>
-            <p class="pend-note lab-note">{synergyCopy.labNote}</p>
-            <p class="pend-note">{synergyCopy.statusNote}</p>
+            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.reflexHead}</h2></div>
+            <h3 class="h-lg reflex-t">{synergyCopy.reflexTitle}</h3>
+            <p class="body">{synergyCopy.reflexIntro}</p>
+            <div class="reflex">
+              {synergyCopy.reflex.map((r) => (
+                <article class="rx"><span class="rx-t">{r.t}</span><span class="rx-d">{r.d}</span></article>
+              ))}
+            </div>
+            <p class="body rx-modes">{synergyCopy.reflexModes}</p>
+            <p class="pend-note">{synergyCopy.reflexNote}</p>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.capsExtHead}</h2></div>
+            <ul class="chips">{synergyCopy.capsExt.map((c) => <li>{c}</li>)}</ul>
+          </section>
+
+          <section class="wrap">
+            <div class="shead"><span class="n">{num()}</span><h2>{synergyCopy.clientsHead}</h2></div>
+            <ul class="chips">{synergyCopy.clients.map((c) => <li>{c}</li>)}</ul>
+            <p class="pend-note clients-n">{synergyCopy.clientsNote}</p>
+          </section>
+
+          <section class="wrap">
+            <div class="open">
+              <p class="label">Decisiones abiertas antes de publicar</p>
+              <ol>{synergyCopy.openQuestions.map((q) => <li>{q}</li>)}</ol>
+            </div>
           </section>
         </>
       )}
@@ -274,6 +306,30 @@ const num = () => `[ 0${++n} ]`;
   .cat-n{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.04em;line-height:1}
   .cat-l{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .roster-cta{margin-top:clamp(24px,3.4vh,40px)}
+
+  .method{list-style:none;padding:0;display:grid;grid-template-columns:1fr;gap:.7rem}
+  @media(min-width:900px){.method{grid-template-columns:repeat(5,1fr)}}
+  .method li{display:grid;gap:.35em;padding:clamp(18px,1.8vw,24px);border:1px solid var(--line);
+    border-radius:8px;background:var(--card);border-top:3px solid var(--accent)}
+  .me-n{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--accent-text)}
+  .me-t{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.02em;line-height:1.15}
+  .me-d{font-size:.86rem;line-height:1.5;color:var(--muted)}
+  .method-close{margin-top:clamp(24px,3.4vh,40px);max-width:32ch}
+  .phil{margin-top:clamp(20px,3vh,32px)}
+
+  .reflex-t{margin-bottom:clamp(16px,2.4vh,26px);max-width:22ch}
+  .reflex{display:grid;grid-template-columns:1fr;gap:.7rem;margin-top:clamp(20px,3vh,32px)}
+  @media(min-width:760px){.reflex{grid-template-columns:repeat(3,1fr)}}
+  .rx{display:grid;gap:.4em;padding:clamp(20px,2vw,28px);border:1px solid var(--line);border-radius:8px;
+    background:var(--card);border-top:3px solid var(--accent)}
+  .rx-t{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.03em}
+  .rx-d{font-size:.92rem;line-height:1.55;color:var(--muted)}
+  .rx-modes{margin-top:clamp(18px,2.6vh,28px)}
+  .clients-n{margin-top:1.1em}
+  .open{padding:clamp(20px,2.4vw,32px);border:1px dashed color-mix(in srgb,var(--accent) 55%,transparent);
+    border-radius:8px;background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .open ol{margin:1em 0 0;padding-left:1.3em;display:grid;gap:.7em}
+  .open li{font-size:.95rem;line-height:1.6;color:var(--ink-2)}
 
   .lab-note{margin-top:1.1em}
   .ucta{padding-block:clamp(70px,12vh,150px)}

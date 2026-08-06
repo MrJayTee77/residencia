@@ -6,9 +6,10 @@
 // Site language is ES. The document marks the EN version as pending, so v4 is
 // Spanish only rather than shipping a machine translation.
 //
-// UNCONFIRMED FIGURES are flagged `pending` and render marked, never as fact.
-// The document itself flags the 19-vs-15 years conflict (brief says 19, the GR8
-// deck says +15) — so the number is shown as pending until Residencia rules.
+// Document v2 resolved 7 of its 14 gaps. 19 years and hola@residencia.com are
+// now CONFIRMED and render as fact. What is still unverified stays flagged
+// `pending` and renders marked — notably the roster audience totals, which come
+// from public sources (Aug 2026) and await GR8's internal validation.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type UnitId = 'agency' | 'produccion' | 'gr8' | 'synergy';
@@ -56,12 +57,13 @@ export const home = {
     kicker: 'Quiénes somos',
     copy: 'En Residencia creemos que el contenido es la expresión visible de una estrategia. Creamos soluciones de comunicación que nacen de un entendimiento profundo de las personas, la cultura y las plataformas. Desde una campaña integral hasta una pieza de contenido, cada ejecución responde a un propósito y forma parte de una idea más grande.',
     stats: [
-      { value: '19', label: 'años de experiencia', pending: true },
-      { value: '+30', label: 'marcas', pending: true },
+      { value: '19', label: 'años de experiencia', pending: false },
+      { value: '+30', label: 'marcas', pending: false },
       { value: '4', label: 'unidades de negocio', pending: false },
-      { value: '+25', label: 'creadores representados', pending: true },
+      { value: '+25', label: 'creadores representados', pending: false },
+      { value: '+100M', label: 'audiencia combinada', pending: true },
     ],
-    statsNote: 'Cifras por confirmar con Residencia. El brief indica 19 años; el deck de GR8 indica +15.',
+    statsNote: 'La audiencia combinada del roster se calculó con fuentes públicas (SocialBlade, StreamsCharts, prensa) a agosto 2026 — validar con los números internos de GR8 antes de publicar y refrescar cada trimestre.',
   },
   ecosystem: {
     kicker: 'El ecosistema',
@@ -70,11 +72,33 @@ export const home = {
   },
   work: { kicker: 'Trabajo destacado', title: 'La prueba.', cta: 'Ver todo el trabajo' },
   clients: { kicker: 'Clientes', copy: 'Marcas que ya construyen con nosotros.' },
+  team: {
+    kicker: 'Equipo',
+    title: 'Las personas detrás del ecosistema.',
+    note: 'Pendiente: autorización de Residencia, nombres definitivos, cargos y fotos.',
+    people: [
+      { role: 'Fundador/a & CEO' },
+      { role: 'Director/a General Creativo/a' },
+      { role: 'Head de Estrategia' },
+      { role: 'Head de Producción' },
+    ],
+  },
+  awards: {
+    kicker: 'Reconocimientos',
+    title: '19 años también se miden en reconocimientos.',
+    note: 'Lista real pendiente. Si no hay premios formales, esta sección se convierte en «Hitos».',
+    entries: [
+      { a: 'Premio / Festival', b: 'Categoría', c: 'Marca / Campaña', y: '20—' },
+      { a: 'Premio', b: 'Categoría', c: 'Campaña', y: '20—' },
+      { a: 'Ranking / Listado de industria', b: 'Posición', c: '', y: '20—' },
+      { a: 'Reconocimiento de plataforma', b: 'Meta / TikTok / Google', c: '', y: '20—' },
+    ],
+  },
   closing: {
     manifesto: ['Sabemos hacer lo bueno.', 'Nos encanta hacerlo más grande.'],
     cta: 'Hablemos',
-    email: 'hola@residencia.com.mx',
-    emailPending: true,
+    email: 'hola@residencia.com',
+    emailPending: false,
   },
 };
 
@@ -141,13 +165,13 @@ export const units: Record<UnitId, Unit> = {
   },
   synergy: {
     id: 'synergy', n: '04', slug: 'synergy', name: 'Synergy by Residencia',
-    kicker: 'Laboratorio de innovación',
-    role: 'Expande sus posibilidades mediante innovación y tecnología.',
-    h1: 'Donde las ideas se encuentran con la tecnología.',
-    sub: 'El laboratorio de innovación creativa y tecnológica de Residencia: exploramos cómo las nuevas tecnologías amplían las posibilidades de una idea y crean experiencias que antes no eran posibles.',
+    kicker: 'Estudio de tecnología creativa',
+    role: 'Expande las posibilidades de cada idea.',
+    h1: 'Arte, diseño, cultura e innovación. En el mismo lugar.',
+    sub: 'Definimos la estrategia, la activamos a través de experiencias creativas y convertimos el engagement en data, insights y resultados de negocio.',
     accent: '#3FB8B8', accentDeep: '#0E5E63', onAccent: '#04201F',
-    services: ['Inteligencia artificial', 'CGI', 'Realidad aumentada', 'Experiencias interactivas',
-      'Instalaciones tecnológicas', 'Contenido generativo', 'Prototipos digitales', 'Activaciones phygital'],
+    services: ['Smart Art Toys', 'Immersive Mapping', 'Digital Wearables', 'Live Stream Effects',
+      'Videomapping', 'Immersive AR', 'Augmented Reality', 'CGI Effects'],
     cta: '¿Qué pasaría si tu idea pudiera más? Experimentemos.',
   },
 };
@@ -159,7 +183,7 @@ export const ecosystemCards = [
   { id: 'agency' as UnitId, lead: 'El núcleo estratégico y creativo.', body: 'Data, insights culturales, creatividad y performance para diseñar estrategias digitales full funnel.' },
   { id: 'produccion' as UnitId, lead: 'El brazo de producción y ejecución.', body: 'De grandes producciones audiovisuales a UGC y contenido con IA.' },
   { id: 'gr8' as UnitId, lead: 'La evolución del creator marketing.', body: 'Colaboraciones estratégicas con los creadores más relevantes de habla hispana.' },
-  { id: 'synergy' as UnitId, lead: 'El laboratorio de innovación creativa y tecnológica.', body: 'IA, CGI, realidad aumentada y experiencias phygital.' },
+  { id: 'synergy' as UnitId, lead: 'El estudio de tecnología creativa.', body: 'AR, CGI, smart art toys, experiencias phygital y Reflex.AR, su espejo inteligente propio — con casos para Nike, Formula 1 y Nissan.' },
 ];
 
 /* ── unit-specific long copy ────────────────────────────────────────────── */
@@ -234,15 +258,46 @@ export const gr8Copy = {
 };
 
 export const synergyCopy = {
-  philHead: 'Filosofía',
-  phil: [
-    'No utilizamos la innovación como un adorno ni como un truco visual. La tecnología debe hacer que la creatividad sea más relevante, más visible, más útil o más impactante.',
-    'Synergy converge en el mundo phygital: conectamos los entornos físicos y digitales para crear experiencias más inmersivas, funcionales y memorables. Desde una pieza que cobra vida a través de realidad aumentada hasta una instalación que responde a la presencia de las personas.',
+  methodHead: 'La metodología Synergy',
+  method: [
+    { t: 'Discovery', d: 'Entender oportunidades, retos y contexto cultural.' },
+    { t: 'Strategic Architectures', d: 'Definir visión, roadmap y marco de innovación.' },
+    { t: 'Synergy Core', d: 'Donde convergen estrategia, creatividad e innovación.' },
+    { t: 'Experience Ecosystem', d: 'Experiencias, productos y activaciones diseñadas para generar impacto.' },
+    { t: 'Intelligence Loop', d: 'Insights, performance y aprendizajes que alimentan la siguiente innovación.' },
   ],
-  labHead: 'El laboratorio',
-  lab: 'Además de ejecutar proyectos, Synergy funciona como un espacio de experimentación: investigamos tendencias, desarrollamos prototipos y exploramos nuevos formatos para anticiparnos a las posibilidades de comunicación del futuro.',
-  labNote: 'Sin casos publicables todavía — gap 04 del documento. La landing misma debería ser el caso de estudio.',
-  statusNote: 'El nombre «Synergy» estaba marcado TBD en el brief. Confirmar antes de publicar.',
+  methodClose: 'Evolución continua: cada proyecto se convierte en inteligencia para el siguiente.',
+  philHead: 'Filosofía',
+  phil: 'No utilizamos la innovación como un adorno ni como un truco visual. La tecnología debe hacer que la creatividad sea más relevante, más visible, más útil o más impactante.',
+  capsHead: 'Capacidades',
+  capsExtHead: 'Capacidades extendidas',
+  capsExt: ['Estrategia y concepto', 'Producción audiovisual', 'CGI-powered videos',
+    'AR multitracker, hand-tracking y mini-juegos', 'Lentes AR (colaboración con Snapchat)',
+    'Plataformas de registro y captura de datos', 'Photo opportunities', 'Activaciones phygital',
+    'AR prints con artistas', 'Perfilamiento de audiencias'],
+  reflexHead: 'Reflex.AR',
+  reflexTitle: 'Reflex.AR — el espejo inteligente de Synergy.',
+  reflexIntro: 'Un espejo AR propio, en tres formatos:',
+  reflex: [
+    { t: 'Pro', d: 'Showrooms, retail y aeropuertos — moda, deporte, lifestyle y entretenimiento a gran escala.' },
+    { t: 'Lite', d: 'Formato vertical compacto para pop-ups y seeding — ideal para accesorios, maquillaje y belleza.' },
+    { t: 'Custom', d: 'Diseño y fabricación a medida, integrado a la identidad de la marca.' },
+  ],
+  reflexModes: 'Modos: try-on, beauty, interactive branding y mini-juegos, siempre con captura de datos.',
+  reflexNote: 'Tener producto propio diferencia a Synergy de cualquier laboratorio de innovación de agencia.',
+  clientsHead: 'Clientes',
+  clients: ['Nike', 'Formula 1', 'Nissan', 'adidas', 'Jordan', 'Apple', 'Dior', 'Vogue', 'Meta',
+    'Adobe', 'IKEA', 'HP', 'Mercedes-Benz', 'Hyundai', 'Walmart', 'Heineken', 'Dos Equis', 'Patrón',
+    'Moët Hennessy', 'LVMH', 'American Express', 'Coachella', 'Cirque du Soleil', 'HBO Max',
+    'UEFA Champions League', 'Liga MX', 'MLB', 'WNBA', 'Kings League', 'Chivas',
+    'El Palacio de Hierro', 'Maybelline', 'Takis', 'Krispy Kreme', 'Telcel', 'Cupra', 'Ford',
+    'OCESA', 'Tecate', 'Naciones Unidas'],
+  clientsNote: 'Del logo wall del book (~65 marcas). Autorización de uso público pendiente.',
+  /** Two decisions the document says must be made before this landing publishes. */
+  openQuestions: [
+    'El «BOOK SYNERGY 2026» está redactado en inglés y firma «LAB. ® MX» — nunca menciona a Residencia. Confirmar cómo se comunica públicamente la relación («Synergy by Residencia» vs. estudio aliado).',
+    'Definir el idioma de esta landing: aquí el copy está en español por consistencia; puede conservarse en inglés si Synergy apunta a clientes globales.',
+  ],
 };
 
 /* ── 07 · master client list ────────────────────────────────────────────── */
