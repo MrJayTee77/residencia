@@ -1,0 +1,400 @@
+---
+// The storytelling home: one thesis on arrival, then the argument is built by
+// scrolling. The four units are deliberately NOT on the first screen — the
+// ecosystem is the payoff of the narrative, revealed by roots growing out of
+// the wordmark once "el mundo cambió" and "quiénes somos" have earned it.
+//
+// Arc (section 00 of the architecture document):
+//   00 tesis · 01 el mundo cambió · 02 el insight · 03 quiénes somos
+//   04 EL ECOSISTEMA (reveal) · 05 la prueba · 06 clientes · 07 cierre
+import Base from '../../layouts/Base.astro';
+import Shell from './Shell.astro';
+import { home, ecosystemCards, units, brand, clientsMaster } from '../../data/v4/content';
+import { featured } from '../../data/v4/cases';
+import { unitPlate } from '../../data/media-v3';
+
+const B = import.meta.env.BASE_URL.replace(/\/$/, '');
+const R = (p = '') => `${B}/v4${p ? `/${p}` : ''}`;
+const heroSub = home.hero.sub.replace('{years}', home.who.stats[0].value);
+const marquee = [...clientsMaster, ...clientsMaster];
+const word = 'Residencia'.split('');
+---
+<Base title="Residencia — Creative Content Strategy" description={brand.thesis} theme="theme-res-v3" lang="es" og="home">
+  <div class="v4">
+    <Shell active="home">
+
+      <!-- ══════ 00 · LA TESIS — nothing but this ══════ -->
+      <section class="act thesis" data-act>
+        <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+        <div class="wrap">
+          <p class="kicker rv">{home.hero.eyebrow}</p>
+          <h1 class="h-xl th-h">
+            <span class="th-a rv">{home.hero.h1[0]}</span>
+            <span class="th-b rv">{home.hero.h1[1]}</span>
+          </h1>
+        </div>
+        <p class="cue" aria-hidden="true"><span>Desplázate</span><i>↓</i></p>
+      </section>
+
+      <!-- ══════ 01 · EL MUNDO CAMBIÓ ══════ -->
+      <section class="act changed" id="cambio" data-act>
+        <div class="wrap">
+          <p class="act-n rv">[ 01 ]</p>
+          <h2 class="h-lg rv ch-h">{home.changed.title}</h2>
+          <div class="ba">
+            <div class="ba-col rv">
+              <p class="label">{home.changed.before.k}</p>
+              <ul>{home.changed.before.items.map((i) => <li>{i}</li>)}</ul>
+            </div>
+            <div class="ba-col now rv">
+              <p class="label">{home.changed.now.k}</p>
+              <ul>{home.changed.now.items.map((i) => <li>{i}</li>)}</ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════ 02 · EL INSIGHT ══════ -->
+      <section class="act insight invert" data-act>
+        <div class="wrap">
+          <p class="act-n rv">[ 02 ]</p>
+          <blockquote class="rv">
+            <p class="h-lg ins-q">«{home.changed.insight}»</p>
+            <p class="body ins-t">{home.changed.insightTail}</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- ══════ 03 · QUIÉNES SOMOS ══════ -->
+      <section class="act who" id="nosotros" data-act>
+        <div class="wrap">
+          <p class="act-n rv">[ 03 ]</p>
+          <p class="h-md rv who-copy">{home.who.copy}</p>
+          <ul class="stats rv">
+            {home.who.stats.map((s) => (
+              <li>
+                <span class={s.pending ? 'stat-v pending' : 'stat-v'}>{s.value}</span>
+                <span class="stat-l">{s.label}{s.pending && <span class="pend-chip">Por validar</span>}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="pend-note rv stats-n">{home.who.statsNote}</p>
+        </div>
+      </section>
+
+      <!-- ══════ 04 · EL ECOSISTEMA — the reveal ══════ -->
+      <section class="act eco-act" id="ecosistema" data-act data-eco>
+        <div class="backdrop" data-backdrop aria-hidden="true">
+          {ecosystemCards.map((c) => (
+            <div class="bd" data-bd={c.id} style={`--plate:url('${unitPlate[c.id === 'produccion' ? 'production' : c.id]}')`}></div>
+          ))}
+        </div>
+        <div class="wrap eco-in">
+          <p class="act-n rv">[ 04 ]</p>
+          <h2 class="wordmark" data-wordmark>
+            <span aria-hidden="true">{word.map((c, i) => <span class="wl" style={`--i:${i}`}>{c}</span>)}</span>
+            <span class="sr-only">Residencia</span>
+          </h2>
+          <p class="h-lg rv eco-h">{home.ecosystem.title}</p>
+
+          <div class="field" data-field>
+            <svg class="roots" data-roots viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <g class="strands">
+                {ecosystemCards.map((_c, i) => <path class="strand" data-strand={i} pathLength="1" style={`--i:${i}`} d="" />)}
+              </g>
+              <g class="nodes">
+                <circle class="origin" data-origin r="5" cx="600" cy="0" />
+                {ecosystemCards.map((_c, i) => <circle class="port" data-port={i} style={`--i:${i}`} r="6" cx="0" cy="0" />)}
+              </g>
+            </svg>
+            <div class="spine" aria-hidden="true"></div>
+
+            <div class="grid" data-grid>
+              {ecosystemCards.map((c, i) => {
+                const u = units[c.id];
+                return (
+                  <a class={`unit u-${c.id}`} data-unit={i} data-id={c.id} style={`--i:${i}`}
+                     href={R(u.slug)} transition:name={`u-${c.id}`}>
+                    <span class="u-port" aria-hidden="true"></span>
+                    <span class="u-top"><span class="u-n">{u.n}</span><span class="u-kind">{u.kicker}</span></span>
+                    <span class="u-name">{u.name.replace(' by Residencia', '')}</span>
+                    <span class="u-lead">{c.lead}</span>
+                    <span class="u-role">{u.role}</span>
+                    <span class="u-go">Entrar<i aria-hidden="true">↘</i></span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+          <p class="body rv eco-close">{home.ecosystem.close}</p>
+        </div>
+      </section>
+
+      <!-- ══════ 05 · LA PRUEBA ══════ -->
+      <section class="act work" id="trabajo" data-act>
+        <div class="wrap">
+          <p class="act-n rv">[ 05 ]</p>
+          <h2 class="h-lg rv ch-h">{home.work.title}</h2>
+          <ul class="cases">
+            {featured.map((c) => (
+              <li class="rv">
+                <a class={`kase u-${c.units[0]}`} href={R(`trabajo/${c.slug}`)}>
+                  <span class="kase-shot">
+                    {c.media?.kind === 'image' && <img src={c.media.src} alt="" loading="lazy" decoding="async" />}
+                  </span>
+                  <span class="kase-b">
+                    <span class="kase-brand">{c.brand}</span>
+                    <span class="kase-t">{c.title}</span>
+                    <span class="kase-d">{c.blurb}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a class="btn btn-ghost rv work-cta" href={R('trabajo')}>{home.work.cta}<i aria-hidden="true">↘</i></a>
+        </div>
+      </section>
+
+      <!-- ══════ 06 · CLIENTES ══════ -->
+      <section class="act clients" data-act>
+        <div class="wrap">
+          <p class="act-n rv">[ 06 ]</p>
+          <p class="h-md rv cl-copy">{home.clients.copy}</p>
+        </div>
+        <div class="marq"><div class="marq-track">{marquee.map((c) => <span>{c}</span>)}</div></div>
+      </section>
+
+      <!-- ══════ 07 · CIERRE ══════ -->
+      <section class="act closing invert" id="contacto" data-act>
+        <span class="mk mk-bl" aria-hidden="true"></span><span class="mk mk-br" aria-hidden="true"></span>
+        <div class="wrap">
+          <h2 class="h-xl cl-h">
+            <span class="rv">{home.closing.manifesto[0]}</span>
+            <span class="rv cl-2">{home.closing.manifesto[1]}</span>
+          </h2>
+          <a class="btn rv cl-btn" href={`mailto:${home.closing.email}`}>
+            {home.closing.cta} — {home.closing.email}<i aria-hidden="true">↗</i>
+          </a>
+        </div>
+      </section>
+
+    </Shell>
+  </div>
+</Base>
+
+<style>
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  .act{position:relative;padding-block:clamp(72px,13vh,170px)}
+  .act-n{font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;color:var(--accent-text);margin-bottom:clamp(20px,3vh,34px)}
+
+  /* reveal — one shared mechanism, respects reduced motion */
+  .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease-entrance),transform .7s var(--ease-entrance)}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){ .rv{opacity:1;transform:none;transition:none} }
+
+  /* ── 00 tesis: the only thing on screen one ── */
+  .thesis{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding-top:clamp(120px,18vh,200px)}
+  .th-h{display:grid;gap:.06em;max-width:18ch;margin-top:clamp(18px,3vh,30px)}
+  .th-b{color:var(--accent-text)}
+  .th-b.rv{transition-delay:.18s}
+  .cue{position:absolute;left:var(--pad);bottom:clamp(24px,5vh,52px);display:flex;align-items:center;gap:.7em;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .cue i{font-style:normal;animation:cue 1.9s ease-in-out infinite}
+  @keyframes cue{50%{transform:translateY(5px)}}
+  @media (prefers-reduced-motion:reduce){ .cue i{animation:none} }
+
+  .ch-h{max-width:22ch;margin-bottom:clamp(28px,4.5vh,54px)}
+  .changed{background:var(--card);border-block:1px solid var(--line)}
+  .ba-col.rv:nth-child(2){transition-delay:.12s}
+
+  /* ── 02 insight ── */
+  .insight{padding-block:clamp(90px,17vh,220px)}
+  .ins-q{max-width:24ch}
+  .ins-t{margin-top:1.2em}
+
+  /* ── 03 quiénes somos ── */
+  .who-copy{max-width:30ch;margin-bottom:clamp(30px,4.5vh,54px)}
+  .stats-n{margin-top:1.2em;max-width:74ch}
+
+  /* ── 04 el ecosistema: the reveal ── */
+  .eco-act{background:var(--card);border-block:1px solid var(--line);overflow:hidden}
+  .backdrop{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .bd{position:absolute;inset:0;background-image:var(--plate);background-size:cover;background-position:center;
+    opacity:0;transform:scale(1.06);transition:opacity .75s var(--ease-entrance),transform 1.4s var(--ease-entrance)}
+  .bd.on{opacity:.42;transform:scale(1)}
+  .backdrop::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.94) 55%,var(--card) 100%)}
+  .eco-in{position:relative;z-index:2}
+  .wordmark{font-family:var(--display);font-weight:700;text-align:center;color:var(--ink);
+    font-size:clamp(2.2rem,11vw,8rem);line-height:.92;letter-spacing:-.045em;margin-bottom:.1em}
+  .wl{display:inline-block;opacity:0;transform:translateY(.3em)}
+  [data-wordmark].in .wl{opacity:1;transform:none;
+    transition:opacity .5s var(--ease-entrance) calc(var(--i)*38ms),transform .5s var(--ease-entrance) calc(var(--i)*38ms)}
+  @media (prefers-reduced-motion:reduce){ .wl{opacity:1;transform:none} }
+  .eco-h{text-align:center;max-width:24ch;margin:0 auto clamp(20px,3vh,34px)}
+
+  .field{position:relative;padding-top:clamp(110px,16vh,210px)}
+  .roots{position:absolute;inset:0;width:100%;height:100%;display:none;pointer-events:none;overflow:visible}
+  .roots .strand{fill:none;stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke;
+    stroke-dasharray:1;stroke-dashoffset:1;opacity:.8;
+    transition:stroke .3s,opacity .3s,stroke-width .3s}
+  .roots .origin,.roots .port{fill:var(--ink);transform-box:fill-box;transform-origin:center;transform:scale(0)}
+  .roots .port{fill:var(--accent)}
+  .spine{position:absolute;left:50%;top:0;width:1.5px;height:clamp(110px,16vh,210px);background:var(--ink);
+    transform:translateX(-50%) scaleY(0);transform-origin:top;transition:transform .7s var(--ease-entrance)}
+
+  [data-eco].go .roots .origin{transform:scale(1);transition:transform .3s var(--ease-entrance) .25s}
+  [data-eco].go .spine{transform:translateX(-50%) scaleY(1);transition-delay:.25s}
+  [data-eco].go .roots .strand{stroke-dashoffset:0;
+    transition:stroke-dashoffset .6s var(--ease-entrance) calc(300ms + var(--i)*110ms),stroke .3s,opacity .3s,stroke-width .3s}
+  [data-eco].go .roots .port{transform:scale(1);transition:transform .3s var(--ease-entrance) calc(820ms + var(--i)*110ms)}
+  [data-eco].go .unit{opacity:1;transform:none;
+    transition:opacity .45s var(--ease-entrance) calc(880ms + var(--i)*110ms),
+      transform .45s var(--ease-entrance) calc(880ms + var(--i)*110ms),
+      border-color .3s,box-shadow .3s}
+  [data-eco].go .unit .u-port{transform:translate(-50%,-50%) scale(1);transition-delay:calc(880ms + var(--i)*110ms)}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:.7rem}
+  @media(min-width:620px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media(min-width:1100px){ .grid{grid-template-columns:repeat(4,1fr)} .roots{display:block} .spine{display:none} }
+
+  .unit{position:relative;display:flex;flex-direction:column;gap:.45em;min-height:250px;
+    padding:clamp(18px,1.8vw,26px);border:1px solid var(--line);border-radius:8px;background:var(--card);
+    opacity:0;transform:translateY(16px);
+    transition:border-color .3s,box-shadow .3s,transform .3s}
+  .unit::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--accent)}
+  .unit:hover,.unit:focus-visible{border-color:var(--accent);box-shadow:0 14px 32px rgba(27,18,38,.13)}
+  .u-port{position:absolute;left:50%;top:0;width:9px;height:9px;border-radius:50%;background:var(--accent);
+    transform:translate(-50%,-50%) scale(0);transition:transform .3s var(--ease-entrance)}
+  .u-top{display:flex;justify-content:space-between;gap:.5em;align-items:baseline;
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
+  .u-n{color:var(--accent-text);font-weight:700}
+  .u-kind{color:var(--muted);text-align:right}
+  .u-name{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,2vw,1.7rem);letter-spacing:-.03em;line-height:1.05;margin-top:.15em}
+  .u-lead{font-weight:600;font-size:.95rem;line-height:1.4}
+  .u-role{font-size:.88rem;line-height:1.5;color:var(--muted);flex:1}
+  .u-go{display:inline-flex;align-items:center;gap:.4em;min-height:44px;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-text)}
+  .u-go i{font-style:normal;transition:transform .3s}
+  .unit:hover .u-go i{transform:translate(3px,3px)}
+  /* la mirada: looking at one unit recedes the others */
+  .field.gazing .unit:not(.gazed){opacity:.42}
+  .field.gazing .roots .strand:not(.lit){opacity:.18}
+  .roots .strand.lit{stroke:var(--accent);stroke-width:2.6}
+  .eco-close{margin-top:clamp(28px,4vh,48px);text-align:center;margin-inline:auto}
+
+  .work-cta{margin-top:clamp(26px,4vh,44px)}
+  .cl-copy{max-width:24ch;margin-bottom:clamp(24px,3.5vh,42px)}
+  .clients{background:var(--card);border-block:1px solid var(--line)}
+
+  .closing{padding-block:clamp(90px,16vh,200px)}
+  .cl-h{display:grid;gap:.06em;max-width:16ch}
+  .cl-2{color:var(--accent-text)}
+  .cl-2.rv{transition-delay:.15s}
+  .cl-btn{margin-top:clamp(30px,4.5vh,52px)}
+  .cl-btn.rv{transition-delay:.3s}
+</style>
+
+<script>
+  let ran = false;
+  const setup = () => {
+    if (ran) return;
+    const eco = document.querySelector<HTMLElement>('[data-eco]');
+    if (!eco) return;
+    ran = true;
+
+    const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const cleanups: Array<() => void> = [];
+
+    /* ── reveal on enter ── */
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.rv, [data-wordmark]').forEach((el) => io.observe(el));
+    cleanups.push(() => io.disconnect());
+
+    /* ── the ecosystem reveal ── */
+    const field = eco.querySelector<HTMLElement>('[data-field]')!;
+    const svg = eco.querySelector<SVGSVGElement>('[data-roots]')!;
+    const origin = svg.querySelector<SVGCircleElement>('[data-origin]')!;
+    const strands = Array.from(svg.querySelectorAll<SVGPathElement>('[data-strand]'));
+    const ports = Array.from(svg.querySelectorAll<SVGCircleElement>('[data-port]'));
+    const cards = Array.from(eco.querySelectorAll<HTMLElement>('[data-unit]'));
+    const backdrop = eco.querySelector<HTMLElement>('[data-backdrop]');
+    const wide = matchMedia('(min-width:1100px)');
+
+    // Strands are measured against the real card positions so they land on the
+    // ports at any width, rather than assuming a four-across grid.
+    const draw = () => {
+      if (!wide.matches) return;
+      const fb = field.getBoundingClientRect();
+      const w = Math.round(fb.width), h = Math.round(fb.height);
+      if (w < 2 || h < 2) return;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      const ox = w / 2, oy = 2;
+      origin.setAttribute('cx', String(ox)); origin.setAttribute('cy', String(oy));
+      cards.forEach((card, i) => {
+        const cb = card.getBoundingClientRect();
+        const x = cb.left - fb.left + cb.width / 2, y = cb.top - fb.top, run = y - oy;
+        strands[i].setAttribute('d', `M ${ox} ${oy} C ${ox} ${oy + run * 0.42}, ${x} ${y - run * 0.4}, ${x} ${y}`);
+        ports[i].setAttribute('cx', String(x)); ports[i].setAttribute('cy', String(y));
+      });
+    };
+    draw();
+
+    if (reduce) eco.classList.add('go');
+    else {
+      const ecoIO = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          ecoIO.disconnect();
+          draw();
+          eco.classList.add('go');
+        }
+      }, { threshold: 0.25 });
+      ecoIO.observe(field);
+      cleanups.push(() => ecoIO.disconnect());
+    }
+
+    let raf = 0;
+    const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); };
+    addEventListener('resize', onResize, { passive: true });
+    cleanups.push(() => removeEventListener('resize', onResize));
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(onResize); ro.observe(field);
+      cleanups.push(() => ro.disconnect());
+    }
+
+    /* ── discovery: pointing at a unit brings its world in behind ── */
+    let t = 0;
+    const gaze = (id: string | null) => {
+      clearTimeout(t);
+      field.classList.toggle('gazing', id !== null);
+      cards.forEach((c) => c.classList.toggle('gazed', c.dataset.id === id));
+      strands.forEach((s, j) => s.classList.toggle('lit', cards[j]?.dataset.id === id));
+      backdrop?.querySelectorAll<HTMLElement>('.bd').forEach((b) => b.classList.toggle('on', b.dataset.bd === id));
+    };
+    cards.forEach((card) => {
+      const id = card.dataset.id!;
+      card.addEventListener('mouseenter', () => gaze(id));
+      card.addEventListener('focus', () => gaze(id));
+      card.addEventListener('mouseleave', () => { t = window.setTimeout(() => gaze(null), 90); });
+      card.addEventListener('blur', () => { t = window.setTimeout(() => gaze(null), 90); });
+      // hold the preview through the click so the next page opens on that plate
+      card.addEventListener('click', () => { clearTimeout(t); gaze(id); });
+    });
+
+    document.addEventListener('astro:before-swap', () => {
+      ran = false;
+      cleanups.forEach((fn) => fn());
+    }, { once: true });
+  };
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>
