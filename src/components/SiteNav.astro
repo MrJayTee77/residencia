@@ -1,0 +1,141 @@
+---
+// Shared site header. The older v3 pages still carry their own copy of this
+// markup; new pages use this one so the nav only has to be corrected in a
+// single place from here on.
+import LangToggle from './LangToggle.astro';
+import { localizedPath, type Lang } from '../i18n/utils';
+import { unitList } from '../data/units-v3';
+
+interface Props {
+  lang: Lang;
+  /** Route key for the language toggle, e.g. 'v3/work'. */
+  route: string;
+  /** Which nav item reads as current. */
+  active?: 'work' | 'about' | string;
+  /** Skin class so the bar inherits the page's palette. */
+  skin?: string;
+}
+const { lang, route, active = '', skin = 'skin-agency' } = Astro.props;
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+const dark = skin !== 'skin-agency';
+const logo = `${BASE}/ds/${dark ? 'residencia-mark-paper' : 'residencia-mark-noturno'}.png`;
+const L = (r: string) => localizedPath(r, lang);
+const all = unitList(lang);
+
+const t = {
+  es: { work: 'Trabajo', about: 'Nosotros', contact: 'Contacto', menu: 'Menú', units: 'Unidades', skip: 'Saltar al contenido' },
+  en: { work: 'Work', about: 'About', contact: 'Contact', menu: 'Menu', units: 'Units', skip: 'Skip to content' },
+}[lang];
+---
+<a href="#main" class="skip">{t.skip}</a>
+
+<header class={`hdr ${skin}`} data-nav>
+  <div class="wrap nav">
+    <a href={L('v3')} class="brand" aria-label="Residencia">
+      <img src={logo} alt="" class="mark" width="30" height="30" /><span>Residencia</span>
+    </a>
+    <nav class="links" aria-label={t.units}>
+      {all.map((s) => (
+        <a href={L(`v3/${s.id}`)} class={active === s.id ? 'on' : ''}
+           aria-current={active === s.id ? 'page' : undefined}>{s.short}</a>
+      ))}
+      <a href={L('v3/work')} class={active === 'work' ? 'on' : ''}
+         aria-current={active === 'work' ? 'page' : undefined}>{t.work}</a>
+      <a href={L('v3/about')} class={active === 'about' ? 'on' : ''}
+         aria-current={active === 'about' ? 'page' : undefined}>{t.about}</a>
+      <a href="#contact" class="muted">{t.contact}</a>
+      <LangToggle lang={lang} route={route} />
+    </nav>
+    <button class="burger" type="button" data-menu-btn aria-expanded="false" aria-controls="site-menu">
+      <span class="burger-l" aria-hidden="true"></span><span class="burger-t">{t.menu}</span>
+    </button>
+  </div>
+
+  <div class="mnav" id="site-menu" data-menu hidden>
+    <nav aria-label={t.menu}>
+      {all.map((s) => (
+        <a href={L(`v3/${s.id}`)} aria-current={active === s.id ? 'page' : undefined}>
+          <span class="mn-n">{s.n}</span><span class="mn-name">{s.short}</span><span class="mn-kind">{s.kind}</span>
+        </a>
+      ))}
+      <a href={L('v3/work')} class="mn-flat"><span class="mn-name">{t.work}</span></a>
+      <a href={L('v3/about')} class="mn-flat"><span class="mn-name">{t.about}</span></a>
+      <a href="#contact" class="mn-flat"><span class="mn-name">{t.contact}</span></a>
+    </nav>
+    <div class="mnav-foot"><LangToggle lang={lang} route={route} /></div>
+  </div>
+</header>
+
+<style>
+  .skip{position:absolute;left:-9999px;top:0;z-index:200;padding:.8em 1.2em;background:var(--ink);color:var(--bg);
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+  .skip:focus{left:12px;top:12px}
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;border-bottom:1px solid transparent;background:transparent;
+    transition:transform .4s var(--ease-standard),background .4s,border-color .4s}
+  .hdr.scrolled{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .hdr.open{transform:none;background:var(--bg);border-color:var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:72px}
+  .mark{width:1.9em;height:auto;flex:none;object-fit:contain}
+  .brand{display:flex;align-items:center;gap:.5em;font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.02em}
+  .links{display:flex;gap:1.2rem;align-items:center}
+  .links a{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+  .links a:hover{color:var(--accent-text)}
+  .links a.muted{color:var(--muted)}
+  .links a.on{color:var(--accent-text);border-bottom:1px solid var(--accent-text);padding-bottom:2px}
+  .burger{display:none;align-items:center;gap:.55em;min-height:44px;padding:0 .2em;background:none;border:0;color:inherit;cursor:pointer}
+  .burger-l{position:relative;display:block;width:22px;height:1.5px;background:currentColor}
+  .burger-l::before,.burger-l::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;transition:transform .28s}
+  .burger-l::before{top:-6px}.burger-l::after{top:6px}
+  .burger[aria-expanded="true"] .burger-l{background:transparent}
+  .burger[aria-expanded="true"] .burger-l::before{transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] .burger-l::after{transform:translateY(-6px) rotate(-45deg)}
+  .burger-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+  .mnav{border-top:1px solid var(--line);background:var(--bg);padding:0 var(--pad) 1.4rem;max-height:80vh;overflow-y:auto}
+  .mnav[hidden]{display:none}
+  .mnav nav{display:flex;flex-direction:column}
+  .mnav a{display:grid;grid-template-columns:auto 1fr;gap:.1em .9em;align-items:baseline;
+    padding:1rem 0;border-bottom:1px solid var(--line);min-height:44px}
+  .mnav a.mn-flat{grid-template-columns:1fr}
+  .mn-n{font-family:var(--mono);font-size:.7rem;color:var(--accent-text);letter-spacing:.06em}
+  .mn-name{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em}
+  .mn-kind{grid-column:2;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .mnav-foot{padding-top:1.1rem}
+  @media (max-width:900px){ .links{display:none} .burger{display:inline-flex} }
+</style>
+
+<script>
+  let ran = false;
+  const setup = () => {
+    if (ran) return;
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    const panel = document.querySelector<HTMLElement>('[data-menu]');
+    const hdr = document.querySelector<HTMLElement>('[data-nav]');
+    if (!btn || !panel || !hdr) return;
+    ran = true;
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      hdr.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+    const mq = matchMedia('(min-width:901px)');
+    const onMq = (e: MediaQueryListEvent) => { if (e.matches) setOpen(false); };
+    mq.addEventListener('change', onMq);
+    document.addEventListener('astro:before-swap', () => {
+      ran = false;
+      document.removeEventListener('keydown', onKey);
+      mq.removeEventListener('change', onMq);
+      document.body.style.overflow = '';
+    }, { once: true });
+  };
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>

@@ -6,7 +6,7 @@ import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { unitList, brand } from '../data/units-v3';
 import { clientLogos, unitPlate } from '../data/media-v3';
-import { FORMSPREE_ID } from '../config';
+import { FORMSPREE_ID, FORM_DEMO } from '../config';
 
 // The hub shows a taste of each unit; the depth lives on the unit pages.
 const stripLogos = ['netflix', 'volkswagen', 'coca-cola', 'mattel', 'xbox', 'ford', 'nike', 'huawei', 'telcel', 'porsche']
@@ -34,7 +34,7 @@ const t = {
     coord: 'Ciudad de México', units: '4 unidades · un ecosistema',
     lead: 'El contenido no es solamente un entregable: es la expresión visible de una estrategia.',
     scroll: 'Desplázate', enter: 'Entrar', menu: 'Menú', contact: 'Contacto', index: 'Índice',
-    chapters: 'Capítulos', see: 'Ver la unidad', work: 'Trabajo',
+    chapters: 'Capítulos', see: 'Ver la unidad', work: 'Trabajo', about: 'Nosotros',
     agencyBand: 'Algunas de las marcas',
     andMore: (n: number) => `+${n} más ↘`,
     gr8Roster: 'Roster de creadores',
@@ -45,7 +45,8 @@ const t = {
     f: { name: 'Nombre', email: 'Correo', company: 'Empresa', unit: 'Unidad', any: 'No estoy seguro',
          message: 'Cuéntanos', send: 'Enviar',
          ok: 'Gracias. Te respondemos pronto.', err: 'No se pudo enviar. Escríbenos a cesar.j@residencia.com.mx',
-         sending: 'Enviando…' },
+         sending: 'Enviando…',
+         demo: 'Modo demostración: el formulario aún no está conectado. Falta el id de Formspree.' },
     city: 'Ciudad de México, México',
     rights: '© 2026 Residencia. Todos los derechos reservados.',
     footTag: 'Creatividad, estrategia, producción y tecnología en un mismo ecosistema.',
@@ -58,7 +59,7 @@ const t = {
     coord: 'Mexico City', units: '4 units · one ecosystem',
     lead: 'Content is not simply a deliverable: it is the visible expression of a strategy.',
     scroll: 'Scroll', enter: 'Enter', menu: 'Menu', contact: 'Contact', index: 'Index',
-    chapters: 'Chapters', see: 'See the unit', work: 'Work',
+    chapters: 'Chapters', see: 'See the unit', work: 'Work', about: 'About',
     agencyBand: 'Some of the brands',
     andMore: (n: number) => `+${n} more ↘`,
     gr8Roster: 'Creator roster',
@@ -69,7 +70,8 @@ const t = {
     f: { name: 'Name', email: 'Email', company: 'Company', unit: 'Unit', any: 'Not sure yet',
          message: 'Tell us', send: 'Send',
          ok: 'Thank you. We’ll be in touch shortly.', err: 'Could not send. Write to cesar.j@residencia.com.mx',
-         sending: 'Sending…' },
+         sending: 'Sending…',
+         demo: 'Demo mode: the form is not connected yet. Formspree id pending.' },
     city: 'Mexico City, Mexico',
     rights: '© 2026 Residencia. All rights reserved.',
     footTag: 'Creativity, strategy, production and technology in one ecosystem.',
@@ -93,6 +95,7 @@ const word = 'Residencia'.split('');
       <nav class="links" aria-label={t.index}>
         {list.map((u) => <a href={L(`v3/${u.id}`)}>{u.short}</a>)}
         <a href={L('v3/work')}>{t.work}</a>
+        <a href={L('v3/about')}>{t.about}</a>
         <a href="#contact" class="muted">{t.contact}</a>
         <LangToggle lang={lang} route="v3" />
       </nav>
@@ -110,6 +113,7 @@ const word = 'Residencia'.split('');
           </a>
         ))}
         <a href={L('v3/work')} class="mn-contact"><span class="mn-name">{t.work}</span></a>
+        <a href={L('v3/about')} class="mn-contact"><span class="mn-name">{t.about}</span></a>
         <a href="#contact" class="mn-contact"><span class="mn-name">{t.contact}</span></a>
       </nav>
       <div class="mnav-foot"><LangToggle lang={lang} route="v3" /></div>
@@ -216,8 +220,9 @@ const word = 'Residencia'.split('');
         <div class="shead reveal"><span class="num">[ 07 ]</span><h2>{t.contactKicker}</h2></div>
         <h2 class="contact-big reveal">{t.contactHead}</h2>
         <p class="contact-sub reveal">{t.contactSub}</p>
-        {FORMSPREE_ID ? (
-          <form class="cform reveal" method="POST" action={`https://formspree.io/f/${FORMSPREE_ID}`} data-form data-copy={JSON.stringify(t.f)}>
+        {(FORMSPREE_ID || FORM_DEMO) ? (
+          <form class="cform reveal" method="POST" action={FORMSPREE_ID ? `https://formspree.io/f/${FORMSPREE_ID}` : ''}
+                data-form data-demo={FORMSPREE_ID ? undefined : 'true'} data-copy={JSON.stringify(t.f)}>
             <div class="f-row">
               <label class="f-field">
                 <span>{t.f.name}</span>
@@ -250,6 +255,7 @@ const word = 'Residencia'.split('');
             </p>
             <button type="submit" class="f-send">{t.f.send}<i aria-hidden="true">↘</i></button>
             <p class="f-status" role="status" aria-live="polite" data-status></p>
+            {!FORMSPREE_ID && <p class="ph-note">{t.f.demo}</p>}
           </form>
         ) : (
           <div class="paths">
@@ -651,6 +657,11 @@ const word = 'Residencia'.split('');
       const copy = JSON.parse(form.dataset.copy || '{}');
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (form.dataset.demo) {
+          status.className = 'f-status err';
+          status.textContent = copy.demo || 'Demo mode — not sent.';
+          return;
+        }
         status.className = 'f-status';
         status.textContent = copy.sending || '…';
         btn.disabled = true;

@@ -5,7 +5,9 @@ import '../styles/ds/styles.css';
 import '../styles/v3-chapters.css';
 import { localizedPath, type Lang } from '../i18n/utils';
 import { unitList } from '../data/units-v3';
-import { work, clientLogos } from '../data/media-v3';
+import { clientLogos } from '../data/media-v3';
+import { cases } from '../data/cases';
+import { units } from '../data/units-v3';
 
 interface Props { lang: Lang; }
 const { lang } = Astro.props;
@@ -22,30 +24,28 @@ const t = {
     desc: 'Trabajo de Residencia: producción audiovisual, campañas y contenido para marcas en México.',
     kicker: 'Trabajo', head: 'Lo que hemos hecho.',
     lead: 'Una selección en construcción. Estamos preparando los casos completos de cada unidad — por ahora, algunas piezas de producción.',
-    unit: 'Residencia Producción', pieces: 'Piezas',
-    soonHead: 'En preparación',
+    casesHead: 'Casos', casesNote: 'Los casos marcados están en preparación — el texto es marcador de posición.',
     soon: 'Los casos de Agency, GR8 y Synergy están en preparación. Si quieres ver material específico de alguna unidad, escríbenos y te lo compartimos directamente.',
     brandsHead: 'Marcas con las que hemos trabajado',
     ctaHead: '¿Quieres ver más?', ctaSub: 'Te compartimos el book completo por correo.',
     write: 'Pedir el book', subj: 'Solicitud de book — Residencia',
     contact: 'Contacto', menu: 'Menú', skip: 'Saltar al contenido',
     rights: '© 2026 Residencia. Todos los derechos reservados.',
-    units: 'Unidades',
+    units: 'Unidades', aboutNav: 'Nosotros',
   },
   en: {
     title: 'Work — Residencia',
     desc: 'Residencia’s work: film production, campaigns and content for brands in Mexico.',
     kicker: 'Work', head: 'What we have made.',
     lead: 'A selection in progress. Full cases for each unit are being prepared — for now, a few production pieces.',
-    unit: 'Residencia Production', pieces: 'Pieces',
-    soonHead: 'In preparation',
+    casesHead: 'Cases', casesNote: 'Marked cases are in preparation — the copy is placeholder text.',
     soon: 'Cases for Agency, GR8 and Synergy are being prepared. If you want to see specific material from a unit, write to us and we’ll share it directly.',
     brandsHead: 'Brands we have worked with',
     ctaHead: 'Want to see more?', ctaSub: 'We’ll send the full book by email.',
     write: 'Request the book', subj: 'Book request — Residencia',
     contact: 'Contact', menu: 'Menu', skip: 'Skip to content',
     rights: '© 2026 Residencia. All rights reserved.',
-    units: 'Units',
+    units: 'Units', aboutNav: 'About',
   },
 }[lang];
 ---
@@ -61,6 +61,7 @@ const t = {
       <nav class="links" aria-label={t.units}>
         {all.map((s) => <a href={L(`v3/${s.id}`)}>{s.short}</a>)}
         <a href={L('v3/work')} class="on" aria-current="page">{t.kicker}</a>
+        <a href={L('v3/about')}>{t.aboutNav}</a>
         <a href="#contact" class="muted">{t.contact}</a>
         <LangToggle lang={lang} route="v3/work" />
       </nav>
@@ -94,23 +95,24 @@ const t = {
     </section>
 
     <section class="wrap sec">
-      <div class="shead reveal"><span class="num">[ 01 ]</span><h2>{t.unit}</h2></div>
-      <div class="work-grid">
-        {work.map((w) => (
-          <figure class="wk reveal">
-            {w.kind === 'video'
-              ? <video src={`${w.src}#t=${w.at}`} preload="metadata" controls playsinline aria-label={w.title}></video>
-              : <img src={w.src} alt={w.title} loading="lazy" decoding="async" />}
-            <figcaption>{w.title}</figcaption>
-          </figure>
+      <div class="shead reveal"><span class="num">[ 01 ]</span><h2>{t.casesHead}</h2></div>
+      <ul class="cases">
+        {cases.map((c) => (
+          <li class="reveal">
+            <a class="case-card" href={L(`v3/case/${c.slug}`)} data-hot>
+              <span class="case-shot" style={`background-image:url('${c.plate}')`}>
+                {c.media && c.media.kind === 'image' && <img src={c.media.src} alt="" loading="lazy" decoding="async" />}
+              </span>
+              <span class="case-meta">
+                <span class="case-brand">{c.brand}</span>
+                <span class={c.approved ? 'case-title' : 'case-title ph'}>{c[lang].title}</span>
+                <span class="case-unit">{units[c.unit][lang].short} · {c.year}</span>
+              </span>
+            </a>
+          </li>
         ))}
-      </div>
-    </section>
-
-    <!-- Said plainly rather than padded with placeholders. -->
-    <section class="wrap sec">
-      <div class="shead reveal"><span class="num">[ 02 ]</span><h2>{t.soonHead}</h2></div>
-      <p class="soon reveal">{t.soon}</p>
+      </ul>
+      <p class="ph-note note">{t.casesNote}</p>
     </section>
 
     <div class="band">
@@ -194,7 +196,7 @@ const t = {
   .wk{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-2)}
   .wk video,.wk img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}
   .wk figcaption{padding:.75em .9em;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .soon{max-width:60ch;color:var(--ink-2);font-size:1.02rem;line-height:1.65}
+  .note{margin-top:clamp(18px,2.6vh,30px)}
 
   .cta{padding-block:clamp(56px,9vh,130px);border-top:1px solid var(--line)}
   .cta-h{font-family:var(--display);font-weight:700;font-size:clamp(2rem,6vw,4.4rem);letter-spacing:-.04em;line-height:1}

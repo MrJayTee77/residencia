@@ -1,12 +1,15 @@
 import type { APIRoute } from 'astro';
 import { unitOrder } from '../data/units-v3';
+import { cases } from '../data/cases';
 
 /** Hand-rolled so the build stays dependency-free. Lists both locales of every
     live v3 route, each pointing at its counterpart via xhtml:link. */
 export const GET: APIRoute = ({ site }) => {
   const origin = (site ?? new URL('https://mrjaytee77.github.io')).origin;
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-  const routes = ['v3', 'v3/work', ...unitOrder.map((u) => `v3/${u}`)];
+  const routes = ['v3', 'v3/work', 'v3/about',
+    ...unitOrder.map((u) => `v3/${u}`),
+    ...cases.map((c) => `v3/case/${c.slug}`)];
 
   const url = (path: string) => `${origin}${base}/${path}/`.replace(/([^:]);\/{2,}/g, '$1/');
   const entry = (path: string) => {

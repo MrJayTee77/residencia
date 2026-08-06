@@ -166,3 +166,72 @@
 }
 
 
+
+/* ============================================================
+   PLACEHOLDER MARKING
+   Anything awaiting Residencia's copy is visibly marked, so in a client
+   meeting nobody mistakes scaffold text for approved copy. Toggle the marks
+   off with .no-ph on <body> if a cleaner look is wanted for a screenshot.
+   ============================================================ */
+.ph{position:relative;color:var(--muted);
+  background:linear-gradient(var(--ph-tint,rgba(255,65,3,.06)),var(--ph-tint,rgba(255,65,3,.06)));
+  box-shadow:inset 0 -1px 0 0 color-mix(in srgb,var(--accent) 45%,transparent);
+  border-radius:2px;padding:0 .12em}
+.ph-chip{display:inline-flex;align-items:center;gap:.4em;vertical-align:middle;
+  margin-left:.6em;padding:.28em .6em;border-radius:var(--radius-pill);
+  border:1px dashed color-mix(in srgb,var(--accent) 60%,transparent);
+  color:var(--accent-text);background:color-mix(in srgb,var(--accent) 8%,transparent);
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.ph-note{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.no-ph .ph{background:none;box-shadow:none;color:inherit;padding:0}
+.no-ph .ph-chip{display:none}
+
+/* metric slots: the shape of a number, without inventing one */
+.metrics{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,28px);
+  padding-block:clamp(20px,3vh,34px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.metrics li{display:grid;gap:.25em}
+.metrics .m-v{font-family:var(--u-font,var(--display));font-weight:700;
+  font-size:clamp(1.6rem,3.6vw,2.8rem);letter-spacing:-.03em;line-height:1;color:var(--ink)}
+.metrics .m-v.empty{color:var(--muted);opacity:.55}
+.metrics .m-l{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* case grid */
+.cases{list-style:none;display:grid;grid-template-columns:1fr;gap:.9rem}
+@media (min-width:680px){ .cases{grid-template-columns:repeat(2,1fr)} }
+@media (min-width:1100px){ .cases{grid-template-columns:repeat(3,1fr)} }
+.case-card{position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg-2);
+  transition:transform .3s var(--ease-standard),box-shadow .3s var(--ease-standard),border-color .3s}
+.case-card:hover,.case-card:focus-visible{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--ink)}
+.case-shot{position:relative;aspect-ratio:16/10;background-size:cover;background-position:center;background-color:var(--bg-3)}
+.case-shot video,.case-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.case-meta{display:flex;flex-direction:column;gap:.35em;padding:clamp(16px,1.6vw,22px)}
+.case-brand{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text)}
+.case-title{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.02em;line-height:1.15}
+.case-unit{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* team */
+.people{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,26px)}
+@media (min-width:680px){ .people{grid-template-columns:repeat(3,1fr)} }
+@media (min-width:1100px){ .people{grid-template-columns:repeat(6,1fr)} }
+.person{display:grid;gap:.5em;justify-items:start}
+.avatar{width:100%;aspect-ratio:1;border-radius:var(--radius-lg);border:1px dashed var(--line);
+  display:grid;place-items:center;background:var(--bg-2);
+  font-family:var(--mono);font-size:.9rem;letter-spacing:.1em;color:var(--muted)}
+.p-name{font-family:var(--display);font-weight:700;font-size:.98rem;letter-spacing:-.01em}
+.p-role{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* awards + testimonials */
+.awards{list-style:none}
+.awards li{display:grid;grid-template-columns:auto 1fr;gap:.2em 1.4rem;align-items:baseline;
+  padding:1rem 0;border-top:1px solid var(--line)}
+.awards li:last-child{border-bottom:1px solid var(--line)}
+.aw-y{font-family:var(--mono);font-size:.72rem;color:var(--accent-text);letter-spacing:.06em}
+.aw-n{font-family:var(--display);font-weight:600;font-size:1.05rem;letter-spacing:-.01em}
+.aw-d{grid-column:2;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.quotes{display:grid;grid-template-columns:1fr;gap:.9rem}
+@media (min-width:760px){ .quotes{grid-template-columns:repeat(2,1fr)} }
+.quote{display:grid;gap:.9em;padding:clamp(20px,2.2vw,32px);border:1px solid var(--line);
+  border-radius:var(--radius-lg);background:var(--bg-2)}
+.q-t{font-family:var(--display);font-weight:400;font-size:clamp(1.05rem,1.9vw,1.35rem);line-height:1.35;letter-spacing:-.015em}
+.q-by{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}

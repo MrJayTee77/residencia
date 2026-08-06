@@ -10,3 +10,8 @@
 export const FORMSPREE_ID = '';
 export const CONTACT_EMAIL = 'cesar.j@residencia.com.mx';
 export const CONTACT_TEL = '+525532288017';
+
+/** Renders the contact form for demos even without a Formspree id. Submissions
+ *  are intercepted and answered with a visible "demo" notice — never silently
+ *  swallowed. Set FORMSPREE_ID and this flag stops mattering. */
+export const FORM_DEMO = true;

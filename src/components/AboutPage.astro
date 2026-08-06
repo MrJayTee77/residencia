@@ -1,0 +1,198 @@
+---
+import Base from '../layouts/Base.astro';
+import SiteNav from './SiteNav.astro';
+import '../styles/ds/styles.css';
+import '../styles/v3-chapters.css';
+import { localizedPath, type Lang } from '../i18n/utils';
+import { unitList, brand } from '../data/units-v3';
+import { team, awards, testimonials, stats } from '../data/cases';
+import { CONTACT_EMAIL } from '../config';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const L = (route: string) => localizedPath(route, lang);
+const all = unitList(lang);
+const b = brand[lang];
+const figures = stats(lang);
+
+const t = {
+  es: {
+    title: 'Nosotros — Residencia', kicker: 'Nosotros', head: 'Un ecosistema, no una agencia suelta.',
+    desc: 'Quiénes somos: el equipo, las unidades y el reconocimiento detrás de Residencia.',
+    philHead: 'Filosofía', teamHead: 'Equipo', unitsHead: 'Unidades',
+    awardsHead: 'Reconocimientos', quotesHead: 'Lo que dicen',
+    pending: 'Pendiente',
+    teamNote: 'Nombres, cargos y fotografías pendientes de Residencia.',
+    awardsNote: 'Ningún premio se publica hasta que Residencia lo confirme.',
+    quotesNote: 'Citas pendientes de aprobación de cada cliente.',
+    statsNote: 'Cifras marcadas con — pendientes de confirmar.',
+    ctaHead: 'Trabajemos juntos.', write: 'Escríbenos', subj: 'Consulta general — Residencia',
+  },
+  en: {
+    title: 'About — Residencia', kicker: 'About', head: 'An ecosystem, not a single agency.',
+    desc: 'Who we are: the team, the units and the recognition behind Residencia.',
+    philHead: 'Philosophy', teamHead: 'Team', unitsHead: 'Units',
+    awardsHead: 'Recognition', quotesHead: 'What they say',
+    pending: 'Pending',
+    teamNote: 'Names, roles and photography pending from Residencia.',
+    awardsNote: 'No award is published until Residencia confirms it.',
+    quotesNote: 'Quotes pending approval from each client.',
+    statsNote: 'Figures marked — are pending confirmation.',
+    ctaHead: 'Let’s work together.', write: 'Write to us', subj: 'General inquiry — Residencia',
+  },
+}[lang];
+---
+<Base title={t.title} description={t.desc} theme="theme-res-v3" lang={lang} og="home">
+  <SiteNav lang={lang} route="v3/about" active="about" skin="skin-agency" />
+
+  <main id="main" class="skin-agency">
+    <section class="hero">
+      <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+      <div class="wrap">
+        <p class="kicker">{t.kicker}</p>
+        <h1>{t.head}</h1>
+        <p class="lead">{b.manifesto[0]}</p>
+        <ul class="figs">
+          {figures.map((f) => (
+            <li>
+              <span class={f.pending ? 'f-v empty' : 'f-v'}>{f.value}</span>
+              <span class="f-l">{f.label}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="ph-note">{t.statsNote}</p>
+      </div>
+    </section>
+
+    <section class="wrap sec">
+      <div class="shead reveal"><span class="num">[ 01 ]</span><h2>{t.philHead}</h2></div>
+      <div class="mani">{b.manifesto.slice(1).map((p) => <p class="reveal">{p}</p>)}</div>
+    </section>
+
+    <section class="wrap sec">
+      <div class="shead reveal"><span class="num">[ 02 ]</span><h2>{t.unitsHead}</h2></div>
+      <ol class="roles">
+        {all.map((u) => (
+          <li class="role reveal">
+            <span class="r-n">{u.n}</span>
+            <a class="r-name" href={L(`v3/${u.id}`)} data-hot>{u.name}</a>
+            <span class="r-desc">{u.role}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="wrap sec">
+      <div class="shead reveal">
+        <span class="num">[ 03 ]</span><h2>{t.teamHead}</h2><span class="ph-chip">{t.pending}</span>
+      </div>
+      <ul class="people">
+        {team.map((p) => (
+          <li class="person reveal">
+            <span class="avatar" aria-hidden="true">{p.initials}</span>
+            <span class="p-name ph">{p.name}</span>
+            <span class="p-role ph">{p.role[lang]}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="ph-note note">{t.teamNote}</p>
+    </section>
+
+    <section class="wrap sec">
+      <div class="shead reveal">
+        <span class="num">[ 04 ]</span><h2>{t.awardsHead}</h2><span class="ph-chip">{t.pending}</span>
+      </div>
+      <ul class="awards">
+        {awards.map((a) => (
+          <li class="reveal">
+            <span class="aw-y ph">{a.year}</span>
+            <span class="aw-n ph">{a.name}</span>
+            <span class="aw-d ph">{a.detail[lang]}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="ph-note note">{t.awardsNote}</p>
+    </section>
+
+    <section class="wrap sec">
+      <div class="shead reveal">
+        <span class="num">[ 05 ]</span><h2>{t.quotesHead}</h2><span class="ph-chip">{t.pending}</span>
+      </div>
+      <div class="quotes">
+        {testimonials.map((q) => (
+          <figure class="quote reveal">
+            <blockquote class="q-t ph">“{q[lang]}”</blockquote>
+            <figcaption class="q-by ph">{q.by} — {q.role[lang]}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="ph-note note">{t.quotesNote}</p>
+    </section>
+
+    <section id="contact" class="wrap cta">
+      <h2 class="cta-h reveal">{t.ctaHead}</h2>
+      <a class="cta-btn reveal" href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t.subj)}`} data-hot>
+        {t.write}<i aria-hidden="true">↘</i>
+      </a>
+    </section>
+  </main>
+
+  <footer class="wrap foot skin-agency">
+    <a href={L('v3')} class="brand" data-hot><span>Residencia</span></a>
+    <span class="muted mono-s">© 2026 Residencia</span>
+  </footer>
+</Base>
+
+<style>
+  main{position:relative}
+  section[id]{scroll-margin-top:84px}
+  .hero{position:relative;padding-top:clamp(120px,17vh,190px);padding-bottom:clamp(40px,6vh,80px)}
+  .mk{position:absolute;width:14px;height:14px;opacity:.55}
+  .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
+  .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+  .kicker{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-text)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,7.5vw,5.6rem);letter-spacing:-.045em;
+    line-height:.96;margin-top:.28em;max-width:18ch}
+  .lead{margin-top:1.2em;max-width:56ch;font-size:clamp(1.02rem,1.7vw,1.28rem);line-height:1.55;color:var(--ink-2)}
+  .figs{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;
+    margin-top:clamp(30px,4.5vh,52px);padding-top:clamp(20px,3vh,34px);border-top:1px solid var(--line)}
+  @media (min-width:680px){ .figs{grid-template-columns:repeat(4,1fr)} }
+  .figs li{display:grid;gap:.3em}
+  .f-v{font-family:var(--display);font-weight:700;font-size:clamp(2rem,4.6vw,3.4rem);letter-spacing:-.04em;line-height:1}
+  .f-v.empty{color:var(--muted);opacity:.55}
+  .f-l{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hero .ph-note{margin-top:clamp(16px,2.4vh,26px)}
+
+  .sec{padding-block:clamp(44px,7vh,100px);border-top:1px solid var(--line)}
+  .shead{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:clamp(28px,4vh,52px)}
+  .shead .num{font-family:var(--mono);color:var(--accent-text);font-size:.76rem;letter-spacing:.06em}
+  .shead h2{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+  .mani{display:grid;gap:1.1rem;max-width:64ch}
+  .mani p{color:var(--ink-2);font-size:1.02rem;line-height:1.68}
+  .roles{list-style:none}
+  .role{display:grid;grid-template-columns:auto minmax(0,15rem) 1fr;gap:.3em 1.6rem;align-items:baseline;
+    padding:1.15rem 0;border-top:1px solid var(--line)}
+  .role:last-child{border-bottom:1px solid var(--line)}
+  .r-n{font-family:var(--mono);font-size:.72rem;color:var(--accent-text);letter-spacing:.06em}
+  .r-name{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.02em;
+    border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+  .r-name:hover{color:var(--accent-text);border-color:var(--accent-text)}
+  .r-desc{color:var(--muted);font-size:.96rem}
+  @media (max-width:760px){ .role{grid-template-columns:auto 1fr} .r-desc{grid-column:2} }
+  .note{margin-top:clamp(18px,2.6vh,30px)}
+
+  .cta{padding-block:clamp(56px,9vh,130px);border-top:1px solid var(--line)}
+  .cta-h{font-family:var(--display);font-weight:700;font-size:clamp(2rem,6vw,4.4rem);letter-spacing:-.04em;line-height:1}
+  .cta-btn{display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(22px,3vh,38px);min-height:52px;padding:0 1.6em;
+    border-radius:var(--radius-pill);background:var(--accent);color:var(--noturno-900);
+    font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+  .cta-btn i{font-style:normal;transition:transform .3s}
+  .cta-btn:hover{background:var(--vulcanico-400)}
+  .cta-btn:hover i{transform:translate(3px,3px)}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+    padding-block:clamp(32px,5vh,58px);border-top:1px solid var(--line)}
+  .brand{font-family:var(--display);font-weight:700;font-size:1rem}
+  .mono-s{font-family:var(--mono);font-size:.74rem}
+  .muted{color:var(--muted)}
+</style>
