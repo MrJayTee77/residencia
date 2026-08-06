@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mrjaytee77.github.io/residencia/sitemap.xml
