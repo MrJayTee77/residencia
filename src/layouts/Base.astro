@@ -8,8 +8,40 @@ interface Props {
   theme?: 'theme-group' | 'theme-residencia' | 'theme-gr8' | 'theme-synergy' | 'theme-agency' | 'theme-prod' | 'theme-syn' | 'theme-res' | 'theme-res-ds' | 'theme-res-v3';
   /** Document language. Drives <html lang>, which screen readers use to pick a voice. */
   lang?: 'es' | 'en';
+  /** Which share card to serve — a file in /public/og. */
+  og?: 'home' | 'agency' | 'production' | 'gr8' | 'synergy' | 'work';
 }
-const { title, description = 'Residencia Group — a creative group of three studios.', theme = 'theme-group', lang = 'es' } = Astro.props;
+const { title, description = 'Residencia Group — a creative group of three studios.', theme = 'theme-group', lang = 'es', og = 'home' } = Astro.props;
+
+/* ── canonical + language alternates ──
+   Paths look like /residencia/v3/… (es) and /residencia/en/v3/… (en), so the
+   counterpart is derived by adding or removing the single `en/` segment. */
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+const site = Astro.site ?? new URL('https://mrjaytee77.github.io');
+const rest = Astro.url.pathname.replace(BASE, '').replace(/^\//, '');
+const bare = rest.startsWith('en/') ? rest.slice(3) : rest;
+const abs = (path: string) => new URL(`${BASE}/${path}`.replace(/\/{2,}/g, '/'), site).href;
+const canonical = abs(rest);
+const esHref = abs(bare);
+const enHref = abs(`en/${bare}`);
+const ogImage = abs(`og/${og}.jpg`);
+const siteName = 'Residencia';
+
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Residencia',
+  description,
+  url: abs(''),
+  logo: abs('ds/residencia-mark-noturno.png'),
+  image: ogImage,
+  email: 'cesar.j@residencia.com.mx',
+  telephone: '+52 55 3228 8017',
+  address: { '@type': 'PostalAddress', addressLocality: 'Ciudad de México', addressCountry: 'MX' },
+  slogan: 'Creative Content Strategy',
+  department: ['Residencia Agency', 'Residencia Producción', 'GR8 by Residencia', 'Synergy by Residencia']
+    .map((n) => ({ '@type': 'Organization', name: n })),
+};
 
 const fonts =
   'https://fonts.googleapis.com/css2?' +
@@ -33,6 +65,31 @@ const fonts =
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href={fonts} rel="stylesheet" />
+
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="es" href={esHref} />
+  <link rel="alternate" hreflang="en" href={enHref} />
+  <link rel="alternate" hreflang="x-default" href={esHref} />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={siteName} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content={lang === 'es' ? 'es_MX' : 'en_US'} />
+  <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_MX'} />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+
+  <meta name="robots" content="index,follow" />
+  <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
+
   <ViewTransitions />
 </head>
 <body class={theme}>

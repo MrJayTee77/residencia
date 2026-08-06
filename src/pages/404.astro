@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/ds/styles.css';
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="404 — Residencia" description="Página no encontrada / Page not found" theme="theme-res-v3" lang="es">
+  <main class="nf">
+    <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-br" aria-hidden="true"></span>
+    <div class="wrap">
+      <p class="code">[ 404 ]</p>
+      <h1>Esta página no existe.<br /><span class="en">This page does not exist.</span></h1>
+      <div class="links">
+        <a href={`${BASE}/v3`} data-hot>Inicio / Home</a>
+        <a href={`${BASE}/v3/work`} data-hot>Trabajo / Work</a>
+        <a href="mailto:cesar.j@residencia.com.mx" data-hot>Contacto / Contact</a>
+      </div>
+    </div>
+  </main>
+</Base>
+<style>
+  .nf{position:relative;min-height:100vh;display:flex;align-items:center;background:var(--bg);color:var(--ink)}
+  .mk{position:absolute;width:14px;height:14px;opacity:.55}
+  .mk-tl{top:32px;left:20px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
+  .mk-br{bottom:32px;right:20px;border-bottom:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+  .code{font-family:var(--mono);font-size:.78rem;letter-spacing:.2em;color:var(--vulcanico-600)}
+  h1{font-family:var(--font-display);font-weight:700;font-size:clamp(2rem,6vw,4.6rem);letter-spacing:-.04em;
+    line-height:1.02;margin-top:.4em}
+  .en{color:var(--noturno-500)}
+  .links{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:clamp(28px,4vh,48px);
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+  .links a{border-bottom:1px solid var(--line);padding-bottom:.25em;min-height:44px;display:inline-flex;align-items:center}
+  .links a:hover{color:var(--vulcanico-600);border-color:var(--vulcanico-600)}
+</style>

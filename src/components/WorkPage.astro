@@ -1,0 +1,244 @@
+---
+import Base from '../layouts/Base.astro';
+import LangToggle from './LangToggle.astro';
+import '../styles/ds/styles.css';
+import '../styles/v3-chapters.css';
+import { localizedPath, type Lang } from '../i18n/utils';
+import { unitList } from '../data/units-v3';
+import { work, clientLogos } from '../data/media-v3';
+
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+const logo = `${BASE}/ds/residencia-mark-noturno.png`;
+const mail = 'cesar.j@residencia.com.mx';
+const L = (route: string) => localizedPath(route, lang);
+const all = unitList(lang);
+
+const t = {
+  es: {
+    title: 'Trabajo — Residencia',
+    desc: 'Trabajo de Residencia: producción audiovisual, campañas y contenido para marcas en México.',
+    kicker: 'Trabajo', head: 'Lo que hemos hecho.',
+    lead: 'Una selección en construcción. Estamos preparando los casos completos de cada unidad — por ahora, algunas piezas de producción.',
+    unit: 'Residencia Producción', pieces: 'Piezas',
+    soonHead: 'En preparación',
+    soon: 'Los casos de Agency, GR8 y Synergy están en preparación. Si quieres ver material específico de alguna unidad, escríbenos y te lo compartimos directamente.',
+    brandsHead: 'Marcas con las que hemos trabajado',
+    ctaHead: '¿Quieres ver más?', ctaSub: 'Te compartimos el book completo por correo.',
+    write: 'Pedir el book', subj: 'Solicitud de book — Residencia',
+    contact: 'Contacto', menu: 'Menú', skip: 'Saltar al contenido',
+    rights: '© 2026 Residencia. Todos los derechos reservados.',
+    units: 'Unidades',
+  },
+  en: {
+    title: 'Work — Residencia',
+    desc: 'Residencia’s work: film production, campaigns and content for brands in Mexico.',
+    kicker: 'Work', head: 'What we have made.',
+    lead: 'A selection in progress. Full cases for each unit are being prepared — for now, a few production pieces.',
+    unit: 'Residencia Production', pieces: 'Pieces',
+    soonHead: 'In preparation',
+    soon: 'Cases for Agency, GR8 and Synergy are being prepared. If you want to see specific material from a unit, write to us and we’ll share it directly.',
+    brandsHead: 'Brands we have worked with',
+    ctaHead: 'Want to see more?', ctaSub: 'We’ll send the full book by email.',
+    write: 'Request the book', subj: 'Book request — Residencia',
+    contact: 'Contact', menu: 'Menu', skip: 'Skip to content',
+    rights: '© 2026 Residencia. All rights reserved.',
+    units: 'Units',
+  },
+}[lang];
+---
+<Base title={t.title} description={t.desc} theme="theme-res-v3" lang={lang} og="work">
+
+  <a href="#main" class="skip">{t.skip}</a>
+
+  <header class="hdr skin-agency" data-nav>
+    <div class="wrap nav">
+      <a href={L('v3')} class="brand" aria-label="Residencia">
+        <img src={logo} alt="" class="mark" width="30" height="30" /><span>Residencia</span>
+      </a>
+      <nav class="links" aria-label={t.units}>
+        {all.map((s) => <a href={L(`v3/${s.id}`)}>{s.short}</a>)}
+        <a href={L('v3/work')} class="on" aria-current="page">{t.kicker}</a>
+        <a href="#contact" class="muted">{t.contact}</a>
+        <LangToggle lang={lang} route="v3/work" />
+      </nav>
+      <button class="burger" type="button" data-menu-btn aria-expanded="false" aria-controls="mobile-nav">
+        <span class="burger-l" aria-hidden="true"></span><span class="burger-t">{t.menu}</span>
+      </button>
+    </div>
+    <div class="mnav" id="mobile-nav" data-menu hidden>
+      <nav aria-label={t.menu}>
+        {all.map((s) => (
+          <a href={L(`v3/${s.id}`)}>
+            <span class="mn-n">{s.n}</span><span class="mn-name">{s.short}</span><span class="mn-kind">{s.kind}</span>
+          </a>
+        ))}
+        <a href="#contact" class="mn-contact"><span class="mn-name">{t.contact}</span></a>
+      </nav>
+      <div class="mnav-foot"><LangToggle lang={lang} route="v3/work" /></div>
+    </div>
+  </header>
+
+  <span id="top"></span>
+
+  <main id="main" class="skin-agency">
+    <section class="hero">
+      <span class="mk mk-tl" aria-hidden="true"></span><span class="mk mk-tr" aria-hidden="true"></span>
+      <div class="wrap">
+        <p class="kicker">{t.kicker}</p>
+        <h1>{t.head}</h1>
+        <p class="lead">{t.lead}</p>
+      </div>
+    </section>
+
+    <section class="wrap sec">
+      <div class="shead reveal"><span class="num">[ 01 ]</span><h2>{t.unit}</h2></div>
+      <div class="work-grid">
+        {work.map((w) => (
+          <figure class="wk reveal">
+            {w.kind === 'video'
+              ? <video src={`${w.src}#t=${w.at}`} preload="metadata" controls playsinline aria-label={w.title}></video>
+              : <img src={w.src} alt={w.title} loading="lazy" decoding="async" />}
+            <figcaption>{w.title}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- Said plainly rather than padded with placeholders. -->
+    <section class="wrap sec">
+      <div class="shead reveal"><span class="num">[ 02 ]</span><h2>{t.soonHead}</h2></div>
+      <p class="soon reveal">{t.soon}</p>
+    </section>
+
+    <div class="band">
+      <div class="wrap">
+        <p class="band-k reveal">{t.brandsHead}</p>
+        <ul class="logos">
+          {clientLogos.map((l) => (
+            <li class="reveal"><img src={l.src} alt={l.name} loading="lazy" decoding="async" /></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <section id="contact" class="wrap cta">
+      <h2 class="cta-h reveal">{t.ctaHead}</h2>
+      <p class="cta-sub reveal">{t.ctaSub}</p>
+      <a class="cta-btn reveal" href={`mailto:${mail}?subject=${encodeURIComponent(t.subj)}`} data-hot>
+        {t.write}<i aria-hidden="true">↘</i>
+      </a>
+    </section>
+  </main>
+
+  <footer class="wrap foot skin-agency">
+    <a href={L('v3')} class="brand" data-hot><img src={logo} alt="" class="mark" width="26" height="26" /><span>Residencia</span></a>
+    <span class="muted mono-s">{t.rights}</span>
+  </footer>
+</Base>
+
+<style>
+  .skip{position:absolute;left:-9999px;top:0;z-index:200;padding:.8em 1.2em;background:var(--ink);color:var(--bg);
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+  .skip:focus{left:12px;top:12px}
+  .hdr{position:fixed;inset:0 0 auto 0;z-index:100;border-bottom:1px solid transparent;background:transparent;
+    transition:transform .4s var(--ease-standard),background .4s,border-color .4s}
+  .hdr.scrolled{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-color:var(--line)}
+  .hdr.hide{transform:translateY(-110%)}
+  .hdr.open{transform:none;background:var(--bg);border-color:var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:72px}
+  .mark{width:1.9em;height:auto;flex:none;object-fit:contain}
+  .brand{display:flex;align-items:center;gap:.5em;font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.02em}
+  .links{display:flex;gap:1.4rem;align-items:center}
+  .links a{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+  .links a:hover{color:var(--accent-text)}
+  .links a.muted{color:var(--muted)}
+  .links a.on{color:var(--accent-text);border-bottom:1px solid var(--accent-text);padding-bottom:2px}
+  .burger{display:none;align-items:center;gap:.55em;min-height:44px;padding:0 .2em;background:none;border:0;color:inherit;cursor:pointer}
+  .burger-l{position:relative;display:block;width:22px;height:1.5px;background:currentColor}
+  .burger-l::before,.burger-l::after{content:"";position:absolute;left:0;width:22px;height:1.5px;background:currentColor;transition:transform .28s}
+  .burger-l::before{top:-6px}.burger-l::after{top:6px}
+  .burger[aria-expanded="true"] .burger-l{background:transparent}
+  .burger[aria-expanded="true"] .burger-l::before{transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] .burger-l::after{transform:translateY(-6px) rotate(-45deg)}
+  .burger-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+  .mnav{border-top:1px solid var(--line);background:var(--bg);padding:0 var(--pad) 1.4rem}
+  .mnav[hidden]{display:none}
+  .mnav nav{display:flex;flex-direction:column}
+  .mnav a{display:grid;grid-template-columns:auto 1fr;gap:.1em .9em;align-items:baseline;padding:1rem 0;border-bottom:1px solid var(--line);min-height:44px}
+  .mn-n{font-family:var(--mono);font-size:.7rem;color:var(--accent-text);letter-spacing:.06em}
+  .mn-name{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.02em}
+  .mn-kind{grid-column:2;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .mnav .mn-contact{grid-template-columns:1fr}
+  .mnav-foot{padding-top:1.1rem}
+  @media (max-width:900px){ .links{display:none} .burger{display:inline-flex} }
+
+  main{position:relative}
+  section[id]{scroll-margin-top:84px}
+  .hero{position:relative;padding-top:clamp(120px,17vh,190px);padding-bottom:clamp(40px,6vh,80px)}
+  .mk{position:absolute;width:14px;height:14px;opacity:.55;pointer-events:none}
+  .mk-tl{top:88px;left:16px;border-top:1.5px solid var(--ink);border-left:1.5px solid var(--ink)}
+  .mk-tr{top:88px;right:16px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+  .kicker{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-text)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,9vw,7rem);letter-spacing:-.045em;line-height:.92;margin-top:.25em}
+  .lead{margin-top:1.2em;max-width:52ch;font-size:clamp(1.02rem,1.7vw,1.3rem);line-height:1.55;color:var(--ink-2)}
+
+  .sec{padding-block:clamp(44px,7vh,96px);border-top:1px solid var(--line)}
+  .shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(28px,4vh,52px)}
+  .shead .num{font-family:var(--mono);color:var(--accent-text);font-size:.76rem;letter-spacing:.06em}
+  .shead h2{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+  .work-grid{display:grid;grid-template-columns:1fr;gap:.9rem}
+  @media (min-width:760px){ .work-grid{grid-template-columns:repeat(3,1fr)} }
+  .wk{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-2)}
+  .wk video,.wk img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}
+  .wk figcaption{padding:.75em .9em;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .soon{max-width:60ch;color:var(--ink-2);font-size:1.02rem;line-height:1.65}
+
+  .cta{padding-block:clamp(56px,9vh,130px);border-top:1px solid var(--line)}
+  .cta-h{font-family:var(--display);font-weight:700;font-size:clamp(2rem,6vw,4.4rem);letter-spacing:-.04em;line-height:1}
+  .cta-sub{margin-top:1rem;max-width:44ch;color:var(--ink-2);font-size:1.02rem;line-height:1.6}
+  .cta-btn{display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(24px,3.5vh,40px);min-height:52px;padding:0 1.6em;
+    border-radius:var(--radius-pill);background:var(--accent);color:var(--noturno-900);
+    font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
+  .cta-btn i{font-style:normal;transition:transform .3s}
+  .cta-btn:hover{background:var(--vulcanico-400)}
+  .cta-btn:hover i{transform:translate(3px,3px)}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:1rem 2rem;flex-wrap:wrap;
+    padding-block:clamp(36px,5vh,64px);border-top:1px solid var(--line)}
+  .foot .brand{font-size:1rem}
+  .mono-s{font-family:var(--mono);font-size:.74rem}
+  .muted{color:var(--muted)}
+</style>
+
+<script>
+  let ran = false;
+  const setup = () => {
+    if (ran) return;
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    const panel = document.querySelector<HTMLElement>('[data-menu]');
+    const hdr = document.querySelector<HTMLElement>('[data-nav]');
+    if (!btn || !panel || !hdr) return;
+    ran = true;
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      hdr.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('astro:before-swap', () => {
+      ran = false;
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    }, { once: true });
+  };
+  document.addEventListener('astro:page-load', setup);
+  setup();
+</script>
